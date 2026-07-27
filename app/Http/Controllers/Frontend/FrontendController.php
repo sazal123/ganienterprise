@@ -638,42 +638,96 @@ class FrontendController extends Controller
         $areas = District::where(['district' => $request->id])->pluck('area_name', 'id');
         return response()->json($areas);
     }
-    public function campaign($slug)
+    public function campaign(Request $request, $slug)
     {
-        $campaign_data = Campaign::where('slug', $slug)->with('images')->first();
+        $campaign_data = Campaign::where('slug', $slug)->with(['images', 'categories'])->firstOrFail();
 
-        $products = Product::whereIn('id', function($query) use ($campaign_data) {
-            $query->select('product_id')
-                  ->from('campaign_product')
-                  ->where('campaign_id', $campaign_data->id);
-        })->orWhere('id', $campaign_data->product_id)
-          ->where('status', 1)
-          ->with('image')
-          ->get();
+        // Get all category IDs attached to this campaign
+        $campaignCategoryIds = $campaign_data->categories->pluck('id')->toArray();
+        if ($campaign_data->category_id && !in_array($campaign_data->category_id, $campaignCategoryIds)) {
+            $campaignCategoryIds[] = $campaign_data->category_id;
+        }
 
+        // Get product IDs explicitly attached to this campaign
+        $productIds = DB::table('campaign_product')
+            ->where('campaign_id', $campaign_data->id)
+            ->pluck('product_id')
+            ->toArray();
 
-        Cart::instance('shopping')->destroy();
-        $cart_count = Cart::instance('shopping')->count();
-        $product = $products->first();
-        if ($cart_count == 0) {
-            Cart::instance('shopping')->add([
-                'id' => $product->id,
-                'name' => $product->name,
-                'qty' => 1,
-                'price' => $product->new_price,
-                'options' => [
-                    'slug' => $product->slug,
-                    'image' => $product->image->image,
-                    'old_price' => $product->old_price,
-                    'purchase_price' => $product->purchase_price,
-                ],
+        // Include all products belonging to any of the selected categories
+        if (!empty($campaignCategoryIds)) {
+            $catProductIds = Product::whereIn('category_id', $campaignCategoryIds)->where('status', 1)->pluck('id')->toArray();
+            $productIds = array_merge($productIds, $catProductIds);
+        }
+
+        if ($campaign_data->product_id) {
+            $productIds[] = $campaign_data->product_id;
+        }
+
+        $productIds = array_unique(array_filter($productIds));
+
+        $query = Product::where('status', 1);
+
+        if (!empty($productIds)) {
+            $query->whereIn('id', $productIds);
+        }
+
+        // Specific category tab filter
+        if ($request->filled('category_id') && $request->category_id !== 'all') {
+            $query->where('category_id', $request->category_id);
+        }
+
+        // Live Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('name', 'LIKE', "%{$search}%");
+        }
+
+        // Sorting
+        if ($request->filled('sort')) {
+            if ($request->sort === 'price_low') {
+                $query->orderBy('new_price', 'asc');
+            } elseif ($request->sort === 'price_high') {
+                $query->orderBy('new_price', 'desc');
+            } elseif ($request->sort === 'oldest') {
+                $query->orderBy('id', 'asc');
+            } else {
+                $query->orderBy('id', 'desc');
+            }
+        } else {
+            $query->orderBy('id', 'desc');
+        }
+
+        $products = $query->with(['image', 'sizes', 'colors'])->paginate(12)->withQueryString();
+
+        // Fallback to showcase all active products if campaign has no attached items or categories
+        if ($products->total() == 0 && empty($productIds)) {
+            $products = Product::where('status', 1)->with(['image', 'sizes', 'colors'])->paginate(12)->withQueryString();
+        }
+
+        // Categories to display as tabs on the view page
+        if (!empty($campaignCategoryIds)) {
+            $categories = Category::whereIn('id', $campaignCategoryIds)->where('status', 1)->get();
+        } elseif (!empty($productIds)) {
+            $categories = Category::whereIn('id', function($q) use ($productIds) {
+                $q->select('category_id')->from('products')->whereIn('id', $productIds)->whereNotNull('category_id');
+            })->get();
+        } else {
+            $categories = Category::where('status', 1)->take(8)->get();
+        }
+
+        $shippingcharge = ShippingCharge::where('status', 1)->get();
+
+        if ($request->ajax()) {
+            $html = view('frontEnd.layouts.pages.campaign._campaign_product_grid', compact('products'))->render();
+            return response()->json([
+                'status' => 'success',
+                'html' => $html,
+                'total' => $products->total()
             ]);
         }
-        //return $products;
-        $shippingcharge = ShippingCharge::where('status', 1)->get();
-        $select_charge = ShippingCharge::where('status', 1)->first();
-        Session::put('shipping', $select_charge->amount);
-        return view('frontEnd.layouts.pages.campaign.campaign', compact('campaign_data', 'products', 'shippingcharge'));
+
+        return view('frontEnd.layouts.pages.campaign.campaign', compact('campaign_data', 'products', 'categories', 'shippingcharge'));
     }
 
     public function payment_success(Request $request)

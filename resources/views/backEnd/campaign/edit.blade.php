@@ -219,15 +219,34 @@
 
                     <div class="col-sm-12">
                         <div class="form-group mb-3">
-                            <label for="product_id" class="form-label">Products *</label>
+                            <label for="category_id" class="form-label">Product Categories (Optional)</label>
+                            <select class="form-control select2 @error('category_id') is-invalid @enderror" 
+                                    name="category_id[]" 
+                                    id="category_id"
+                                    multiple="multiple"
+                                    data-placeholder="Choose categories...">
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat->id }}" {{ (isset($select_category_ids) && in_array($cat->id, $select_category_ids)) ? 'selected' : '' }}>
+                                        {{ $cat->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <small class="text-muted">Selecting categories will automatically select all active products under those categories.</small>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group mb-3">
+                            <label for="product_id" class="form-label">Products</label>
                             <select class="select2 form-control @error('product_id') is-invalid @enderror" 
                                     name="product_id[]" 
+                                    id="product_id_select"
                                     multiple="multiple" 
-                                    data-placeholder="Choose ...">
-                                <option value="">Select..</option>
+                                    data-placeholder="Choose products...">
                                 @foreach($products as $value)
                                     <option value="{{ $value->id }}" 
-                                        {{ $value->id == $edit_data->product_id || in_array($value->id, array_column($select_products, 'id')) ? 'selected' : '' }}>
+                                            data-category="{{ $value->category_id }}"
+                                            {{ in_array($value->id, $select_product_ids) ? 'selected' : '' }}>
                                         {{ $value->name }}
                                     </option>
                                 @endforeach
@@ -238,13 +257,14 @@
                                 </span>
                             @enderror
                         </div>
-                        <div>Selected Products</div>
+                        @if(!empty($select_products))
+                        <div>Selected Products:</div>
                         <ul>
                            @foreach($select_products as $sp)
-                           <li>{{$sp->name}}</li>
-                            @endforeach  
+                           <li>{{ $sp->name }}</li>
+                           @endforeach  
                         </ul>
-                       
+                        @endif
                     </div>
 
 
@@ -386,25 +406,23 @@
 
 
 @section('script')
-<script src="{{asset('backEnd/assets/libs/parsleyjs/parsley.min.js"></script>
-<script src="{{asset('backEnd/assets/js/pages/form-validation.init.js"></script>
-<script src="{{asset('backEnd/assets/libs/select2/js/select2.min.js"></script>
-<script src="{{asset('backEnd/assets/js/pages/form-advanced.init.js"></script>
-<script src="{{asset('backEnd/assets/libs/flatpickr/flatpickr.min.js"></script>
-<script src="{{asset('backEnd/assets/js/pages/form-pickers.init.js"></script>
+<script src="{{asset('backEnd/assets/libs/parsleyjs/parsley.min.js')}}"></script>
+<script src="{{asset('backEnd/assets/js/pages/form-validation.init.js')}}"></script>
+<script src="{{asset('backEnd/assets/libs/select2/js/select2.min.js')}}"></script>
+<script src="{{asset('backEnd/assets/js/pages/form-advanced.init.js')}}"></script>
+<script src="{{asset('backEnd/assets/libs/flatpickr/flatpickr.min.js')}}"></script>
+<script src="{{asset('backEnd/assets/js/pages/form-pickers.init.js')}}"></script>
 <!-- Plugins js -->
-<script src="{{asset('backEnd/assets/libs//summernote/summernote-lite.min.js"></script>
+<script src="{{asset('backEnd/assets/libs/summernote/summernote-lite.min.js')}}"></script>
 <script>
   $(".summernote").summernote({
     placeholder: "Enter Your Text Here",
   });
 </script>
 <script type="text/javascript">
-    document.forms['editForm'].elements['product_id'].value="{{$edit_data->product_id}}"
-    $('.select2').select2();
-</script>
-<script type="text/javascript">
     $(document).ready(function () {
+        $('.select2').select2();
+
         $(".btn-increment").click(function () {
             var html = $(".clone").html();
             $(".increment").after(html);
@@ -412,7 +430,20 @@
         $("body").on("click", ".btn-danger", function () {
             $(this).parents(".control-group").remove();
         });
-        $('.select2').select2();
+
+        $('#category_id').on('change', function() {
+            let selectedCatIds = $(this).val() || [];
+            if (selectedCatIds.length > 0) {
+                let selectedVals = [];
+                $('#product_id_select option').each(function() {
+                    let cat = $(this).data('category');
+                    if (selectedCatIds.includes(String(cat))) {
+                        selectedVals.push($(this).val());
+                    }
+                });
+                $('#product_id_select').val(selectedVals).trigger('change');
+            }
+        });
     });
 </script>
 @endsection

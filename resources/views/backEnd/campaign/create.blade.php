@@ -78,14 +78,30 @@
                     </div>
                     <div class="col-sm-12">
                         <div class="form-group mb-3">
-                            <label for="product_id" class="form-label">Products *</label>
+                            <label for="category_id" class="form-label">Product Categories (Optional)</label>
+                            <select class="form-control select2 @error('category_id') is-invalid @enderror" 
+                                    name="category_id[]" 
+                                    id="category_id"
+                                    multiple="multiple"
+                                    data-placeholder="Choose categories...">
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                                @endforeach
+                            </select>
+                            <small class="text-muted">Selecting categories will automatically select all active products under those categories.</small>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group mb-3">
+                            <label for="product_id" class="form-label">Products</label>
                             <select class="select2 form-control @error('product_id') is-invalid @enderror" 
                                     name="product_id[]" 
+                                    id="product_id_select"
                                     multiple="multiple" 
-                                    data-placeholder="Choose ..." 
-                                    required>
+                                    data-placeholder="Choose products...">
                                 @foreach($products as $value)
-                                    <option value="{{ $value->id }}">{{ $value->name }}</option>
+                                    <option value="{{ $value->id }}" data-category="{{ $value->category_id }}">{{ $value->name }}</option>
                                 @endforeach
                             </select>
                             @error('product_id')
@@ -238,6 +254,20 @@
             $(this).parents(".control-group").remove();
         });
         $('.select2').select2();
+
+        $('#category_id').on('change', function() {
+            let selectedCatIds = $(this).val() || [];
+            if (selectedCatIds.length > 0) {
+                let selectedVals = [];
+                $('#product_id_select option').each(function() {
+                    let cat = $(this).data('category');
+                    if (selectedCatIds.includes(String(cat))) {
+                        selectedVals.push($(this).val());
+                    }
+                });
+                $('#product_id_select').val(selectedVals).trigger('change');
+            }
+        });
     });
 </script>
 @endsection
