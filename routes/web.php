@@ -71,6 +71,7 @@ Route::group(['namespace'=>'Frontend', 'middleware' => ['ipcheck','check_refer']
     Route::get('/page/{slug}', [FrontendController::class, 'page'])->name('page');
     Route::get('districts', [FrontendController::class, 'districts'])->name('districts');
     Route::get('/campaign/{slug}', [FrontendController::class, 'campaign'])->name('campaign');
+    Route::get('/school-bags', [FrontendController::class, 'schoolBagsLanding'])->name('schoolbags.landing');
     Route::get('/offer', [FrontendController::class, 'offers'])->name('offers');
     Route::get('/collection/prime', [FrontendController::class, 'collectionPrime'])->name('collection.prime');
     Route::get('/collection/new', [FrontendController::class, 'collectionNew'])->name('collection.new');

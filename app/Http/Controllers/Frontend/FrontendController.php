@@ -756,4 +756,103 @@ class FrontendController extends Controller
         return view('frontEnd.layouts.pages.offers');
     }
 
+    public function schoolBagsLanding(Request $request)
+    {
+        $query = Product::where('status', 1);
+
+        // Broad matching for school bags / backpacks / bags
+        $query->where(function($q) {
+            $q->where('name', 'LIKE', '%bag%')
+              ->orWhere('name', 'LIKE', '%backpack%')
+              ->orWhere('name', 'LIKE', '%school%')
+              ->orWhereHas('category', function($catQ) {
+                  $catQ->where('name', 'LIKE', '%bag%')
+                       ->orWhere('name', 'LIKE', '%school%');
+              });
+        });
+
+        // Persona / Grade tab filter
+        if ($request->filled('persona')) {
+            $persona = $request->persona;
+            if ($persona === 'kids') {
+                $query->where(function($q) {
+                    $q->where('name', 'LIKE', '%kid%')
+                      ->orWhere('name', 'LIKE', '%preschool%')
+                      ->orWhere('name', 'LIKE', '%small%')
+                      ->orWhere('name', 'LIKE', '%cartoon%')
+                      ->orWhere('name', 'LIKE', '%cute%')
+                      ->orWhere('name', 'LIKE', '%baby%');
+                });
+            } elseif ($persona === 'primary') {
+                $query->where(function($q) {
+                    $q->where('name', 'LIKE', '%primary%')
+                      ->orWhere('name', 'LIKE', '%class%')
+                      ->orWhere('name', 'LIKE', '%medium%')
+                      ->orWhere('name', 'LIKE', '%school%');
+                });
+            } elseif ($persona === 'high') {
+                $query->where(function($q) {
+                    $q->where('name', 'LIKE', '%college%')
+                      ->orWhere('name', 'LIKE', '%laptop%')
+                      ->orWhere('name', 'LIKE', '%large%')
+                      ->orWhere('name', 'LIKE', '%travel%');
+                });
+            } elseif ($persona === 'trolley') {
+                $query->where(function($q) {
+                    $q->where('name', 'LIKE', '%trolley%')
+                      ->orWhere('name', 'LIKE', '%wheel%')
+                      ->orWhere('name', 'LIKE', '%roll%');
+                });
+            }
+        }
+
+        // Live Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('name', 'LIKE', "%{$search}%");
+        }
+
+        // Price Sort
+        if ($request->filled('sort')) {
+            if ($request->sort === 'price_low') {
+                $query->orderBy('new_price', 'asc');
+            } elseif ($request->sort === 'price_high') {
+                $query->orderBy('new_price', 'desc');
+            } elseif ($request->sort === 'oldest') {
+                $query->orderBy('id', 'asc');
+            } else {
+                $query->orderBy('id', 'desc');
+            }
+        } else {
+            $query->orderBy('id', 'desc');
+        }
+
+        $products = $query->with(['image', 'sizes', 'colors'])->paginate(12)->withQueryString();
+
+        // If no bag matches, fallback to all active products to ensure landing page always showcases items nicely
+        if ($products->total() == 0) {
+            $products = Product::where('status', 1)->with(['image', 'sizes', 'colors'])->paginate(12)->withQueryString();
+        }
+
+        // Top 4 spotlight products
+        $spotlightProducts = Product::where('status', 1)
+            ->with(['image', 'sizes', 'colors'])
+            ->latest()
+            ->take(4)
+            ->get();
+
+        $shipping_charge = ShippingCharge::where('status', 1)->get();
+
+        if ($request->ajax()) {
+            $html = view('frontEnd.layouts.pages._school_bag_grid', compact('products'))->render();
+            return response()->json([
+                'status' => 'success',
+                'html' => $html,
+                'total' => $products->total()
+            ]);
+        }
+
+        return view('frontEnd.layouts.pages.school_bag_landing', compact('products', 'spotlightProducts', 'shipping_charge'));
+    }
+
 }
