@@ -12,6 +12,8 @@ use App\Models\CreatePage;
 use App\Models\OrderStatus;
 use App\Models\EcomPixel;
 use App\Models\GoogleTagManager;
+use App\Models\Notice;
+use App\Models\Story;
 use App\Models\Order;
 use App\Models\PaymentGateway;
 use Config;
@@ -80,6 +82,12 @@ class AppServiceProvider extends ServiceProvider
 
         $brands = Brand::where('status',1)->get();
         view()->share('brands',$brands);
+
+        $notices = Notice::where('status',1)->orderBy('order_id','ASC')->orderBy('id','ASC')->get();
+        view()->share('notices',$notices);
+
+        $stories = Story::where('status',1)->orderBy('order_id','ASC')->orderBy('id','ASC')->with('product', 'product.image')->get();
+        view()->share('stories',$stories);
 
         $neworder = Order::where('order_status','1')->count();
         view()->share('neworder',$neworder);

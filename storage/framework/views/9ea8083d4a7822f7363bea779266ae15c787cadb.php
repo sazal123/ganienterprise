@@ -467,6 +467,12 @@
                     <li>
                       <a href="<?php echo e(route('banners.index')); ?>"><i data-feather="file-plus"></i> Banner & Ads</a>
                     </li>
+                    <li>
+                      <a href="<?php echo e(route('notices.index')); ?>"><i data-feather="file-plus"></i> Notice</a>
+                    </li>
+                    <li>
+                      <a href="<?php echo e(route('stories.index')); ?>"><i data-feather="file-plus"></i> Stories</a>
+                    </li>
                   </ul>
                 </div>
               </li>

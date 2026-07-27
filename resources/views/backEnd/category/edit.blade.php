@@ -16,8 +16,8 @@
                 <h4 class="page-title">Category Edit</h4>
             </div>
         </div>
-    </div>       
-    <!-- end page title --> 
+    </div>
+    <!-- end page title -->
    <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="card">
@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <!-- col-end -->
-                    
+
                     <div class="col-sm-12 mb-3">
                         <div class="form-group">
                             <label for="image" class="form-label">Image *</label>
@@ -62,7 +62,7 @@
                             @enderror
                         </div>
                     </div>
-                    
+
                     <div class="col-sm-12">
                         <div class="form-group mb-3">
                             <label for="meta_description" class="form-label">Meta Description</label>
@@ -98,11 +98,15 @@
                                 <input type="checkbox" value="1" name="front_view" @if($edit_data->front_view==1) checked @endif>
                                 <span class="slider round"></span>
                             </label>
-                            @error('front_view')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
+                        </div>
+                    </div>
+                    <div class="col mb-3">
+                        <div class="form-group">
+                            <label for="spotlight" class="d-block">Clothing Spotlight</label>
+                            <label class="switch">
+                                <input type="checkbox" value="1" name="spotlight" @if($edit_data->spotlight==1) checked @endif>
+                                <span class="slider round"></span>
+                            </label>
                         </div>
                     </div>
                     <!-- col end -->

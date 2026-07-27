@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\SocialMediaController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\BannerCategoryController;
 use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\NoticeController;
 use App\Http\Controllers\Admin\CreatePageController;
 use App\Http\Controllers\Admin\CampaignController;
 use App\Http\Controllers\Admin\ReviewController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\Admin\ShippingChargeController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\TagManagerController;
+use App\Http\Controllers\Admin\StoryController;
 
 Auth::routes();
 
@@ -70,6 +72,8 @@ Route::group(['namespace'=>'Frontend', 'middleware' => ['ipcheck','check_refer']
     Route::get('districts', [FrontendController::class, 'districts'])->name('districts');
     Route::get('/campaign/{slug}', [FrontendController::class, 'campaign'])->name('campaign');
     Route::get('/offer', [FrontendController::class, 'offers'])->name('offers');
+    Route::get('/collection/prime', [FrontendController::class, 'collectionPrime'])->name('collection.prime');
+    Route::get('/collection/new', [FrontendController::class, 'collectionNew'])->name('collection.new');
      Route::get('/payment-success', [FrontEndController::class, 'payment_success'])->name('payment_success');
     Route::get('/payment-cancel', [FrontEndController::class, 'payment_cancel'])->name('payment_cancel');
 
@@ -375,6 +379,24 @@ Route::group(['namespace'=>'Admin','middleware' => ['auth','lock','check_refer']
     Route::post('banner/inactive', [BannerController::class,'inactive'])->name('banners.inactive');
     Route::post('banner/active', [BannerController::class,'active'])->name('banners.active');
     Route::post('banner/destroy', [BannerController::class,'destroy'])->name('banners.destroy');
+
+    // notice route
+    Route::get('notice/manage', [NoticeController::class,'index'])->name('notices.index');
+    Route::get('notice/create', [NoticeController::class,'create'])->name('notices.create');
+    Route::post('notice/save', [NoticeController::class,'store'])->name('notices.store');
+    Route::get('notice/{id}/edit', [NoticeController::class,'edit'])->name('notices.edit');
+    Route::post('notice/update', [NoticeController::class,'update'])->name('notices.update');
+    Route::post('notice/inactive', [NoticeController::class,'inactive'])->name('notices.inactive');
+    Route::post('notice/active', [NoticeController::class,'active'])->name('notices.active');
+    Route::post('notice/destroy', [NoticeController::class,'destroy'])->name('notices.destroy');
+
+    // story route
+    Route::get('story/manage', [StoryController::class,'index'])->name('stories.index');
+    Route::get('story/create', [StoryController::class,'create'])->name('stories.create');
+    Route::post('story/save', [StoryController::class,'store'])->name('stories.store');
+    Route::get('story/{id}/edit', [StoryController::class,'edit'])->name('stories.edit');
+    Route::post('story/update', [StoryController::class,'update'])->name('stories.update');
+    Route::post('story/destroy', [StoryController::class,'destroy'])->name('stories.destroy');
 
     // contact route
     Route::get('page/manage', [CreatePageController::class,'index'])->name('pages.index');

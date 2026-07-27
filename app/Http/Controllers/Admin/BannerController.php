@@ -35,29 +35,32 @@ class BannerController extends Controller
             'link' => 'required',
             'status' => 'required',
         ]);
-        
-        // image with intervention 
+
+        // image upload
         $file = $request->file('image');
         $name = time().$file->getClientOriginalName();
-        $uploadPath = 'public/uploads/banner/';
+        $uploadPath = public_path('uploads/banner/');
         $file->move($uploadPath,$name);
-        $fileUrl =$uploadPath.$name;
+        $fileUrl = 'uploads/banner/'.$name;
 
         $input = $request->all();
         $input['status'] = $request->status?1:0;
         $input['image'] = $fileUrl;
+        $input['title'] = $request->title;
+        $input['subtitle'] = $request->subtitle;
+        $input['btn_text'] = $request->btn_text;
         Banner::create($input);
         Toastr::success('Success','Data insert successfully');
         return redirect()->route('banners.index');
     }
-    
+
     public function edit($id)
     {
         $edit_data = Banner::find($id);
         $categories = BannerCategory::select('id','name')->get();
         return view('backEnd.banner.edit',compact('edit_data','categories'));
     }
-    
+
     public function update(Request $request)
     {
         $this->validate($request, [
@@ -67,25 +70,33 @@ class BannerController extends Controller
         $input = $request->all();
         $image = $request->file('image');
         if($image){
-           // image with intervention 
+            // image upload
             $file = $request->file('image');
             $name = time().$file->getClientOriginalName();
-            $uploadPath = 'public/uploads/banner/';
+            $uploadPath = public_path('uploads/banner/');
             $file->move($uploadPath,$name);
-            $fileUrl =$uploadPath.$name;
+            $fileUrl = 'uploads/banner/'.$name;
             $input['image'] = $fileUrl;
-            File::delete($update_data->image);
+            // Delete old file
+            $oldPath = str_replace('public/', '', $update_data->image);
+            $oldFullPath = public_path($oldPath);
+            if (file_exists($oldFullPath)) {
+                @unlink($oldFullPath);
+            }
         }else{
             $input['image'] = $update_data->image;
         }
 
         $input['status'] = $request->status?1:0;
+        $input['title'] = $request->title;
+        $input['subtitle'] = $request->subtitle;
+        $input['btn_text'] = $request->btn_text;
         $update_data->update($input);
 
         Toastr::success('Success','Data update successfully');
         return redirect()->route('banners.index');
     }
- 
+
     public function inactive(Request $request)
     {
         $inactive = Banner::find($request->hidden_id);

@@ -14,6 +14,7 @@ use App\Models\District;
 use App\Models\CreatePage;
 use App\Models\Campaign;
 use App\Models\Banner;
+use App\Models\BannerCategory;
 use App\Models\ShippingCharge;
 use App\Models\Productcolor;
 use App\Models\Productsize;
@@ -36,52 +37,85 @@ class FrontendController extends Controller
     public function index()
     {
         $generalsetting = GeneralSetting::where('status',1)->limit(1)->first();
-        // return "Welcome to Kenakatar.com";
+
         $frontcategory = Category::where(['status' => 1])
             ->select('id', 'name', 'image', 'slug', 'status')
             ->get();
 
-        $sliders = Banner::where(['status' => 1, 'category_id' => 1])
-            ->select('id', 'image', 'link')
+        // Hero Sliders — try "Hero Slider" category first, fallback to "Slider" category
+        $heroCat = \App\Models\BannerCategory::where('name', 'Hero Slider')->value('id');
+        $sliderCatId = $heroCat ?: 1;
+        $sliders = Banner::where(['status' => 1, 'category_id' => $sliderCatId])
+            ->select('id', 'image', 'link', 'title', 'subtitle', 'btn_text')
             ->get();
 
+        // Campaign ads (category_id = 7)
         $campaognads = Banner::where(['status' => 1, 'category_id' => 7])
             ->select('id', 'image', 'link')
             ->limit(1)
             ->get();
 
+        // Slider bottom ads (category_id = 5)
         $sliderbottomads = Banner::where(['status' => 1, 'category_id' => 5])
             ->select('id', 'image', 'link')
             ->limit(3)
             ->get();
 
+        // Footer top ads (category_id = 6)
         $footertopads = Banner::where(['status' => 1, 'category_id' => 6])
             ->select('id', 'image', 'link')
             ->limit(3)
             ->get();
 
-         $flas_sales = Product::where(['status' => 1, 'flashsale' => 1])
+        // Flash sale products
+        $flas_sales = Product::where(['status' => 1, 'flashsale' => 1])
             ->orderBy('id', 'DESC')
             ->select('id', 'name', 'slug', 'new_price', 'old_price','sold','stock')
-            ->with('prosizes', 'procolors')
+            ->with('image', 'prosizes', 'procolors')
             ->limit(12)
             ->get();
-        // return $hotdeal_top;
 
-        $hotdeal_top = Product::where(['status' => 1, 'topsale' => 1])
+        // Trending Products (topsale = hot deals / trending)
+        $trendingProducts = Product::where(['status' => 1, 'topsale' => 1])
             ->orderBy('id', 'DESC')
             ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
-            ->with('prosizes', 'procolors')
-            ->limit(12)
+            ->with('image', 'images', 'procolors')
+            ->limit(8)
             ->get();
-        // return $hotdeal_top;
 
+        // New Collection (is_new flag)
+        $newProducts = Product::where(['status' => 1, 'is_new' => 1])
+            ->orderBy('id', 'DESC')
+            ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
+            ->with('image', 'images', 'procolors')
+            ->limit(5)
+            ->get();
+
+        // Prime Collection (is_prime flag)
+        $primeProducts = Product::where(['status' => 1, 'is_prime' => 1])
+            ->orderBy('id', 'DESC')
+            ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
+            ->with('image', 'images', 'procolors')
+            ->limit(5)
+            ->get();
+
+        // Top Category Products (featured products)
+        $topCategoryProducts = Product::where(['status' => 1, 'feature_product' => 1])
+            ->orderBy('id', 'DESC')
+            ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
+            ->with('image', 'images', 'procolors')
+            ->limit(8)
+            ->get();
+
+        // Hot deals (for backward compatibility)
+        $hotdeal_top = $trendingProducts;
         $hotdeal_bottom = Product::where(['status' => 1, 'topsale' => 1])
             ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
-            ->skip(12)
+            ->skip(8)
             ->limit(12)
             ->get();
 
+        // Category-wise products
         if($generalsetting->show_category_wise_products){
             $homeproducts = Category::where(['front_view' => 1, 'status' => 1])
                 ->orderBy('id', 'ASC')
@@ -91,30 +125,61 @@ class FrontendController extends Controller
                     $query->setRelation('products', $query->products->take(12));
                     return $query;
                 });
-
         }else{
             $homeproducts = null;
         }
 
+        // Customer Reviews (banners with category_id = 8)
         $reviews = Banner::where(['status' => 1, 'category_id' => 8])
             ->select('id', 'image', 'link')
             ->limit(3)
             ->get();
 
+        // All products
         if($generalsetting->show_all_products){
             $all_products = Product::where(['status' => 1])
-            //->orderBy('id', 'DESC')
-            ->inRandomOrder()
-            ->select('id', 'name', 'slug', 'new_price', 'old_price','sold','stock')
-            ->with('prosizes', 'procolors')
-            ->limit(30)
-            ->get();
+                ->inRandomOrder()
+                ->select('id', 'name', 'slug', 'new_price', 'old_price','sold','stock')
+                ->with('image', 'images', 'prosizes', 'procolors')
+                ->limit(30)
+                ->get();
         }else{
             $all_products = null;
         }
 
+        // All active categories for category grid (front_view enabled)
+        $homeCategories = Category::where(['status' => 1, 'front_view' => 1])
+            ->select('id', 'name', 'slug', 'image')
+            ->get();
 
-        return view('frontEnd.layouts.pages.index', compact('sliders', 'frontcategory', 'hotdeal_top', 'hotdeal_bottom', 'homeproducts', 'sliderbottomads', 'footertopads','flas_sales','campaognads','reviews','all_products'));
+        // Clothing spotlight categories
+        $spotlightCategories = Category::where(['status' => 1, 'spotlight' => 1])
+            ->select('id', 'name', 'slug', 'image')
+            ->get();
+
+        // Prime drop banner — look up "Prime Drop Banner" category dynamically
+        $primeDropCatId = BannerCategory::where('name', 'Prime Drop Banner')->value('id');
+        $primeDropBanner = null;
+        $primeDropProducts = collect();
+        if ($primeDropCatId) {
+            $primeDropBanner = Banner::where(['status' => 1, 'category_id' => $primeDropCatId])
+                ->select('id', 'image', 'link', 'title', 'subtitle', 'btn_text')
+                ->first();
+            // Products to showcase on the right side of the banner
+            $primeDropProducts = Product::where(['status' => 1])
+                ->inRandomOrder()
+                ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock')
+                ->with('image')
+                ->limit(3)
+                ->get();
+        }
+
+        return view('frontEnd.layouts.pages.index', compact(
+            'sliders', 'frontcategory', 'trendingProducts', 'newProducts', 'primeProducts', 'topCategoryProducts',
+            'hotdeal_top', 'hotdeal_bottom', 'homeproducts', 'sliderbottomads', 'footertopads',
+            'flas_sales', 'campaognads', 'reviews', 'all_products', 'homeCategories',
+            'primeDropBanner', 'primeDropProducts', 'spotlightCategories'
+        ));
     }
 
     public function hotdeals(Request $request)
@@ -150,9 +215,21 @@ class FrontendController extends Controller
     }
     public function shop(Request $request)
     {
+        // Get global price range (unfiltered)
+        $globalMin = Product::where('status', 1)->min('new_price');
+        $globalMax = Product::where('status', 1)->max('new_price');
+
         $products = Product::where(['status' => 1])
-            ->select('id', 'name', 'slug', 'new_price', 'old_price','stock');
-        // return $request->sort;
+            ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
+            ->with('image', 'images', 'procolors', 'prosizes');
+
+        // Filter by category if specified
+        if ($request->category_filter) {
+            $products = $products->whereHas('category', function ($q) use ($request) {
+                $q->where('slug', $request->category_filter);
+            });
+        }
+
         if ($request->sort == 1) {
             $products = $products->orderBy('created_at', 'desc');
         } elseif ($request->sort == 2) {
@@ -169,15 +246,54 @@ class FrontendController extends Controller
             $products = $products->latest();
         }
 
-        $min_price = $products->min('new_price');
-        $max_price = $products->max('new_price');
-        if($request->min_price && $request->max_price){
-            $products = $products->where('new_price','>=',$request->min_price);
-            $products = $products->where('new_price','<=',$request->max_price);
+        if ($request->min_price && $request->max_price) {
+            $products = $products->where('new_price', '>=', $request->min_price)
+                                 ->where('new_price', '<=', $request->max_price);
         }
+
+        $products = $products->paginate(20);
+
+        // Categories for sidebar filter
+        $categories = Category::where('status', 1)
+            ->with(['subcategories' => function ($q) {
+                $q->where('status', 1)->select('id', 'slug', 'subcategoryName', 'category_id');
+            }])
+            ->select('id', 'name', 'slug')
+            ->get();
+
+        return view('frontEnd.layouts.pages.shop', compact(
+            'products', 'categories', 'globalMin', 'globalMax'
+        ));
+    }
+
+    public function collectionPrime(Request $request)
+    {
+        $products = Product::where(['status' => 1, 'is_prime' => 1])
+            ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
+            ->with('image', 'procolors');
+        if ($request->sort == 1) { $products = $products->orderBy('created_at', 'desc'); }
+        elseif ($request->sort == 2) { $products = $products->orderBy('created_at', 'asc'); }
+        elseif ($request->sort == 3) { $products = $products->orderBy('new_price', 'desc'); }
+        elseif ($request->sort == 4) { $products = $products->orderBy('new_price', 'asc'); }
+        else { $products = $products->latest(); }
         $products = $products->paginate(36);
         return view('frontEnd.layouts.pages.shop', compact('products'));
     }
+
+    public function collectionNew(Request $request)
+    {
+        $products = Product::where(['status' => 1, 'is_new' => 1])
+            ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
+            ->with('image', 'procolors');
+        if ($request->sort == 1) { $products = $products->orderBy('created_at', 'desc'); }
+        elseif ($request->sort == 2) { $products = $products->orderBy('created_at', 'asc'); }
+        elseif ($request->sort == 3) { $products = $products->orderBy('new_price', 'desc'); }
+        elseif ($request->sort == 4) { $products = $products->orderBy('new_price', 'asc'); }
+        else { $products = $products->latest(); }
+        $products = $products->paginate(36);
+        return view('frontEnd.layouts.pages.shop', compact('products'));
+    }
+
     public function flashsales(Request $request)
     {
 
@@ -212,14 +328,19 @@ class FrontendController extends Controller
 
     public function category($slug, Request $request)
     {
-        $soldShow = $request->sold=='show'?true:false;
-        $category = Category::where(['slug' => $slug, 'status' => 1])->first();
+        $soldShow = $request->sold == 'show' ? true : false;
+        $category = Category::where(['slug' => $slug, 'status' => 1])->firstOrFail();
+
+        // Global price range for slider
+        $globalMin = Product::where(['status' => 1, 'category_id' => $category->id])->min('new_price');
+        $globalMax = Product::where(['status' => 1, 'category_id' => $category->id])->max('new_price');
 
         $products = Product::where(['status' => 1, 'category_id' => $category->id])
-            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id','sold','stock');
-        $subcategories = Subcategory::where('category_id', $category->id)->get();
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'sold', 'stock')
+            ->with('image', 'images', 'procolors', 'prosizes');
 
-        // return $request->sort;
+        $subcategories = Subcategory::where('category_id', $category->id)->where('status', 1)->get();
+
         if ($request->sort == 1) {
             $products = $products->orderBy('created_at', 'desc');
         } elseif ($request->sort == 2) {
@@ -236,11 +357,9 @@ class FrontendController extends Controller
             $products = $products->latest();
         }
 
-        $min_price = $products->min('new_price');
-        $max_price = $products->max('new_price');
-        if($request->min_price && $request->max_price){
-            $products = $products->where('new_price','>=',$request->min_price);
-            $products = $products->where('new_price','<=',$request->max_price);
+        if ($request->min_price && $request->max_price) {
+            $products = $products->where('new_price', '>=', $request->min_price)
+                                 ->where('new_price', '<=', $request->max_price);
         }
 
         $selectedSubcategories = $request->input('subcategory', []);
@@ -251,7 +370,19 @@ class FrontendController extends Controller
         });
 
         $products = $products->paginate(24);
-        return view('frontEnd.layouts.pages.category', compact('category', 'products', 'subcategories', 'min_price', 'max_price','soldShow'));
+
+        // Categories for sidebar
+        $categories = Category::where('status', 1)
+            ->with(['subcategories' => function ($q) {
+                $q->where('status', 1)->select('id', 'slug', 'subcategoryName', 'category_id');
+            }])
+            ->select('id', 'name', 'slug')
+            ->get();
+
+        return view('frontEnd.layouts.pages.category', compact(
+            'category', 'products', 'subcategories',
+            'globalMin', 'globalMax', 'soldShow', 'categories'
+        ));
     }
 
     public function subcategory($slug, Request $request)
@@ -352,23 +483,58 @@ class FrontendController extends Controller
     public function details($slug)
     {
         $details = Product::where(['slug' => $slug, 'status' => 1])
-            ->with('image', 'mainImages', 'images', 'category', 'subcategory', 'childcategory')
+            ->with('image', 'mainImages', 'images', 'category', 'subcategory', 'childcategory', 'brand')
             ->firstOrFail();
-        $products = Product::where(['category_id' => $details->category_id, 'status' => 1])
-            ->with('image')
-            ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
+
+        // Related products from same category
+        $relatedProducts = Product::where(['category_id' => $details->category_id, 'status' => 1])
+            ->where('id', '!=', $details->id)
+            ->with('image', 'procolors', 'prosizes')
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock')
+            ->limit(12)
             ->get();
+
+        // "Pair It & Shine!" — also fetch some unrelated products for variety
+        $pairProducts = Product::where('status', 1)
+            ->where('id', '!=', $details->id)
+            ->where('category_id', '!=', $details->category_id)
+            ->with('image')
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock')
+            ->inRandomOrder()
+            ->limit(5)
+            ->get();
+
         $shippingcharge = ShippingCharge::where('status', 1)->get();
         $reviews = Review::where('product_id', $details->id)->get();
+
+        // Review stats
+        $avgRating = $reviews->avg('ratting');
+        $totalReviews = $reviews->count();
+
         $productcolors = Productcolor::where('product_id', $details->id)
             ->with('color')
             ->get();
-        // return $productcolors;
+
         $productsizes = Productsize::where('product_id', $details->id)
             ->with('size')
             ->get();
 
-        return view('frontEnd.layouts.pages.details', compact('details', 'products', 'shippingcharge', 'productcolors', 'productsizes', 'reviews'));
+        // Parse features (pipe-separated from admin)
+        $features = [];
+        if ($details->features) {
+            $featureItems = explode('|', $details->features);
+            foreach ($featureItems as $item) {
+                $item = trim($item);
+                if ($item) {
+                    $features[] = $item;
+                }
+            }
+        }
+
+        return view('frontEnd.layouts.pages.details', compact(
+            'details', 'relatedProducts', 'pairProducts', 'shippingcharge',
+            'productcolors', 'productsizes', 'reviews', 'avgRating', 'totalReviews', 'features'
+        ));
     }
     public function quickview(Request $request)
     {

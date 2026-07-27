@@ -84,6 +84,9 @@ class ProductController extends Controller
         $input['status'] = $request->status?1:0;
         $input['topsale'] = $request->topsale?1:0;
         $input['feature_product'] = $request->feature_product?1:0;
+        $input['flashsale'] = $request->flashsale?1:0;
+        $input['is_new'] = $request->is_new?1:0;
+        $input['is_prime'] = $request->is_prime?1:0;
         $input['product_code'] = 'P' . str_pad($last_id, 4, '0', STR_PAD_LEFT);
         $save_data = Product::create($input);
 
@@ -212,6 +215,9 @@ class ProductController extends Controller
         $input['status'] = $request->status?1:0;
         $input['topsale'] = $request->topsale?1:0;
         $input['feature_product'] = $request->feature_product?1:0;
+        $input['flashsale'] = $request->flashsale?1:0;
+        $input['is_new'] = $request->is_new?1:0;
+        $input['is_prime'] = $request->is_prime?1:0;
         $input['pro_video'] = $this->getYouTubeVideoId($request->pro_video);
         $update_data->update($input);
 

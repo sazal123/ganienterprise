@@ -1158,7 +1158,7 @@ section.slider-section {
 
 .footer-top {
     padding: 50px 0;
-    background: #d5ded0;
+    background: #111;
 }
 
 .footer-about {
@@ -1168,7 +1168,7 @@ section.slider-section {
 .footer-about p {
     text-align: center;
     margin: 5px 0;
-    color: #000000;
+    color: #aaa;
     font-size: 16px;
 }
 
@@ -1191,7 +1191,7 @@ section.slider-section {
 }
 
 .footer-menu ul li a:hover {
-    color: #3c7d17;
+    color: #C9A84C;
     margin-left: 2px !important;
 }
 
@@ -1215,10 +1215,13 @@ section.slider-section {
     object-fit: contain;
 }
 
+.footer-menu .title a {
+    color: #C9A84C;
+}
 .footer-menu .title {
     text-transform: uppercase;
     font-weight: 600;
-    color: #000;
+    color: #C9A84C;
     margin-bottom: 10px;
     font-size: 15px;
 }
@@ -1228,17 +1231,18 @@ section.slider-section {
 }
 
 .footer-menu ul li a {
-    color: #000;
+    color: #ccc;
     margin: 8px 0 !important;
     display: block;
 }
 .footer-bottom {
-    background: #C41E3A;
+    background: #000;
     padding: 10px 0;
+    border-top: 2px solid #C9A84C;
 }
 
 .footer-hotlint {
-    color: #f1ffe7;
+    color: #C9A84C;
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 8px;
@@ -1285,7 +1289,7 @@ section.slider-section {
     position: absolute;
     top: -5px;
     right: 25px;
-    background: #3c7d17;
+    background: #C9A84C;
     width: 15px;
     height: 15px;
     font-size: 12px;
@@ -2374,7 +2378,7 @@ li.recent_pro {
     text-align: center;
 }
 .checkout-shipping h6 a{
-   color: #3c7d17; 
+   color: #3c7d17;
 }
 .checkout-shipping select {
     font-size: 14px;
@@ -3053,7 +3057,7 @@ section.product-inner {
     cursor: pointer;
     transition: all .5s ease;
     padding: 6px 0;
-    border-radius: 5px; 
+    border-radius: 5px;
 }
 
 .cart_btn a:hover {
@@ -3528,7 +3532,6 @@ form.sort-form .form-select:focus {
 
 #content {
     width: 100%;
-    padding-top: 145px;
 }
 
 .main-header {
@@ -4226,9 +4229,9 @@ td.tfoot_bg {
     z-index: 999;
 }
 .product-details-discount-badge {
-    
+
 }
-.product-details-discount-badge span.sale-badge-text p {     
+.product-details-discount-badge span.sale-badge-text p {
     font-size: 11px;
     color: #fff;
     line-height: 10px;
@@ -4244,7 +4247,7 @@ td.tfoot_bg {
     justify-content: center;
     flex-direction: column;
     color: #fff;
-    
+
 }
 .details-ratting-wrapper {
     margin-bottom: 10px;
@@ -4283,5 +4286,1682 @@ td.tfoot_bg {
 .show_more_btn {
     text-align: center;
     margin-bottom: 12px;
+}
+
+/* ============================================================
+   FOLKS-INSPIRED HOME PAGE DESIGN — Gold / Luxury Aesthetic
+   ============================================================ */
+
+/* --- Section Common --- */
+.gani-section {
+    padding: 80px 0;
+}
+
+/* Font family fallbacks */
+.gani-serif {
+    font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+}
+.gani-section-light {
+    background: #f8f8f6;
+}
+.gani-section-white {
+    background: #ffffff;
+}
+
+
+.gani-section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #000;
+    margin-bottom: 0;
+}
+.gani-section-title-sm {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #000;
+}
+
+.gani-divider {
+    width: 50px;
+    height: 2px;
+    background: #C9A84C;
+    margin-top: 15px;
+}
+
+@media (max-width: 768px) {
+    .gani-section { padding: 50px 0; }
+    .gani-section-title { font-size: 20px; }
+}
+
+/* --- Hero Slider (Folks-style multi-slide carousel) --- */
+.gani-hero-slider {
+    position: relative;
+    overflow: hidden;
+    height: 550px;
+    background: #000;
+}
+.gani-hero-slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    z-index: 0;
+}
+.gani-hero-slide.active {
+    opacity: 1;
+    z-index: 1;
+}
+.gani-hero-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
+}
+.gani-hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 40px;
+    max-width: 700px;
+}
+.gani-hero-subtitle {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 40px;
+    color: #C9A84C;
+    font-style: italic;
+    margin-bottom: 16px;
+    line-height: 1.2;
+}
+.gani-hero-title {
+    font-size: 96px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -3px;
+    color: #fff;
+    margin-bottom: 32px;
+    line-height: 1;
+}
+.gani-hero-title-accent {
+    font-size: 44px;
+    vertical-align: super;
+    color: #C9A84C;
+}
+.gani-hero-btn {
+    display: inline-block;
+    background: #C9A84C;
+    color: #000;
+    padding: 16px 48px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-decoration: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+.gani-hero-btn:hover {
+    background: #b8942e;
+    color: #000;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+}
+
+/* Slider Dots */
+.gani-slider-dots {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+.gani-slider-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.6);
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.3s ease;
+}
+.gani-slider-dot.active {
+    background: #C9A84C;
+    border-color: #C9A84C;
+    transform: scale(1.2);
+}
+.gani-slider-dot:hover {
+    border-color: #C9A84C;
+}
+
+/* --- Sliding Notice Bar --- */
+.gani-notice-bar {
+    width: 100%;
+    overflow: hidden;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    padding: 12px 0;
+    white-space: nowrap;
+}
+.gani-notice-track {
+    display: inline-flex;
+    animation: ganiNoticeScroll 40s linear infinite;
+}
+.gani-notice-item {
+    display: inline-block;
+    padding: 0 40px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #222;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+.gani-notice-item:hover {
+    color: #C9A84C;
+}
+
+@keyframes ganiNoticeScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-33.333%); }
+}
+
+/* Pause on hover */
+.gani-notice-bar:hover .gani-notice-track {
+    animation-play-state: paused;
+}
+
+@media (max-width: 1200px) {
+    .gani-hero-slider { height: 550px; }
+    .gani-hero-title { font-size: 72px; }
+    .gani-hero-title-accent { font-size: 36px; }
+    .gani-hero-subtitle { font-size: 32px; }
+}
+@media (max-width: 768px) {
+    .gani-hero-slider { height: 400px; }
+    .gani-hero-title { font-size: 48px; letter-spacing: -1px; }
+    .gani-hero-title-accent { font-size: 26px; }
+    .gani-hero-subtitle { font-size: 26px; }
+    .gani-hero-content { padding: 0 24px; }
+    .gani-hero-gradient { background: rgba(0,0,0,0.65); }
+    .gani-hero-btn { padding: 14px 32px; font-size: 11px; }
+    .gani-slider-dots { bottom: 20px; }
+    .gani-slider-dot { width: 10px; height: 10px; }
+}
+
+/* --- Prime Drop Banner (Admin-manageable) --- */
+.gani-prime-drop {
+    position: relative;
+    background: #111;
+    background-size: cover;
+    background-position: center;
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+.gani-prime-drop-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.6) 60%, rgba(0,0,0,0.3) 100%);
+}
+.gani-prime-drop-inner {
+    z-index: 2;
+    padding: 60px 0;
+}
+.gani-pd-badge {
+    display: inline-block;
+    background: #C9A84C;
+    color: #000;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    margin-bottom: 20px;
+}
+.gani-pd-title {
+    font-size: 18px;
+    color: #C9A84C;
+    font-weight: 400;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+.gani-pd-subtitle {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 56px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 28px;
+    line-height: 1.1;
+}
+.gani-pd-btn {
+    display: inline-block;
+    background: #fff;
+    color: #000;
+    padding: 14px 40px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+.gani-pd-btn:hover {
+    background: #C9A84C;
+    color: #000;
+}
+.gani-pd-product {
+    display: block;
+    width: 120px;
+    height: 160px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.15);
+    transition: all 0.3s ease;
+    transform: rotate(3deg);
+    margin-top: -10px;
+}
+.gani-pd-product:nth-child(2) {
+    transform: rotate(-2deg);
+    margin-top: 20px;
+}
+.gani-pd-product:nth-child(3) {
+    transform: rotate(4deg);
+    margin-top: 0;
+}
+.gani-pd-product:hover {
+    border-color: #C9A84C;
+    transform: scale(1.05) rotate(0deg);
+}
+.gani-pd-product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+@media (max-width: 991px) {
+    .gani-prime-drop { min-height: 350px; }
+    .gani-pd-subtitle { font-size: 36px; }
+}
+@media (max-width: 768px) {
+    .gani-prime-drop { min-height: 300px; }
+    .gani-pd-subtitle { font-size: 28px; }
+    .gani-pd-title { font-size: 14px; letter-spacing: 2px; }
+}
+
+/* --- Stories / Reels Section --- */
+.gani-story-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    cursor: pointer;
+}
+.gani-story-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+.gani-story-thumb-wrap {
+    position: relative;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background: #f0f0f0;
+}
+.gani-story-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease;
+}
+.gani-story-card:hover .gani-story-video {
+    transform: scale(1.05);
+}
+.gani-story-play-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+.gani-story-card:hover .gani-story-play-indicator {
+    opacity: 1;
+}
+.gani-story-info {
+    padding: 12px;
+}
+.gani-story-product-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.gani-story-prod-img {
+    width: 45px;
+    height: 45px;
+    border-radius: 6px;
+    object-fit: cover;
+    border: 1px solid #eee;
+    flex-shrink: 0;
+}
+.gani-story-prod-details {
+    flex: 1;
+    min-width: 0;
+}
+.gani-story-prod-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #000;
+    margin: 0 0 3px;
+    line-height: 1.3;
+}
+.gani-story-prod-price {
+    font-size: 13px;
+    font-weight: 700;
+    color: #C9A84C;
+}
+.gani-story-cart-btn {
+    display: block;
+    width: 100%;
+    padding: 9px;
+    background: #000;
+    color: #fff;
+    border: none;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+.gani-story-cart-btn:hover {
+    background: #C9A84C;
+    color: #000;
+}
+
+/* Story Product Modal */
+.gani-video-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.gani-video-modal.active {
+    display: flex;
+}
+.gani-video-close {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    color: #fff;
+    font-size: 40px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    z-index: 100000;
+    transition: color 0.3s ease;
+    line-height: 1;
+}
+.gani-video-close:hover {
+    color: #C9A84C;
+}
+.gani-story-modal-inner {
+    display: flex;
+    max-width: 800px;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    max-height: 80vh;
+}
+.gani-story-modal-left {
+    flex: 1 1 50%;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+.gani-story-modal-left video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    outline: none;
+    display: block;
+}
+.gani-story-modal-right {
+    flex: 1 1 50%;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+}
+.gani-sm-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+.gani-sm-price-row {
+    margin-bottom: 20px;
+}
+.gani-sm-price {
+    font-size: 24px;
+    font-weight: 800;
+    color: #C9A84C;
+}
+.gani-sm-old-price {
+    font-size: 16px;
+    color: #999;
+    text-decoration: line-through;
+    margin-left: 10px;
+}
+.gani-sm-colors {
+    margin-bottom: 20px;
+}
+.gani-sm-color-label {
+    font-size: 13px;
+    color: #666;
+    display: block;
+    margin-bottom: 8px;
+}
+.gani-sm-color-swatches {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.gani-sm-color-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.gani-sm-color-swatch.active,
+.gani-sm-color-swatch:hover {
+    border-color: #C9A84C;
+}
+.gani-sm-cart-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: #000;
+    color: #fff;
+    border: none;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-bottom: 12px;
+}
+.gani-sm-cart-btn:hover {
+    background: #C9A84C;
+    color: #000;
+}
+.gani-sm-view-link {
+    display: block;
+    text-align: center;
+    color: #999;
+    font-size: 12px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+.gani-sm-view-link:hover {
+    color: #C9A84C;
+}
+
+@media (max-width: 768px) {
+    .gani-story-modal-inner {
+        flex-direction: column;
+        max-height: 90vh;
+    }
+    .gani-story-modal-left {
+        min-height: 250px;
+    }
+    .gani-story-modal-right {
+        padding: 20px;
+    }
+    .gani-sm-title { font-size: 18px; }
+}
+
+/* --- Clothing Spotlight Cards with Attractive Animations --- */
+.gani-clothing-card {
+    display: block;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    animation: ganiFadeUp 0.6s ease both;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.gani-clothing-card:nth-child(1) { animation-delay: 0s; }
+.gani-clothing-card:nth-child(2) { animation-delay: 0.1s; }
+.gani-clothing-card:nth-child(3) { animation-delay: 0.2s; }
+.gani-clothing-card:nth-child(4) { animation-delay: 0.3s; }
+.gani-clothing-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+}
+.gani-clothing-img {
+    transition: transform 0.7s ease, filter 0.5s ease;
+}
+.gani-clothing-card:hover .gani-clothing-img {
+    transform: scale(1.15);
+    filter: brightness(1.1) contrast(1.05);
+}
+.gani-clothing-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.15), transparent 50%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 1;
+    pointer-events: none;
+}
+.gani-clothing-card:hover::after {
+    opacity: 1;
+}
+.gani-clothing-name {
+    color: #fff;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 24px;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease, letter-spacing 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+.gani-clothing-card:hover .gani-clothing-name {
+    transform: translateY(-3px);
+    letter-spacing: 1px;
+}
+
+/* Staggered fade-in animation */
+@keyframes ganiFadeUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- 5-Column Grid --- */
+.col-md-g5 {
+    flex: 0 0 20%;
+    max-width: 20%;
+}
+@media (max-width: 991px) {
+    .col-md-g5 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+/* --- Product Card (Folks Style) --- */
+.gani-product-card {
+    background: #fff;
+    transition: all 0.3s ease;
+}
+.gani-product-img-wrap {
+    position: relative;
+    aspect-ratio: 4/5;
+    overflow: hidden;
+    background: #f5f5f5;
+    border: 1px solid #eee;
+    transition: border-color 0.3s ease;
+}
+.gani-product-card:hover .gani-product-img-wrap {
+    border-color: #C9A84C;
+}
+.gani-product-img {
+    transition: transform 0.6s ease;
+    object-fit: cover;
+}
+.gani-product-card:hover .gani-product-img {
+    transform: scale(1.05);
+}
+
+.gani-product-hover {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.92);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+.gani-product-card:hover .gani-product-hover {
+    transform: translateY(0);
+}
+
+.gani-add-cart-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+.gani-add-cart-btn:hover {
+    color: #C9A84C;
+}
+
+.gani-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    pointer-events: none;
+    z-index: 2;
+}
+.gani-badge-dark {
+    background: #000;
+    color: #C9A84C;
+}
+.gani-badge-gold {
+    background: #C9A84C;
+    color: #000;
+}
+
+.gani-stock-overlay {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.9);
+    color: #000;
+    font-weight: 700;
+    font-size: 14px;
+    text-align: center;
+    padding: 10px 0;
+    letter-spacing: 2px;
+}
+
+.gani-product-info {
+    padding: 15px 5px 10px;
+    text-align: center;
+}
+.gani-product-name {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #000;
+    margin-bottom: 8px;
+    line-height: 1.4;
+    transition: color 0.3s ease;
+}
+a:hover .gani-product-name,
+.gani-product-name a:hover {
+    color: #C9A84C;
+}
+.gani-product-info a {
+    text-decoration: none;
+    color: inherit;
+}
+.gani-product-price {
+    margin-bottom: 8px;
+}
+.gani-old-price {
+    font-size: 13px;
+    color: #999;
+    text-decoration: line-through;
+    margin-right: 8px;
+}
+.gani-new-price {
+    font-size: 15px;
+    font-weight: 700;
+    color: #C9A84C;
+}
+
+/* Color Swatches — Image Thumbnails */
+.gani-color-swatches {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+    min-height: 28px;
+}
+.gani-swatch-link,
+.gani-swatch-btn {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1.5px solid #ddd;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+}
+.gani-swatch-link:hover,
+.gani-swatch-btn:hover {
+    border-color: #C9A84C;
+    transform: scale(1.15);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.gani-swatch-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.gani-swatch-more {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    font-size: 9px;
+    font-weight: 700;
+    color: #999;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.gani-swatch-more:hover {
+    background: #C9A84C;
+    color: #000;
+    border-color: #C9A84C;
+}
+
+/* --- Prime Drop Banner --- */
+.gani-prime-banner {
+    position: relative;
+    min-height: 450px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    background-color: #000;
+}
+.gani-prime-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+}
+.gani-prime-content {
+    z-index: 2;
+    padding: 60px 0;
+}
+.gani-prime-label {
+    color: #C9A84C;
+    font-size: 18px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+.gani-prime-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 64px;
+    color: #fff;
+    margin-bottom: 30px;
+    line-height: 1.1;
+}
+.gani-prime-btn {
+    display: inline-block;
+    border: 1px solid #C9A84C;
+    color: #C9A84C;
+    padding: 14px 40px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+.gani-prime-btn:hover {
+    background: #C9A84C;
+    color: #000;
+}
+
+@media (max-width: 768px) {
+    .gani-prime-title { font-size: 36px; }
+    .gani-prime-banner { min-height: 350px; }
+}
+
+/* --- Category Cards --- */
+.gani-cat-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s ease;
+}
+.gani-cat-card:hover {
+    transform: translateY(-4px);
+}
+.gani-cat-img-wrap {
+    position: relative;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    background: #f0f0f0;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+.gani-cat-img {
+    transition: transform 0.6s ease;
+}
+.gani-cat-card:hover .gani-cat-img {
+    transform: scale(1.12);
+}
+.gani-cat-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 6px;
+}
+.gani-cat-card:hover .gani-cat-overlay {
+    opacity: 1;
+}
+.gani-cat-shop-btn {
+    display: inline-block;
+    background: #C9A84C;
+    color: #000;
+    padding: 8px 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 2px;
+    transition: background 0.3s ease;
+}
+.gani-cat-shop-btn:hover {
+    background: #b8942e;
+}
+.gani-cat-name {
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #000;
+    margin: 0;
+    transition: color 0.3s ease;
+}
+.gani-cat-card:hover .gani-cat-name {
+    color: #C9A84C;
+}
+
+/* --- Category Spotlight --- */
+.gani-spotlight-card {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    background: #333;
+    text-decoration: none;
+}
+.gani-spotlight-lg {
+    height: 100%;
+    min-height: 450px;
+}
+.gani-spotlight-sm {
+    min-height: 210px;
+}
+.gani-spotlight-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    transition: background 0.3s ease;
+}
+.gani-spotlight-card:hover .gani-spotlight-overlay {
+    background: rgba(0,0,0,0.55);
+}
+.gani-spotlight-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+.gani-spotlight-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    color: #fff;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+.gani-spotlight-title-sm {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: #fff;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+.gani-spotlight-link {
+    color: #C9A84C;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 11px;
+    border-bottom: 1px solid #C9A84C;
+    padding-bottom: 4px;
+}
+
+@media (max-width: 768px) {
+    .gani-spotlight-lg { min-height: 300px; }
+    .gani-spotlight-sm { min-height: 180px; }
+    .gani-spotlight-title { font-size: 28px; }
+}
+
+/* --- Look of the Week --- */
+.gani-look-week {
+    width: 100%;
+}
+.gani-look-img {
+    height: 600px;
+    object-fit: cover;
+}
+.gani-look-label {
+    color: #C9A84C;
+    letter-spacing: 4px;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+.gani-look-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    color: #000;
+    margin-bottom: 25px;
+    line-height: 1.2;
+}
+.gani-look-btn {
+    display: inline-block;
+    background: #000;
+    color: #fff;
+    padding: 14px 40px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+.gani-look-btn:hover {
+    background: #C9A84C;
+    color: #000;
+}
+
+@media (max-width: 768px) {
+    .gani-look-img { height: 350px; }
+    .gani-look-title { font-size: 32px; }
+}
+
+/* --- Trust Badges --- */
+.gani-trust-section {
+    border-bottom: 1px solid #eee;
+    padding: 50px 0;
+}
+.gani-trust-item {
+    text-align: center;
+    padding: 10px;
+}
+.gani-trust-icon {
+    font-size: 28px;
+    color: #C9A84C;
+    margin-bottom: 12px;
+}
+.gani-trust-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #000;
+    margin-bottom: 6px;
+}
+.gani-trust-text {
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+}
+
+/* --- Collection Tabs --- */
+.gani-collection-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 40px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0;
+}
+.gani-collection-tab {
+    padding: 12px 32px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #999;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.gani-collection-tab:hover {
+    color: #000;
+}
+.gani-collection-tab.active {
+    color: #000;
+    border-bottom-color: #C9A84C;
+}
+.gani-collection-panel {
+    display: none;
+}
+.gani-collection-panel.active {
+    display: block;
+}
+
+/* --- View All Button --- */
+.gani-view-all-btn {
+    display: inline-block;
+    background: #000;
+    color: #fff;
+    padding: 12px 35px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+.gani-view-all-btn:hover {
+    background: #C9A84C;
+    color: #000;
+}
+
+/* --- Ad Link Hover --- */
+.gani-ad-link {
+    display: block;
+    transition: opacity 0.3s ease;
+}
+.gani-ad-link:hover {
+    opacity: 0.9;
+}
+.gani-ad-img {
+    transition: transform 0.4s ease;
+}
+.gani-ad-link:hover .gani-ad-img {
+    transform: scale(1.02);
+}
+
+/* Override main.css section-title conflicts */
+.gani-section .section-title,
+.gani-section .section-header-wrapper {
+    /* Reset conflicting main.css styles */
+}
+.gani-section .section-header-wrapper {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* ============================================================
+   FOLKS-INSPIRED HEADER & NAVIGATION
+   ============================================================ */
+
+/* --- Gold Announcement Bar --- */
+.gani-top-announcement {
+    background: #C9A84C;
+    color: #000;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 0;
+    text-align: center;
+    position: relative;
+    z-index: 1001;
+    display: none;
+}
+.gani-cd-num {
+    font-size: 16px;
+    font-weight: 900;
+    color: #fff;
+}
+
+/* --- Black Secondary Bar --- */
+.gani-top-bar {
+    background: #111;
+    color: #C9A84C;
+    font-size: 12px;
+    padding: 10px 0;
+    position: relative;
+    z-index: 1000;
+}
+.gani-top-link {
+    color: #C9A84C;
+    text-decoration: none;
+    font-size: 12px;
+    transition: color 0.3s ease;
+}
+.gani-top-link:hover {
+    color: #fff;
+}
+.gani-top-shipping-text {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+/* --- Desktop Header --- */
+.gani-desktop-header {
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    padding: 15px 0;
+    transition: box-shadow 0.3s ease;
+}
+.gani-desktop-header.gani-header-no-top {
+    top: 0;
+}
+.gani-desktop-header.gani-header-shadow {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.gani-header-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #000;
+    text-decoration: none;
+}
+.gani-header-logo:hover {
+    color: #000;
+}
+.text-gold {
+    color: #C9A84C;
+}
+
+/* --- Navigation --- */
+.gani-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+}
+.gani-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #000;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+}
+.gani-nav-link:hover {
+    color: #C9A84C;
+}
+.gani-nav-arrow {
+    font-size: 8px;
+    transition: transform 0.3s ease;
+}
+.gani-nav-dropdown:hover .gani-nav-arrow {
+    transform: rotate(180deg);
+}
+.gani-nav-highlight {
+    color: #C9A84C !important;
+    font-weight: 700;
+}
+
+/* --- Dropdown Menu --- */
+.gani-nav-dropdown {
+    position: relative;
+}
+.gani-nav-dropdown > .gani-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 220px;
+    background: #fff;
+    border: 1px solid #eee;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 8px 0;
+    z-index: 1000;
+}
+.gani-nav-dropdown:hover > .gani-dropdown-menu {
+    display: block;
+}
+.gani-dropdown-item {
+    display: block;
+    padding: 8px 18px;
+    font-size: 12px;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+.gani-dropdown-item:hover {
+    background: #f8f8f6;
+    color: #C9A84C;
+}
+.gani-sub-arrow {
+    font-size: 8px;
+    color: #999;
+}
+
+/* Sub-menu (level 2) */
+.gani-dropdown-sub {
+    position: relative;
+}
+.gani-dropdown-sub > .gani-sub-menu {
+    display: none;
+    position: absolute;
+    top: -8px;
+    left: 100%;
+    min-width: 220px;
+    background: #fff;
+    border: 1px solid #eee;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 8px 0;
+    z-index: 1001;
+}
+.gani-dropdown-sub:hover > .gani-sub-menu {
+    display: block;
+}
+
+/* Child-menu (level 3) */
+.gani-dropdown-sub-child {
+    position: relative;
+}
+.gani-dropdown-sub-child > .gani-child-menu {
+    display: none;
+    position: absolute;
+    top: -8px;
+    left: 100%;
+    min-width: 220px;
+    background: #fff;
+    border: 1px solid #eee;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 8px 0;
+    z-index: 1002;
+}
+.gani-dropdown-sub-child:hover > .gani-child-menu {
+    display: block;
+}
+
+/* --- Header Icon Buttons --- */
+.gani-icon-btn {
+    background: none;
+    border: none;
+    color: #000;
+    font-size: 18px;
+    padding: 6px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    text-decoration: none;
+    position: relative;
+}
+.gani-icon-btn:hover {
+    color: #C9A84C;
+}
+.gani-icon-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    vertical-align: middle;
+}
+.gani-cart-count {
+    position: absolute;
+    top: -2px;
+    right: -4px;
+    background: #C9A84C;
+    color: #000;
+    font-size: 9px;
+    font-weight: 800;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+.gani-track-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+}
+
+/* --- Search Dropdown --- */
+.gani-search-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    padding: 20px 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+.gani-search-dropdown.active {
+    display: block;
+}
+.gani-search-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+.gani-search-input {
+    flex: 1;
+    border: none;
+    border-bottom: 2px solid #000;
+    padding: 10px 0;
+    font-size: 16px;
+    outline: none;
+    background: transparent;
+}
+.gani-search-submit {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #000;
+    cursor: pointer;
+    padding: 8px;
+}
+.gani-search-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #999;
+    cursor: pointer;
+    padding: 8px;
+}
+.gani-search-close:hover {
+    color: #000;
+}
+
+/* --- Mobile Header --- */
+.gani-mobile-header {
+    display: none;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+}
+.gani-mobile-toggle {
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: #000;
+    padding: 4px;
+    cursor: pointer;
+}
+.gani-mobile-logo-link {
+    text-decoration: none;
+}
+.gani-mobile-logo-img {
+    max-height: 35px;
+    width: auto;
+}
+.gani-mobile-icon {
+    color: #000;
+    font-size: 18px;
+    text-decoration: none;
+}
+.gani-mobile-cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -6px;
+    background: #C9A84C;
+    color: #000;
+    font-size: 9px;
+    font-weight: 800;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.gani-mobile-search {
+    padding: 0 15px 10px;
+}
+.gani-mobile-search form {
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.gani-mobile-search input {
+    flex: 1;
+    border: none;
+    padding: 8px 12px;
+    font-size: 13px;
+    outline: none;
+}
+.gani-mobile-search button {
+    background: none;
+    border: none;
+    padding: 8px 14px;
+    color: #999;
+    cursor: pointer;
+}
+
+/* --- Mobile Sidebar --- */
+.gani-mobile-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 9998;
+}
+.gani-mobile-overlay.active {
+    display: block;
+}
+.gani-mobile-sidebar {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 300px;
+    max-width: 85vw;
+    background: #fff;
+    z-index: 9999;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+}
+.gani-mobile-sidebar.active {
+    display: block;
+    transform: translateX(0);
+}
+.gani-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+.gani-sidebar-logo-img {
+    max-height: 35px;
+}
+.gani-sidebar-close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: #000;
+    cursor: pointer;
+}
+.gani-sidebar-user {
+    display: block;
+    padding: 15px;
+    color: #000;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+}
+.gani-sidebar-nav {
+    padding: 0 0 20px;
+}
+.gani-sidebar-link {
+    display: block;
+    padding: 12px 15px;
+    color: #333;
+    text-decoration: none;
+    font-size: 13px;
+    border-bottom: 1px solid #f5f5f5;
+    transition: all 0.2s ease;
+}
+.gani-sidebar-link:hover {
+    background: #f8f8f6;
+    color: #C9A84C;
+}
+
+/* Sidebar Accordion */
+.gani-sidebar-accordion {
+    border-bottom: 1px solid #f5f5f5;
+}
+.gani-sidebar-acc-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 15px;
+    background: none;
+    border: none;
+    font-size: 13px;
+    color: #333;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.gani-sidebar-acc-btn:hover {
+    background: #f8f8f6;
+    color: #C9A84C;
+}
+.gani-sidebar-acc-btn i {
+    font-size: 10px;
+    transition: transform 0.3s ease;
+}
+.gani-sidebar-acc-btn.active i {
+    transform: rotate(180deg);
+}
+.gani-sidebar-acc-content {
+    display: none;
+    padding: 0 0 8px 20px;
+}
+.gani-sidebar-acc-content.open {
+    display: block;
+}
+.gani-sidebar-sub-link {
+    display: block;
+    padding: 8px 15px;
+    color: #666;
+    text-decoration: none;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+.gani-sidebar-sub-link:hover {
+    color: #C9A84C;
+}
+
+/* --- Responsive: hide desktop, show mobile --- */
+@media (max-width: 991px) {
+    .gani-desktop-header {
+        display: none;
+    }
+    .gani-mobile-header {
+        display: block;
+    }
+    .gani-top-announcement {
+        font-size: 10px;
+        padding: 8px 0;
+    }
+    .gani-top-bar {
+        font-size: 10px;
+        padding: 6px 0;
+    }
+    .gani-top-shipping-text {
+        font-size: 10px;
+    }
+}
+@media (min-width: 992px) {
+    .gani-mobile-header {
+        display: none !important;
+    }
+    .gani-mobile-overlay,
+    .gani-mobile-sidebar {
+        display: none !important;
+    }
 }
 

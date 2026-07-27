@@ -17,7 +17,7 @@ class ShoppingController extends Controller
         $productImage = DB::table('productimages')->where('product_id',$id)->first();
         $cartinfo=Cart::instance('shopping')->add(['id'=>$productInfo->id,'name'=>$productInfo->name,'qty'=>$qty,'price'=>$productInfo->new_price,
             'options' => [
-                'image'=>$productImage->image,
+                'image'=>$productImage->image ?? 'frontEnd/img/default-product.jpg',
                 'old_price'=>$productInfo->old_price,
                 'slug' => $productInfo->slug,
                 'purchase_price' => $productInfo->purchase_price,
@@ -65,7 +65,7 @@ class ShoppingController extends Controller
             'price' => $variantPrice,
             'options' => [
                 'slug' => $product->slug,
-                'image' => $product->image->image,
+                'image' => $product->image->image ?? 'frontEnd/img/default-product.jpg',
                 'old_price' => $product->new_price,
                 'purchase_price' => $product->purchase_price,
                 'product_size'=>$request->product_size,

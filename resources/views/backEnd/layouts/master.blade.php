@@ -467,6 +467,12 @@
                     <li>
                       <a href="{{route('banners.index')}}"><i data-feather="file-plus"></i> Banner & Ads</a>
                     </li>
+                    <li>
+                      <a href="{{route('notices.index')}}"><i data-feather="file-plus"></i> Notice</a>
+                    </li>
+                    <li>
+                      <a href="{{route('stories.index')}}"><i data-feather="file-plus"></i> Stories</a>
+                    </li>
                   </ul>
                 </div>
               </li>

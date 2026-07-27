@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Productsize extends Model
 {
     use HasFactory;
+    protected $guarded = [];
     public function size(){
         return $this->hasOne('App\Models\Size', 'id', 'size_id');
     }

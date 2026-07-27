@@ -24,10 +24,10 @@
         <!-- toastr css -->
         <link rel="stylesheet" href="{{asset('backEnd/assets/css/toastr.min.css')}}" />
 
-        <link rel="stylesheet" href="{{asset('frontEnd/css/wsit-menu.css')}}" />
         <link rel="stylesheet" href="{{asset('frontEnd/css/style.css')}}" />
         <link rel="stylesheet" href="{{asset('frontEnd/css/responsive.css')}}" />
         <link rel="stylesheet" href="{{asset('frontEnd/css/main.css')}}" />
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
         <meta name="facebook-domain-verification" content="{{$generalsetting->facebook_verification}}" />
         <meta name="google-site-verification" content="{{$generalsetting->google_verification}}" />
@@ -233,178 +233,246 @@
                     @endforeach
                 </ul>
             </div>
-        <header id="navbar_top">
-            <div class="top_header" style="background-color:#C41E3A">
-                    <div class="container d-flex align-items-center">
-                        <!-- Hotline button on the left side -->
-                        <a href="tel:{{ $contact->hotline }}" class="text-center bg-light px-2 d-none d-sm-block fw-bold fs-4" style="color:#13027D;min-width:270px;">
-                            <i class="fa-solid fa-headset"></i> {{ $contact->hotline }}
-                        </a>
+        {{-- ============================================================ --}}
+        {{-- FOLKS-INSPIRED HEADER — Gold announcement + Black bar + Sticky Nav --}}
+        {{-- ============================================================ --}}
 
-                        <!-- Marquee headline -->
-                        <div class="d-flex align-items-center flex-grow-1">
-                            <marquee direction="left" scrollamount="5" class="text-light fs-6" >
-                                {{$generalsetting->top_headline}}
-                            </marquee>
-                        </div>
-                    </div>
-                </div>
-            <div class="mobile-header sticky">
-                <div class="mobile-logo">
-                    <div class="menu-bar">
-                        <a class="toggle">
-                            <i class="fa-solid fa-bars"></i>
-                        </a>
-                    </div>
-                    <div class="menu-logo">
-                        <a href="{{route('home')}}"><img src="{{asset($generalsetting->white_logo)}}" alt="" /></a>
-                    </div>
-                    <div class="menu-bag">
-                        <p class="margin-shopping">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                            <span class="mobilecart-qty">{{Cart::instance('shopping')->count()}}</span>
-                        </p>
-                    </div>
+        {{-- Gold Announcement Bar --}}
+        <div class="gani-top-announcement">
+            <div class="container d-flex align-items-center justify-content-center gap-2 gap-md-4 flex-wrap">
+                <span class="d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-clock fa-fade"></i>
+                    সময় শেষ হয়ে আসছে... ফ্রি শিপিং শেষ হতে বাকি!
+                </span>
+                <div id="gani-countdown-timer" class="d-flex align-items-center gap-2 gap-md-3 fw-bold">
+                    <div class="d-flex align-items-center gap-1"><span id="gani-cd-days" class="gani-cd-num">০০</span> দিন</div>
+                    <span class="d-none d-md-inline">:</span>
+                    <div class="d-flex align-items-center gap-1"><span id="gani-cd-hours" class="gani-cd-num">২১</span> ঘণ্টা</div>
+                    <span class="d-none d-md-inline">:</span>
+                    <div class="d-flex align-items-center gap-1"><span id="gani-cd-minutes" class="gani-cd-num">০০</span> মিনিট</div>
+                    <span class="d-none d-md-inline">:</span>
+                    <div class="d-flex align-items-center gap-1"><span id="gani-cd-seconds" class="gani-cd-num">৫০</span> সেকেন্ড</div>
                 </div>
             </div>
+        </div>
 
-            <div class="mobile-search">
+        {{-- Black Secondary Bar --}}
+        <div class="gani-top-bar">
+            <div class="container d-flex align-items-center justify-content-center justify-content-md-between flex-wrap">
+                <div class="d-flex align-items-center gap-3">
+                    <span><i class="fa-solid fa-phone me-1"></i> {{ $contact->hotline }}</span>
+                </div>
+                <div class="fw-bold gani-top-shipping-text">৫০০০ টাকার বেশি অর্ডারে ফ্রি শিপিং</div>
+                <div class="d-flex align-items-center gap-3">
+                    @if(Auth::guard('customer')->user())
+                        <a href="{{route('customer.account')}}" class="gani-top-link"><i class="fa-regular fa-user me-1"></i> {{ Str::limit(Auth::guard('customer')->user()->name, 14) }}</a>
+                        <a href="{{ route('logout') }}" class="gani-top-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">লগআউট</a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">@csrf</form>
+                    @else
+                        <a href="{{route('customer.login')}}" class="gani-top-link"><i class="fa-regular fa-user me-1"></i> লগইন / রেজিস্টার</a>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        {{-- Mobile Header --}}
+        <div class="gani-mobile-header">
+            <div class="container d-flex align-items-center justify-content-between py-2">
+                <button class="gani-mobile-toggle" id="ganiMobileToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <a href="{{route('home')}}" class="gani-mobile-logo-link">
+                    <img src="{{asset($generalsetting->white_logo)}}" alt="{{$generalsetting->name}}" class="gani-mobile-logo-img" />
+                </a>
+                <div class="d-flex align-items-center gap-3">
+                    <a href="{{route('customer.order_track')}}" class="gani-mobile-icon"><i class="fa-solid fa-truck"></i></a>
+                    <a href="{{route('customer.checkout')}}" class="gani-mobile-icon position-relative">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        <span class="gani-mobile-cart-badge">{{Cart::instance('shopping')->count()}}</span>
+                    </a>
+                </div>
+            </div>
+            <div class="gani-mobile-search">
                 <form action="{{route('search')}}">
-                    <input type="text" placeholder="Search Product ... " value="" class="msearch_keyword msearch_click" name="keyword" />
-                    <button><i data-feather="search"></i></button>
+                    <input type="text" placeholder="Search Product..." class="msearch_keyword" name="keyword" />
+                    <button type="submit"><i class="fa-solid fa-search"></i></button>
                 </form>
-                <div class="search_result"></div>
             </div>
+        </div>
 
-
-
-            <div class="main-header">
-
-
-
-                <div class="logo-area">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="logo-header">
-                                    <div class="main-logo">
-                                        <a href="{{route('home')}}"><img src="{{asset($generalsetting->white_logo)}}" alt="" /></a>
-                                    </div>
-                                    <div class="main-search">
-                                        <form action="{{route('search')}}">
-                                            <input type="text" placeholder="Search Product..." class="search_keyword search_click" name="keyword" />
-                                            <button>
-                                                <i data-feather="search"></i>
-                                            </button>
-                                        </form>
-                                        <div class="search_result"></div>
-                                    </div>
-                                    <div class="header-list-items">
-                                        <ul>
-                                            <li class="track_btn">
-                                                <a href="{{route('customer.order_track')}}"> <i class="fa fa-truck"></i>Track Order</a>
-                                            </li>
-                                            @if(Auth::guard('customer')->user())
-                                            <li class="for_order">
-                                                <p>
-                                                    <a href="{{route('customer.account')}}">
-                                                        <i class="fa-regular fa-user"></i>
-
-                                                        {{Str::limit(Auth::guard('customer')->user()->name,14)}}
-                                                    </a>
-                                                </p>
-                                            </li>
-                                            @else
-                                            <li class="for_order">
-                                                <p>
-                                                    <a href="{{route('customer.login')}}">
-                                                        <i class="fa-regular fa-user"></i>
-                                                        Login / Sign Up
-                                                    </a>
-                                                </p>
-                                            </li>
-                                            @endif
-
-                                            <li class="cart-dialog" id="cart-qty">
-                                                <a href="{{route('customer.checkout')}}">
-                                                    <p class="margin-shopping">
-                                                        <i class="fa-solid fa-cart-shopping"></i>
-                                                        <span>{{Cart::instance('shopping')->count()}}</span>
-                                                    </p>
-                                                </a>
-                                                <div class="cshort-summary">
-                                                    <ul>
-                                                        @foreach(Cart::instance('shopping')->content() as $key=>$value)
-                                                        <li>
-                                                            <a href=""><img src="{{asset($value->options->image)}}" alt="" /></a>
-                                                        </li>
-                                                        <li><a href="">{{Str::limit($value->name, 30)}}</a></li>
-                                                        <li>Qty: {{$value->qty}}</li>
-                                                        <li>
-                                                            <p>৳{{$value->price}}</p>
-                                                            <button class="remove-cart cart_remove" data-id="{{$value->rowId}}"><i data-feather="x"></i></button>
-                                                        </li>
-                                                        @endforeach
-                                                    </ul>
-                                                    <p><strong>সর্বমোট : ৳{{$subtotal}}</strong></p>
-                                                    <a href="{{route('customer.checkout')}}" class="go_cart"> অর্ডার করুন </a>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        {{-- Desktop Sticky Header --}}
+        <header class="gani-desktop-header" id="ganiHeader">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <a href="{{route('home')}}" class="gani-header-logo">Gani<span class="text-gold">.</span></a>
                     </div>
-                </div>
-
-                <div class="menu-area">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="catagory_menu text-center">
-                                    <ul>
-                                        @foreach ($menucategories as $scategory)
-                                        <li class="cat_bar ">
-                                            <a href="{{ url('category/' . $scategory->slug) }}">
-                                                <span class="cat_head">{{ $scategory->name }}</span>
-                                                @if ($scategory->subcategories->count() > 0)
-                                                <i class="fa-solid fa-angle-down cat_down"></i>
-                                                @endif
+                    <div class="col">
+                        <nav class="gani-nav">
+                            {{-- Apnar bag khujun — Dropdown for all categories --}}
+                            <div class="gani-nav-dropdown">
+                                <button class="gani-nav-link dropdown-toggle">
+                                    ক্যাটাগরি
+                                    <i class="fa-solid fa-chevron-down gani-nav-arrow"></i>
+                                </button>
+                                <div class="gani-dropdown-menu">
+                                    @foreach($menucategories->take(12) as $cat)
+                                        @if($cat->subcategories->count() > 0)
+                                        <div class="gani-dropdown-sub">
+                                            <a href="{{ url('category/'.$cat->slug) }}" class="gani-dropdown-item d-flex justify-content-between align-items-center">
+                                                {{ $cat->name }}
+                                                <i class="fa-solid fa-chevron-right gani-sub-arrow"></i>
                                             </a>
-                                            @if($scategory->subcategories->count() > 0)
-                                            <ul class="Cat_menu">
-                                                @foreach ($scategory->subcategories as $subcat)
-                                                <li class="Cat_list cat_list_hover">
-                                                    <a href="{{ url('subcategory/' . $subcat->slug) }}">
-                                                        <span>{{ Str::limit($subcat->subcategoryName, 25) }}</span>
-                                                        @if($subcat->childcategories->count() > 0)<i class="fa-solid fa-chevron-right cat_down"></i>@endif
-                                                    </a>
-                                                    @if($subcat->childcategories->count() > 0)
-                                                    <ul class="child_menu">
-                                                        @foreach($subcat->childcategories as $childcat)
-                                                        <li class="child_main">
-                                                            <a href="{{ url('products/'.$childcat->slug) }}">{{ $childcat->childcategoryName }}</a>
-
-                                                        </li>
-                                                        @endforeach
-                                                    </ul>
+                                            <div class="gani-sub-menu">
+                                                @foreach($cat->subcategories as $sub)
+                                                    @if($sub->childcategories->count() > 0)
+                                                    <div class="gani-dropdown-sub-child">
+                                                        <a href="{{ url('subcategory/'.$sub->slug) }}" class="gani-dropdown-item d-flex justify-content-between align-items-center">
+                                                            {{ $sub->subcategoryName }}
+                                                            <i class="fa-solid fa-chevron-right gani-sub-arrow"></i>
+                                                        </a>
+                                                        <div class="gani-child-menu">
+                                                            @foreach($sub->childcategories as $child)
+                                                            <a href="{{ url('products/'.$child->slug) }}" class="gani-dropdown-item">{{ $child->childcategoryName }}</a>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                    @else
+                                                    <a href="{{ url('subcategory/'.$sub->slug) }}" class="gani-dropdown-item">{{ $sub->subcategoryName }}</a>
                                                     @endif
-                                                </li>
                                                 @endforeach
-                                            </ul>
-                                            @endif
-                                        </li>
-                                        @endforeach
-                                    </ul>
+                                            </div>
+                                        </div>
+                                        @else
+                                        <a href="{{ url('category/'.$cat->slug) }}" class="gani-dropdown-item">{{ $cat->name }}</a>
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
+
+                            {{-- Quick links to first few categories --}}
+                            @foreach($menucategories->take(6) as $cat)
+                            <a href="{{ url('category/'.$cat->slug) }}" class="gani-nav-link">{{ $cat->name }}</a>
+                            @endforeach
+
+                            <a href="{{ route('shop') }}" class="gani-nav-link gani-nav-highlight">সকল পণ্য</a>
+                        </nav>
+                    </div>
+                    <div class="col-auto">
+                        <div class="d-flex align-items-center gap-3">
+                            <button class="gani-icon-btn" id="ganiSearchToggle">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                            <a href="{{route('customer.order_track')}}" class="gani-icon-btn gani-track-link">
+                                <i class="fa-solid fa-truck-fast"></i>
+                                <span class="d-none d-lg-inline gani-icon-label">ট্র্যাক</span>
+                            </a>
+                            <a href="{{route('customer.checkout')}}" class="gani-icon-btn position-relative">
+                                <i class="fa-solid fa-bag-shopping"></i>
+                                <span class="gani-cart-count">{{Cart::instance('shopping')->count()}}</span>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- main-header end -->
+            {{-- Search dropdown --}}
+            <div class="gani-search-dropdown" id="ganiSearchDropdown">
+                <div class="container">
+                    <form action="{{route('search')}}" class="gani-search-form">
+                        <input type="text" name="keyword" placeholder="পণ্য সার্চ করুন..." class="gani-search-input" autocomplete="off" />
+                        <button type="submit" class="gani-search-submit"><i class="fa-solid fa-search"></i></button>
+                        <button type="button" class="gani-search-close" id="ganiSearchClose"><i class="fa-solid fa-xmark"></i></button>
+                    </form>
+                </div>
+            </div>
         </header>
+
+        {{-- Mobile Side Menu (Overlay) --}}
+        <div class="gani-mobile-overlay" id="ganiMobileOverlay"></div>
+        <div class="gani-mobile-sidebar" id="ganiMobileSidebar">
+            <div class="gani-sidebar-header">
+                <a href="{{route('home')}}" class="gani-sidebar-logo">
+                    <img src="{{asset($generalsetting->white_logo)}}" alt="" class="gani-sidebar-logo-img" />
+                </a>
+                <button class="gani-sidebar-close" id="ganiSidebarClose"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="gani-sidebar-body">
+                @if(Auth::guard('customer')->user())
+                <a href="{{route('customer.account')}}" class="gani-sidebar-user">
+                    <i class="fa-regular fa-user-circle fs-5 me-2"></i> {{ Auth::guard('customer')->user()->name }}
+                </a>
+                @else
+                <a href="{{route('customer.login')}}" class="gani-sidebar-user">
+                    <i class="fa-regular fa-user-circle fs-5 me-2"></i> লগইন / রেজিস্টার
+                </a>
+                @endif
+                <hr class="my-2" />
+                <nav class="gani-sidebar-nav">
+                    <a href="{{route('home')}}" class="gani-sidebar-link"><i class="fa-solid fa-home me-2"></i> হোম</a>
+                    <a href="{{route('shop')}}" class="gani-sidebar-link"><i class="fa-solid fa-store me-2"></i> সকল পণ্য</a>
+                    @foreach($menucategories as $cat)
+                    <div class="gani-sidebar-accordion">
+                        <button class="gani-sidebar-acc-btn">
+                            {{ $cat->name }}
+                            @if($cat->subcategories->count() > 0)
+                            <i class="fa-solid fa-chevron-down"></i>
+                            @endif
+                        </button>
+                        @if($cat->subcategories->count() > 0)
+                        <div class="gani-sidebar-acc-content">
+                            @foreach($cat->subcategories as $sub)
+                            <a href="{{ url('subcategory/'.$sub->slug) }}" class="gani-sidebar-sub-link">{{ $sub->subcategoryName }}</a>
+                            @endforeach
+                        </div>
+                        @endif
+                    </div>
+                    @endforeach
+                    <a href="{{route('customer.order_track')}}" class="gani-sidebar-link"><i class="fa-solid fa-truck me-2"></i> অর্ডার ট্র্যাক</a>
+                </nav>
+            </div>
+        </div>
+
+        {{-- Old mobile menu sidebar kept for compatibility (hidden) --}}
+        <div class="mobile-menu" style="display:none !important;">
+            <div class="mobile-menu-logo">
+                <div class="logo-image">
+                    <img src="{{asset($generalsetting->white_logo)}}" alt="" />
+                </div>
+                <div class="mobile-menu-close">
+                    <i class="fa fa-times"></i>
+                </div>
+            </div>
+            <ul class="first-nav">
+                @foreach($menucategories as $scategory)
+                <li class="parent-category">
+                    <a href="{{url('category/'.$scategory->slug)}}" class="menu-category-name">
+                        <img src="{{asset($scategory->image)}}" alt="" class="side_cat_img" />
+                        {{$scategory->name}}
+                    </a>
+                    @if($scategory->subcategories->count() > 0)
+                    <span class="menu-category-toggle">
+                        <i class="fa fa-chevron-down"></i>
+                    </span>
+                    @endif
+                    <ul class="second-nav" style="display: none;">
+                        @foreach($scategory->subcategories as $subcategory)
+                        <li class="parent-subcategory">
+                            <a href="{{url('subcategory/'.$subcategory->slug)}}" class="menu-subcategory-name">{{$subcategory->subcategoryName}}</a>
+                            @if($subcategory->childcategories->count() > 0)
+                            <span class="menu-subcategory-toggle"><i class="fa fa-chevron-down"></i></span>
+                            @endif
+                            <ul class="third-nav" style="display: none;">
+                                @foreach($subcategory->childcategories as $childcat)
+                                <li class="childcategory"><a href="{{url('products/'.$childcat->slug)}}" class="menu-childcategory-name">{{$childcat->childcategoryName}}</a></li>
+                                @endforeach
+                            </ul>
+                        </li>
+                        @endforeach
+                    </ul>
+                </li>
+                @endforeach
+            </ul>
+        </div>
         <div id="content">
             @yield('content')
         </div>
@@ -489,10 +557,7 @@
         <div class="footer_nav">
             <ul>
                 <li>
-                    <a class="toggle">
-                        <span>
-                            <i class="fa-solid fa-bars"></i>
-                        </span>
+                    <a id="ganiMobileToggle" style="cursor:pointer;">
                         <span>Category</span>
                     </a>
                 </li>
@@ -562,7 +627,6 @@
         <script src="{{asset('frontEnd/js/bootstrap.min.js')}}"></script>
         <script src="{{asset('frontEnd/js/owl.carousel.min.js')}}"></script>
         <script src="{{asset('frontEnd/js/mobile-menu.js')}}"></script>
-        <script src="{{asset('frontEnd/js/wsit-menu.js')}}"></script>
         <script src="{{asset('frontEnd/js/mobile-menu-init.js')}}"></script>
         <script src="{{asset('frontEnd/js/wow.min.js')}}"></script>
         <script>
@@ -831,26 +895,7 @@
             });
         </script>
 
-        <script>
-            var menu = new MmenuLight(document.querySelector("#menu"), "all");
-
-            var navigator = menu.navigation({
-                selectedClass: "Selected",
-                slidingSubmenus: true,
-                // theme: 'dark',
-                title: "ক্যাটাগরি",
-            });
-
-            var drawer = menu.offcanvas({
-                // position: 'left'
-            });
-
-            //  Open the menu.
-            document.querySelector('a[href="#menu"]').addEventListener("click", (evnt) => {
-                evnt.preventDefault();
-                drawer.open();
-            });
-        </script>
+        {{-- MmenuLight removed — header redesigned with custom mobile sidebar --}}
 
         <script>
             // document.addEventListener("DOMContentLoaded", function () {
@@ -905,6 +950,117 @@
             })
         </script>
         <!--search ANIMAtion end-->
+
+        {{-- ============================================================ --}}
+        {{-- FOLKS-INSPIRED HEADER SCRIPTS --}}
+        {{-- ============================================================ --}}
+        <script>
+            // Header shadow on scroll
+            document.addEventListener('DOMContentLoaded', function() {
+                var header = document.getElementById('ganiHeader');
+                if (header) {
+                    window.addEventListener('scroll', function() {
+                        if (window.scrollY > 50) {
+                            header.classList.add('gani-header-shadow');
+                        } else {
+                            header.classList.remove('gani-header-shadow');
+                        }
+                    });
+                }
+
+                // Mobile sidebar toggle
+                var toggleBtn = document.getElementById('ganiMobileToggle');
+                var sidebar = document.getElementById('ganiMobileSidebar');
+                var overlay = document.getElementById('ganiMobileOverlay');
+                var closeBtn = document.getElementById('ganiSidebarClose');
+
+                function openSidebar() {
+                    if (sidebar) sidebar.classList.add('active');
+                    if (overlay) overlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+                function closeSidebar() {
+                    if (sidebar) sidebar.classList.remove('active');
+                    if (overlay) overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+
+                if (toggleBtn) toggleBtn.addEventListener('click', openSidebar);
+                if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+                if (overlay) overlay.addEventListener('click', closeSidebar);
+
+                // Sidebar accordion
+                document.querySelectorAll('.gani-sidebar-acc-btn').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var content = this.nextElementSibling;
+                        if (content && content.classList.contains('gani-sidebar-acc-content')) {
+                            content.classList.toggle('open');
+                            this.classList.toggle('active');
+                        }
+                    });
+                });
+
+                // Search toggle
+                var searchToggle = document.getElementById('ganiSearchToggle');
+                var searchDropdown = document.getElementById('ganiSearchDropdown');
+                var searchClose = document.getElementById('ganiSearchClose');
+
+                if (searchToggle && searchDropdown) {
+                    searchToggle.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        searchDropdown.classList.toggle('active');
+                        if (searchDropdown.classList.contains('active')) {
+                            setTimeout(function() {
+                                searchDropdown.querySelector('.gani-search-input').focus();
+                            }, 100);
+                        }
+                    });
+                }
+                if (searchClose && searchDropdown) {
+                    searchClose.addEventListener('click', function() {
+                        searchDropdown.classList.remove('active');
+                    });
+                }
+                // Close search on click outside
+                document.addEventListener('click', function(e) {
+                    if (searchDropdown && searchDropdown.classList.contains('active')) {
+                        if (!e.target.closest('#ganiSearchToggle') && !e.target.closest('.gani-search-dropdown')) {
+                            searchDropdown.classList.remove('active');
+                        }
+                    }
+                });
+
+                // Countdown timer
+                var totalSeconds = (21 * 3600) + 50;
+                var daysEl = document.getElementById('gani-cd-days');
+                var hoursEl = document.getElementById('gani-cd-hours');
+                var minutesEl = document.getElementById('gani-cd-minutes');
+                var secondsEl = document.getElementById('gani-cd-seconds');
+
+                function toBanglaNum(str) {
+                    var bn = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
+                    return str.replace(/[0-9]/g, function(w) { return bn[w]; });
+                }
+
+                function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+                function updateTimer() {
+                    if (totalSeconds <= 0) return;
+                    var days = Math.floor(totalSeconds / 86400);
+                    var hours = Math.floor((totalSeconds % 86400) / 3600);
+                    var mins = Math.floor((totalSeconds % 3600) / 60);
+                    var secs = totalSeconds % 60;
+                    if (daysEl) daysEl.textContent = toBanglaNum(pad(days));
+                    if (hoursEl) hoursEl.textContent = toBanglaNum(pad(hours));
+                    if (minutesEl) minutesEl.textContent = toBanglaNum(pad(mins));
+                    if (secondsEl) secondsEl.textContent = toBanglaNum(pad(secs));
+                    totalSeconds--;
+                }
+                updateTimer();
+                setInterval(updateTimer, 1000);
+            });
+        </script>
+
         <!-- Google Tag Manager (noscript) -->
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $gtm->code }}"
         height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>

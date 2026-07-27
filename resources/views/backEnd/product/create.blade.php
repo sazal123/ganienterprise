@@ -370,6 +370,26 @@
               </div>
             </div>
             <!-- col end -->
+            <div class="col-sm-3 mb-3">
+              <div class="form-group">
+                <label for="is_new" class="d-block">New Collection</label>
+                <label class="switch">
+                  <input type="checkbox" value="1" name="is_new" />
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+            <!-- col end -->
+            <div class="col-sm-3 mb-3">
+              <div class="form-group">
+                <label for="is_prime" class="d-block">Prime Collection</label>
+                <label class="switch">
+                  <input type="checkbox" value="1" name="is_prime" />
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+            <!-- col end -->
 
             <div>
               <input type="submit" class="btn btn-success" value="Submit" />
