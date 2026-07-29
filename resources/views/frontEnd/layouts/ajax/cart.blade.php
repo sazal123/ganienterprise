@@ -8,10 +8,10 @@
 <table class="cart_table table table-bordered table-striped text-center mb-0">
         <thead>
          <tr>
-          <th style="width: 10%;">ডিলিট</th>
-          <th>প্রোডাক্ট</th>
-          <th style="width: 20%;">পরিমাণ</th>
-          <th style="width: 20%;">মূল্য</th>
+          <th style="width: 15%;">Action</th>
+          <th style="width: 45%;">Product</th>
+          <th style="width: 20%;">Quantity</th>
+          <th style="width: 20%;">Price</th>
          </tr>
         </thead>
 
@@ -32,9 +32,8 @@
                 <!-- Size Selector -->
                 @if($product->sizes->isNotEmpty())
                 <div class="col-6">
-                    
                     <select id="size-selector-{{ $value->rowId }}" class="form-select form-select-sm cart-size-selector" data-id="{{ $value->rowId }}">
-                       <option>Select an option</option>
+                       <option>Select Size</option>
                         @foreach($product->sizes as $size)
                         <option value="{{ $size->sizeName }}" {{ $size->sizeName == $value->options->product_size ? 'selected' : '' }}>
                             {{ $size->sizeName }}
@@ -53,7 +52,7 @@
                 @if($product->colors->isNotEmpty())
                 <div class="col-6">
                     <select id="color-selector-{{ $value->rowId }}" class="form-select form-select-sm cart-color-selector" data-id="{{ $value->rowId }}">
-                       <option>Select an option</option>
+                       <option>Select Color</option>
                         @foreach($product->colors as $color)
                         <option value="{{ $color->colorName }}" {{ $color->colorName == $value->options->product_color ? 'selected' : '' }}>
                             {{ $color->colorName }}
@@ -69,9 +68,6 @@
                 @endif
             </div>
             @endif
-
-
-
           </td>
           <td class="cart_qty">
            <div class="qty-cart vcart-qty">
@@ -88,19 +84,19 @@
         </tbody>
         <tfoot>
          <tr>
-          <th colspan="3" class="text-end px-4">মোট</th>
+          <th colspan="3" class="text-end px-4">Subtotal</th>
           <td>
            <span id="net_total"><span class="alinur">৳ </span><strong>{{$subtotal}}</strong></span>
           </td>
          </tr>
          <tr>
-          <th colspan="3" class="text-end px-4">ডেলিভারি চার্জ</th>
+          <th colspan="3" class="text-end px-4">Shipping Charge</th>
           <td>
            <span id="cart_shipping_cost"><span class="alinur">৳ </span><strong>{{$shipping}}</strong></span>
           </td>
          </tr>
          <tr>
-          <th colspan="3" class="text-end px-4">সর্বমোট</th>
+          <th colspan="3" class="text-end px-4">Grand Total</th>
           <td>
            <span id="grand_total"><span class="alinur">৳ </span><strong>{{$subtotal+$shipping}}</strong></span>
           </td>
@@ -178,23 +174,23 @@
         });
      }  
    });
-   // Event listener for size selector change
+
 $('.cart-size-selector').on('change', function() {
-    var rowId = $(this).data('id'); // Get the row ID
-    var selectedSize = $(this).val(); // Get the selected size
+    var rowId = $(this).data('id');
+    var selectedSize = $(this).val();
 
     if (rowId) {
         $.ajax({
-            type: "GET", // Change to GET if your route accepts GET requests
+            type: "GET",
             data: {
                 'id': rowId,
-                'product_size': selectedSize // New size to update
+                'product_size': selectedSize
             },
-            url: "{{ route('cart.update') }}", // Use the same route for updating size
+            url: "{{ route('cart.update') }}",
             success: function(data) {
                 if (data) {
-                    $(".cartlist").html(data); // Update the cart list UI with new data
-                    return cart_count(); // Update the cart count
+                    $(".cartlist").html(data);
+                    return cart_count();
                 }
             },
             error: function() {
@@ -204,33 +200,30 @@ $('.cart-size-selector').on('change', function() {
     }
 });
 
-
-// Event listener for color selector change
 $('.cart-color-selector').on('change', function() {
-    var rowId = $(this).data('id'); // Get the row ID
-    var selectedColor = $(this).val(); // Get the selected color
+    var rowId = $(this).data('id');
+    var selectedColor = $(this).val();
 
     if (rowId) {
         $.ajax({
-            type: "GET", // Change to GET if your route accepts GET requests
+            type: "GET",
             data: {
                 'id': rowId,
-                'product_color': selectedColor // New size to update
+                'product_color': selectedColor
             },
-            url: "{{ route('cart.update') }}", // Use the same route for updating size
+            url: "{{ route('cart.update') }}",
             success: function(data) {
                 if (data) {
-                    $(".cartlist").html(data); // Update the cart list UI with new data
-                    return cart_count(); // Update the cart count
+                    $(".cartlist").html(data);
+                    return cart_count();
                 }
             },
             error: function() {
-                alert('An error occurred while updating the size. Please try again.');
+                alert('An error occurred while updating the color. Please try again.');
             }
         });
     }
 });
-
 
     function cart_count(){
         $.ajax({
@@ -245,8 +238,4 @@ $('.cart-color-selector').on('change', function() {
            }
         }); 
    };
-   
 </script>
-
-
-<!-- cart js end -->
