@@ -610,14 +610,13 @@ class FrontendController extends Controller
             ];
 
 
-            // Send email
-            $contact = Contact::where('status',1)->first();
-            if($contact->email){
+            // Send email to contact email from admin panel
+            $contact = Contact::where('status', 1)->first();
+            if ($contact && $contact->email) {
                 try {
                     Mail::to($contact->email)->send(new ContactMail($data));
-                } catch (Exception $e) {
-                    // Log the exception message
-                    Log::error('Email sending failed: ' . $e->getMessage());
+                } catch (\Exception $e) {
+                    \Log::error('Email sending failed: ' . $e->getMessage());
                 }
             }
 

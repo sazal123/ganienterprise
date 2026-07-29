@@ -349,16 +349,14 @@ class CustomerController extends Controller
         $site_setting = GeneralSetting::where('status', 1)->first();
         $sms_gateway = SmsGateway::where(['status'=> 1, 'order'=>'1'])->first();
         
-        $contact = Contact::where('status',1)->first();
-        // if($contact->email){
-        //     try {
-        //         Mail::to($contact->email)->send(new OrderPlace($order));
-        //     } catch (Exception $e) {
-        //         // Log the exception message
-        //         Log::error('Email sending failed: ' . $e->getMessage());
-        //     }
-           
-        // }
+        $contact = Contact::where('status', 1)->first();
+        if ($contact && $contact->email) {
+            try {
+                Mail::to($contact->email)->send(new OrderPlace($order));
+            } catch (\Exception $e) {
+                \Log::error('Email sending failed: ' . $e->getMessage());
+            }
+        }
         
         
         if($sms_gateway) {
