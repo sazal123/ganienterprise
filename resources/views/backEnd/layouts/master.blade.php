@@ -246,7 +246,7 @@
           <div id="sidebar-menu">
             <ul id="side-menu">
               <li>
-                <a href="{{url('admin/dashboard')}}" data-bs-toggle="collapse">
+                <a href="{{route('dashboard')}}">
                   <i data-feather="airplay"></i>
                   <span> Dashboard </span>
                 </a>
