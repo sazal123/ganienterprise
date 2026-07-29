@@ -19,7 +19,13 @@
                         @csrf
                         <div class="card">
                            <div class="card-header">
-                                <h6>To confirm your order, fill in the information below and click the <span style="color:#fe5200;">"Place Order"</span> button, or call us directly at <a href="tel:{{ $contact->hotline }}">{{ $contact->hotline }}</a>.</h6>
+                                <h6>To confirm your order, fill in the information below and click the <span style="color:#fe5200;">"Place Order"</span> button
+                                @if(isset($contact) && $contact && $contact->hotline)
+                                    , or call us directly at <a href="tel:{{ $contact->hotline }}">{{ $contact->hotline }}</a>.
+                                @else
+                                    .
+                                @endif
+                                </h6>
                             </div>
                             <div class="card-body">
                                 <div class="row">
