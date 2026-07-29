@@ -29,20 +29,63 @@ class BrandController extends Controller
         // image with intervention 
         $image = $request->file('image');
         if($image){
-            $name =  time().'-'.$image->getClientOriginalName();
-            $name = preg_replace('"\.(jpg|jpeg|png|webp)$"', '.webp',$name);
-            $name = strtolower(preg_replace('/\s+/', '-', $name));
-            $uploadpath = 'public/uploads/brand/';
-            $imageUrl = $uploadpath.$name; 
-            $img=Image::make($image->getRealPath());
-            $img->encode('webp', 90);
-            $width = 210;
-            $height = 210;
-            $img->height() > $img->width() ? $width=null : $height=null;
-            $img->resize($width, $height, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $img->save($imageUrl); 
+            $ext = strtolower($image->getClientOriginalExtension());
+            if(!$ext) { $ext = 'jpg'; }
+            $filenameOnly = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+            $name = time().'-'.strtolower(preg_replace('/\s+/', '-', $filenameOnly)).'.'.$ext;
+
+            $uploadpath = 'uploads/brand/';
+            $imageUrl = $uploadpath.$name;
+
+            $dir1 = public_path('uploads/brand/');
+            $dir2 = base_path('uploads/brand/');
+            $dir3 = base_path('public/uploads/brand/');
+
+            foreach ([$dir1, $dir2, $dir3] as $dir) {
+                if (!File::exists($dir)) {
+                    File::makeDirectory($dir, 0777, true, true);
+                }
+            }
+
+            try {
+                $img = Image::make($image->getRealPath());
+                if($ext == 'webp') {
+                    @$img->encode('webp', 90);
+                }
+                $width = 210;
+                $height = 210;
+                $img->height() > $img->width() ? $width=null : $height=null;
+                $img->resize($width, $height, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $img->save($dir1.$name);
+            } catch (\Exception $e) {
+                $image->move($dir1, $name);
+            }
+
+            if (!File::exists($dir1.$name)) {
+                $image->move($dir1, $name);
+            }
+
+            @copy($dir1.$name, $dir2.$name);
+            @copy($dir1.$name, $dir3.$name);
+            @copy($dir1.$name, public_path('../uploads/brand/'.$name));
+
+            // Copy directly to cPanel public_html/uploads/brand/
+            if (is_dir(base_path('../public_html'))) {
+                $cpanelDir = base_path('../public_html/uploads/brand/');
+                if (!File::exists($cpanelDir)) {
+                    @File::makeDirectory($cpanelDir, 0777, true, true);
+                }
+                @copy($dir1.$name, $cpanelDir.$name);
+            }
+            if (isset($_SERVER['DOCUMENT_ROOT']) && is_dir($_SERVER['DOCUMENT_ROOT'])) {
+                $docRootBrand = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/uploads/brand/';
+                if (!File::exists($docRootBrand)) {
+                    @File::makeDirectory($docRootBrand, 0777, true, true);
+                }
+                @copy($dir1.$name, $docRootBrand.$name);
+            }
         }else{
             $imageUrl = NULL;
         }
@@ -72,22 +115,72 @@ class BrandController extends Controller
         $image = $request->file('image');
         if($image){
             // image with intervention 
-            $name =  time().'-'.$image->getClientOriginalName();
-            $name = preg_replace('"\.(jpg|jpeg|png|webp)$"', '.webp',$name);
-            $name = strtolower(preg_replace('/\s+/', '-', $name));
-            $uploadpath = 'public/uploads/brand/';
-            $imageUrl = $uploadpath.$name; 
-            $img=Image::make($image->getRealPath());
-            $img->encode('webp', 90);
-            $width = 210;
-            $height = 210;
-            $img->height() > $img->width() ? $width=null : $height=null;
-            $img->resize($width, $height, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $img->save($imageUrl);
+            $ext = strtolower($image->getClientOriginalExtension());
+            if(!$ext) { $ext = 'jpg'; }
+            $filenameOnly = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+            $name = time().'-'.strtolower(preg_replace('/\s+/', '-', $filenameOnly)).'.'.$ext;
+
+            $uploadpath = 'uploads/brand/';
+            $imageUrl = $uploadpath.$name;
+
+            $dir1 = public_path('uploads/brand/');
+            $dir2 = base_path('uploads/brand/');
+            $dir3 = base_path('public/uploads/brand/');
+
+            foreach ([$dir1, $dir2, $dir3] as $dir) {
+                if (!File::exists($dir)) {
+                    File::makeDirectory($dir, 0777, true, true);
+                }
+            }
+
+            try {
+                $img = Image::make($image->getRealPath());
+                if($ext == 'webp') {
+                    @$img->encode('webp', 90);
+                }
+                $width = 210;
+                $height = 210;
+                $img->height() > $img->width() ? $width=null : $height=null;
+                $img->resize($width, $height, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $img->save($dir1.$name);
+            } catch (\Exception $e) {
+                $image->move($dir1, $name);
+            }
+
+            if (!File::exists($dir1.$name)) {
+                $image->move($dir1, $name);
+            }
+
+            @copy($dir1.$name, $dir2.$name);
+            @copy($dir1.$name, $dir3.$name);
+            @copy($dir1.$name, public_path('../uploads/brand/'.$name));
+
+            // Copy directly to cPanel public_html/uploads/brand/
+            if (is_dir(base_path('../public_html'))) {
+                $cpanelDir = base_path('../public_html/uploads/brand/');
+                if (!File::exists($cpanelDir)) {
+                    @File::makeDirectory($cpanelDir, 0777, true, true);
+                }
+                @copy($dir1.$name, $cpanelDir.$name);
+            }
+            if (isset($_SERVER['DOCUMENT_ROOT']) && is_dir($_SERVER['DOCUMENT_ROOT'])) {
+                $docRootBrand = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/uploads/brand/';
+                if (!File::exists($docRootBrand)) {
+                    @File::makeDirectory($docRootBrand, 0777, true, true);
+                }
+                @copy($dir1.$name, $docRootBrand.$name);
+            }
+
             $input['image'] = $imageUrl;
-            File::delete($update_data->image);
+            if($update_data->image){
+                $oldFile = str_replace('public/', '', $update_data->image);
+                @File::delete(public_path($oldFile));
+                @File::delete(base_path($oldFile));
+                @File::delete(base_path('public/'.$oldFile));
+                @File::delete(public_path('../'.$oldFile));
+            }
         }else{
             $input['image'] = $update_data->image;
         }

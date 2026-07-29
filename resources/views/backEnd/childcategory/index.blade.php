@@ -48,7 +48,7 @@
                            
 
                             <td>
-                                <span>{{ $value->subcategory->subcategoryName }}</span>
+                                <span>{{ $value->subcategory->subcategoryName ?? 'N/A' }}</span>
                             </td>
 
                             <td>
