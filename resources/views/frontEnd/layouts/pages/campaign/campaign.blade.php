@@ -15,75 +15,90 @@
 
 /* ───── Hero Header Section ───── */
 .cmp-hero {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #064e3b 100%);
-    padding: 50px 0 45px;
-    color: #ffffff;
     position: relative;
+    padding: 85px 0 75px;
+    color: #ffffff;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
     overflow: hidden;
+    min-height: 440px;
+    display: flex;
+    align-items: center;
 }
-.cmp-hero::before {
-    content: '';
+.cmp-hero-overlay {
     position: absolute;
-    top: -30%;
-    right: -10%;
-    width: 450px;
-    height: 450px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.75) 50%, rgba(6, 78, 59, 0.85) 100%);
+    z-index: 1;
+}
+.cmp-hero-content {
+    position: relative;
+    z-index: 2;
 }
 .cmp-hero-badge {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(245, 158, 11, 0.2);
+    background: rgba(245, 158, 11, 0.25);
+    backdrop-filter: blur(8px);
     border: 1px solid var(--cmp-accent);
-    color: var(--cmp-accent);
-    padding: 6px 16px;
+    color: #fde047;
+    padding: 7px 22px;
     border-radius: 50px;
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 16px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
 }
 .cmp-hero h1 {
-    font-size: 34px;
+    font-size: 38px;
     font-weight: 800;
-    line-height: 1.3;
-    margin-bottom: 14px;
+    line-height: 1.35;
+    margin-bottom: 16px;
     color: #ffffff;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.4);
 }
 .cmp-hero p {
-    font-size: 15px;
-    color: #cbd5e1;
-    max-width: 650px;
-    line-height: 1.6;
-    margin-bottom: 24px;
+    font-size: 16px;
+    color: #f1f5f9;
+    max-width: 780px;
+    line-height: 1.7;
+    margin: 0 auto 26px;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.4);
 }
 
 /* Countdown Timer */
 .cmp-countdown-box {
     display: flex;
-    gap: 12px;
-    margin-top: 20px;
+    gap: 14px;
+    margin-top: 10px;
+    justify-content: center;
 }
 .cmp-timer-unit {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 8px 16px;
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 20px;
+    border-radius: 12px;
     text-align: center;
-    min-width: 70px;
+    min-width: 80px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
 }
 .cmp-timer-num {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 800;
-    color: var(--cmp-accent);
+    color: #fde047;
     display: block;
 }
 .cmp-timer-label {
-    font-size: 11px;
-    color: #94a3b8;
+    font-size: 12px;
+    color: #e2e8f0;
     text-transform: uppercase;
+    font-weight: 600;
 }
 
 /* ───── Category Navigation Tabs ───── */
@@ -389,22 +404,33 @@
 @endpush
 
 @section('content')
-<!-- Dynamic Hero Section -->
-<section class="cmp-hero">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-7">
-                <span class="cmp-hero-badge">
+@php
+    $heroBanner = $campaign_data->banner 
+        ? asset($campaign_data->banner) 
+        : asset('frontEnd/img/default-product.jpg');
+@endphp
+
+<!-- Dynamic Full-Width Hero Banner Section -->
+<section class="cmp-hero" style="background-image: url('{{ $heroBanner }}');">
+    <div class="cmp-hero-overlay"></div>
+    <div class="container cmp-hero-content">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-9 col-xl-8">
+                <span class="cmp-hero-badge mx-auto">
                     <i class="fa fa-fire"></i> {{ $campaign_data->top_title_1 ?? 'বিশেষ ডিসকাউন্ট অফার' }}
                 </span>
+
                 <h1>{{ $campaign_data->heading_1 ?? $campaign_data->name }}</h1>
+
                 <p>
                     {!! nl2br(e($campaign_data->short_description ?? $campaign_data->description ?? 'সেরা কোয়ালিটির আসল পণ্য এখন পান আকর্ষনীয় অফার মূল্যে। ক্যাশ অন ডেলিভারিতে সরাসরি অর্ডার করুন।')) !!}
                 </p>
 
                 @if($campaign_data->deadline)
-                <div class="d-flex align-items-center gap-2">
-                    <span class="fw-semibold text-warning" style="font-size: 13px;">অফারের বাকী সময়:</span>
+                <div class="d-flex flex-column align-items-center gap-2 mt-3">
+                    <span class="fw-bold text-warning" style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">
+                        <i class="fa fa-clock-o me-1"></i> অফারের বাকী সময়:
+                    </span>
                     <div class="cmp-countdown-box" id="cmp-timer" data-deadline="{{ $campaign_data->deadline }}">
                         <div class="cmp-timer-unit"><span class="cmp-timer-num" id="t-days">00</span><span class="cmp-timer-label">দিন</span></div>
                         <div class="cmp-timer-unit"><span class="cmp-timer-num" id="t-hours">00</span><span class="cmp-timer-label">ঘন্টা</span></div>
@@ -413,18 +439,6 @@
                     </div>
                 </div>
                 @endif
-            </div>
-
-            <div class="col-lg-5 d-none d-lg-block text-center">
-                @php
-                    $heroBanner = $campaign_data->banner 
-                        ? asset($campaign_data->banner) 
-                        : ($campaign_data->image_one ? asset($campaign_data->image_one) : asset('frontEnd/img/default-product.jpg'));
-                @endphp
-                <img src="{{ $heroBanner }}" 
-                     alt="{{ $campaign_data->name }}" 
-                     class="img-fluid rounded-4 shadow-lg" 
-                     style="max-height: 320px; border: 4px solid rgba(255,255,255,0.2);">
             </div>
         </div>
     </div>

@@ -2,7 +2,6 @@
 @section('title','Landing Page Create')
 @section('css')
 <link href="{{asset('backEnd/assets/libs/summernote/summernote-lite.min.css')}}" rel="stylesheet" type="text/css" />
-
 <link href="{{asset('backEnd/assets/libs/select2/css/select2.min.css')}}" rel="stylesheet" type="text/css" />
 <link href="{{asset('backEnd/assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
 @endsection
@@ -38,7 +37,6 @@
                             @enderror
                         </div>
                     </div>
-                    <!-- col-end -->
                 
                     <div class="col-sm-12 mb-3">
                         <div class="form-group">
@@ -51,31 +49,43 @@
                             @enderror
                         </div>
                     </div>
-                    <!-- col end -->
-                
-                    <div class="col-sm-12">
+
+                    <div class="col-sm-6">
                         <div class="form-group mb-3">
-                            <label for="banner_title" class="form-label">Banner Title *</label>
-                            <input type="text" class="form-control @error('banner_title') is-invalid @enderror" name="banner_title" value="{{ old('banner_title') }}" id="banner_title" required="">
-                            @error('banner_title')
+                            <label for="top_title_1" class="form-label">Badge Tag (Top Title)</label>
+                            <input type="text" class="form-control @error('top_title_1') is-invalid @enderror" name="top_title_1" value="{{ old('top_title_1') }}" id="top_title_1" placeholder="e.g. বিশেষ ডিসকাউন্ট অফার">
+                            @error('top_title_1')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
                         </div>
                     </div>
-                    <!-- col-end -->
-                    <div class="col-sm-12">
+
+                    <div class="col-sm-6">
                         <div class="form-group mb-3">
-                            <label for="video" class="form-label">Youtube Video ID</label>
-                            <input type="text" class="form-control @error('video') is-invalid @enderror" name="video" value=""  id="video">
-                            @error('video')
+                            <label for="heading_1" class="form-label">Main Heading</label>
+                            <input type="text" class="form-control @error('heading_1') is-invalid @enderror" name="heading_1" value="{{ old('heading_1') }}" id="heading_1" placeholder="e.g. ধামাকা অফার!">
+                            @error('heading_1')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
                         </div>
                     </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group mb-3">
+                            <label for="deadline" class="form-label">Offer Deadline (Countdown Timer)</label>
+                            <input type="datetime-local" class="form-control @error('deadline') is-invalid @enderror" name="deadline" value="{{ old('deadline') }}" id="deadline">
+                            @error('deadline')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+
                     <div class="col-sm-12">
                         <div class="form-group mb-3">
                             <label for="category_id" class="form-label">Product Categories (Optional)</label>
@@ -94,7 +104,7 @@
 
                     <div class="col-sm-12">
                         <div class="form-group mb-3">
-                            <label for="product_id" class="form-label">Products</label>
+                            <label for="product_id" class="form-label">Select Products</label>
                             <select class="select2 form-control @error('product_id') is-invalid @enderror" 
                                     name="product_id[]" 
                                     id="product_id_select"
@@ -111,87 +121,11 @@
                             @enderror
                         </div>
                     </div>
-
-                    <!-- col end -->
-                
-                    <div class="col-sm-6 mb-3">
-                        <div class="form-group">
-                            <label for="image_one" class="form-label">Image One *</label>
-                            <input type="file" class="form-control @error('image_one') is-invalid @enderror" name="image_one" id="image_one" required="">
-                            @error('image_one')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                    </div>
-                
-                    <div class="col-sm-6 mb-3">
-                        <div class="form-group">
-                            <label for="image_two" class="form-label">Image Two</label>
-                            <input type="file" class="form-control @error('image_two') is-invalid @enderror" name="image_two" id="image_two">
-                            @error('image_two')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                    </div>
-                
-                    <div class="col-sm-6 mb-3">
-                        <div class="form-group">
-                            <label for="image_three" class="form-label">Image Three</label>
-                            <input type="file" class="form-control @error('image_three') is-invalid @enderror" name="image_three" id="image_three">
-                            @error('image_three')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                    </div>
-                    <!-- col end -->
-                
-                    <div class="col-sm-6 mb-3">
-                        <label for="image">Review Image *</label>
-                        <div class="input-group control-group increment">
-                            <input type="file" name="image[]" class="form-control @error('image') is-invalid @enderror" required />
-                            <div class="input-group-btn">
-                                <button class="btn btn-success btn-increment" type="button"><i class="fa fa-plus"></i></button>
-                            </div>
-                            @error('image')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-                        <div class="clone hide" style="display: none;">
-                            <div class="control-group input-group">
-                                <input type="file" name="image[]" class="form-control" />
-                                <div class="input-group-btn">
-                                    <button class="btn btn-danger" type="button"><i class="fa fa-trash"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- col end -->
-                
-                    <div class="col-sm-6 mb-3">
-                        <div class="form-group mb-3">
-                            <label for="review" class="form-label">Review *</label>
-                            <input type="text" class="form-control @error('review') is-invalid @enderror" name="review" value="{{ old('review') }}" id="review" required="">
-                            @error('review')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                    </div>
-                    <!-- col-end -->
                 
                     <div class="col-sm-12 mb-3">
                         <div class="form-group">
-                            <label for="short_description" class="form-label">Short Description *</label>
-                            <textarea name="short_description" rows="6" class="summernote form-control @error('short_description') is-invalid @enderror" required="">{{ old('short_description') }}</textarea>
+                            <label for="short_description" class="form-label">Short Description</label>
+                            <textarea name="short_description" rows="4" class="summernote form-control @error('short_description') is-invalid @enderror">{{ old('short_description') }}</textarea>
                             @error('short_description')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -199,12 +133,11 @@
                             @enderror
                         </div>
                     </div>
-                    <!-- col end -->
-                
+
                     <div class="col-sm-12 mb-3">
                         <div class="form-group">
-                            <label for="description" class="form-label">Description *</label>
-                            <textarea name="description" rows="6" class="summernote form-control @error('description') is-invalid @enderror" required="">{{ old('description') }}</textarea>
+                            <label for="description" class="form-label">Description / Details</label>
+                            <textarea name="description" rows="6" class="summernote form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
                             @error('description')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -212,10 +145,6 @@
                             @enderror
                         </div>
                     </div>
-                    <!-- col end -->
-                
-                  
-                    <!-- col end -->
                 
                     <div>
                         <input type="submit" class="btn btn-success" value="Create Campaign">
@@ -229,30 +158,21 @@
 </div>
 @endsection
 
-
 @section('script')
-<script src="{{asset('backEnd/assets/libs/parsleyjs/parsley.min.js"></script>
-<script src="{{asset('backEnd/assets/js/pages/form-validation.init.js"></script>
-<script src="{{asset('backEnd/assets/libs/select2/js/select2.min.js"></script>
-<script src="{{asset('backEnd/assets/js/pages/form-advanced.init.js"></script>
-<script src="{{asset('backEnd/assets/libs/flatpickr/flatpickr.min.js"></script>
-<script src="{{asset('backEnd/assets/js/pages/form-pickers.init.js"></script>
+<script src="{{asset('backEnd/assets/libs/parsleyjs/parsley.min.js')}}"></script>
+<script src="{{asset('backEnd/assets/js/pages/form-validation.init.js')}}"></script>
+<script src="{{asset('backEnd/assets/libs/select2/js/select2.min.js')}}"></script>
+<script src="{{asset('backEnd/assets/js/pages/form-advanced.init.js')}}"></script>
+<script src="{{asset('backEnd/assets/libs/flatpickr/flatpickr.min.js')}}"></script>
+<script src="{{asset('backEnd/assets/js/pages/form-pickers.init.js')}}"></script>
 
-<script src="{{asset('backEnd/assets/libs//summernote/summernote-lite.min.js"></script>
+<script src="{{asset('backEnd/assets/libs/summernote/summernote-lite.min.js')}}"></script>
 <script>
     $(".summernote").summernote({
         placeholder: "Enter Your Text Here",    
     });
-</script>
-<script type="text/javascript">
+
     $(document).ready(function () {
-        $(".btn-increment").click(function () {
-            var html = $(".clone").html();
-            $(".increment").after(html);
-        });
-        $("body").on("click", ".btn-danger", function () {
-            $(this).parents(".control-group").remove();
-        });
         $('.select2').select2();
 
         $('#category_id').on('change', function() {
