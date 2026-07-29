@@ -92,7 +92,7 @@
 <section class="gani-section gani-section-light">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="gani-section-title">ট্রেন্ডিং কালেকশন</h2>
+            <h2 class="gani-section-title">Trending Collection</h2>
             <div class="gani-divider mx-auto"></div>
         </div>
         <div class="row g-4">
@@ -390,29 +390,29 @@
             <div class="col-6 col-md-3">
                 <div class="gani-trust-item">
                     <i class="fa-solid fa-truck gani-trust-icon"></i>
-                    <h5 class="gani-trust-title">ফ্রি শিপিং</h5>
-                    <p class="gani-trust-text">৫০০০ টাকার বেশি অর্ডারে</p>
+                    <h5 class="gani-trust-title">Free Shipping</h5>
+                    <p class="gani-trust-text">On orders over BDT 5000</p>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="gani-trust-item">
                     <i class="fa-solid fa-rotate-left gani-trust-icon"></i>
-                    <h5 class="gani-trust-title">ফ্রি রিটার্ন</h5>
-                    <p class="gani-trust-text">৩০ দিনের রিটার্ন পলিসি</p>
+                    <h5 class="gani-trust-title">Free Return</h5>
+                    <p class="gani-trust-text">30 Day Return Policy</p>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="gani-trust-item">
                     <i class="fa-solid fa-shield-halved gani-trust-icon"></i>
-                    <h5 class="gani-trust-title">নিরাপদ পেমেন্ট</h5>
-                    <p class="gani-trust-text">শতভাগ নিরাপদ পেমেন্ট</p>
+                    <h5 class="gani-trust-title">Secure Payment</h5>
+                    <p class="gani-trust-text">100% Secure Payment</p>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="gani-trust-item">
                     <i class="fa-solid fa-headset gani-trust-icon"></i>
-                    <h5 class="gani-trust-title">সার্বক্ষণিক সাপোর্ট</h5>
-                    <p class="gani-trust-text">নিবেদিত কাস্টমার সার্ভিস</p>
+                    <h5 class="gani-trust-title">Customer Support</h5>
+                    <p class="gani-trust-text">Dedicated Customer Service</p>
                 </div>
             </div>
         </div>

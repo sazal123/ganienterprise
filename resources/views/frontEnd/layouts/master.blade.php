@@ -262,14 +262,14 @@
                 <div class="d-flex align-items-center gap-3">
                     <span><i class="fa-solid fa-phone me-1"></i> {{ $contact->hotline }}</span>
                 </div>
-                <div class="fw-bold gani-top-shipping-text">৫০০০ টাকার বেশি অর্ডারে ফ্রি শিপিং</div>
+                <div class="fw-bold gani-top-shipping-text">Free Shipping On Orders Over BDT 5000</div>
                 <div class="d-flex align-items-center gap-3">
                     @if(Auth::guard('customer')->user())
                         <a href="{{route('customer.account')}}" class="gani-top-link"><i class="fa-regular fa-user me-1"></i> {{ Str::limit(Auth::guard('customer')->user()->name, 14) }}</a>
                         <a href="{{ route('logout') }}" class="gani-top-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">লগআউট</a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">@csrf</form>
                     @else
-                        <a href="{{route('customer.login')}}" class="gani-top-link"><i class="fa-regular fa-user me-1"></i> লগইন / রেজিস্টার</a>
+                        <a href="{{route('customer.login')}}" class="gani-top-link"><i class="fa-regular fa-user me-1"></i> Login / Register</a>
                     @endif
                 </div>
             </div>
@@ -318,8 +318,7 @@
                             {{-- Apnar bag khujun — Dropdown for all categories --}}
                             <div class="gani-nav-dropdown">
                                 <button class="gani-nav-link dropdown-toggle">
-                                    ক্যাটাগরি
-                                    <i class="fa-solid fa-chevron-down gani-nav-arrow"></i>
+                                    Category
                                 </button>
                                 <div class="gani-dropdown-menu">
                                     @foreach($menucategories->take(12) as $cat)
@@ -361,7 +360,7 @@
                             <a href="{{ url('category/'.$cat->slug) }}" class="gani-nav-link">{{ $cat->name }}</a>
                             @endforeach
 
-                            <a href="{{ route('shop') }}" class="gani-nav-link gani-nav-highlight">সকল পণ্য</a>
+                            <a href="{{ route('shop') }}" class="gani-nav-link gani-nav-highlight">All Products</a>
                         </nav>
                     </div>
                     <div class="col-auto">
@@ -371,7 +370,7 @@
                             </button>
                             <a href="{{route('customer.order_track')}}" class="gani-icon-btn gani-track-link">
                                 <i class="fa-solid fa-truck-fast"></i>
-                                <span class="d-none d-lg-inline gani-icon-label">ট্র্যাক</span>
+                                <span class="d-none d-lg-inline gani-icon-label">Track Order</span>
                             </a>
                             <a href="{{route('customer.checkout')}}" class="gani-icon-btn position-relative">
                                 <i class="fa-solid fa-bag-shopping"></i>
