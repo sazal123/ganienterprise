@@ -1,5 +1,5 @@
 @extends('frontEnd.layouts.master')
-@section('title', $campaign_data->name ?? 'বিশেষ ক্যাম্পেইন')
+@section('title', $campaign_data->name ?? 'Special Campaign')
 @push('css')
 <style>
 /* ───── Campaign Page Base & Relational Theme Tokens ───── */
@@ -34,8 +34,8 @@
 }
 
 @if($campaign_data->banner)
-.cmp-hero-card.has-banner-bg {
-    background: linear-gradient(135deg, rgba(233, 228, 217, 0.92) 0%, rgba(222, 215, 201, 0.94) 100%), url("{{ asset($campaign_data->banner) }}") no-repeat center center / cover;
+.cmp-hero-card.has-banner-bg{
+    background:none;
 }
 @endif
 
@@ -156,7 +156,7 @@
     color: #ffffff;
 }
 
-/* ───── Product Card Grid (Reference Design Match) ───── */
+/* ───── Product Card Grid ───── */
 .cmp-card {
     background: #ffffff;
     border-radius: 20px;
@@ -176,7 +176,7 @@
 .cmp-card-img-box {
     position: relative;
     width: 100%;
-    padding-top: 100%; /* 1:1 Aspect Ratio */
+    padding-top: 100%;
     background: #fcfbf9;
     border-radius: 16px;
     overflow: hidden;
@@ -209,7 +209,7 @@
     z-index: 2;
 }
 
-/* Color Variant Swatches (Reference Detail) */
+/* Color Swatches */
 .cmp-color-swatches {
     display: flex;
     align-items: center;
@@ -325,9 +325,9 @@
         <div class="cmp-hero-card {{ $campaign_data->banner ? 'has-banner-bg' : '' }}">
             <!-- Breadcrumb Navigation -->
             <div class="cmp-breadcrumb">
-                <span>হোম</span> <i class="fa fa-chevron-right"></i>
-                <span>ক্যাম্পেইন</span> <i class="fa fa-chevron-right"></i>
-                <span class="text-dark fw-bold">{{ $campaign_data->name }}</span>
+                <span>HOME</span> <i class="fa fa-chevron-right"></i>
+                <span>CAMPAIGN</span> <i class="fa fa-chevron-right"></i>
+                <span class="text-dark fw-bold">{{ strtoupper($campaign_data->name) }}</span>
             </div>
 
             <!-- Main Heading Title -->
@@ -337,7 +337,7 @@
 
             <!-- Description -->
             <p class="cmp-hero-desc">
-                {!! nl2br(e($campaign_data->short_description ?? $campaign_data->description ?? 'সেরা কোয়ালিটির আসল পণ্য এখন পান আকর্ষনীয় অফার মূল্যে। ক্যাশ অন ডেলিভারিতে সরাসরি অর্ডার করুন।')) !!}
+                {!! nl2br(e($campaign_data->short_description ?? $campaign_data->description ?? 'Get authentic products at attractive offer prices. Order directly with Cash on Delivery.')) !!}
             </p>
 
             <!-- Bottom Control Pills Bar -->
@@ -345,7 +345,7 @@
                 <!-- Category Select Pill -->
                 @if(isset($categories) && $categories->count() > 0)
                 <select class="cmp-pill-select" id="cmp-cat-select">
-                    <option value="all">সকল ক্যাটাগরি (All Categories)</option>
+                    <option value="all">All Categories</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                     @endforeach
@@ -354,22 +354,22 @@
 
                 <!-- Sort Select Pill -->
                 <select class="cmp-pill-select" id="cmp-sort-select">
-                    <option value="latest">নতুন পণ্যসমূহ</option>
-                    <option value="price_low">মূল্য: কম থেকে বেশি</option>
-                    <option value="price_high">মূল্য: বেশি থেকে কম</option>
-                    <option value="oldest">পুরাতন পণ্যসমূহ</option>
+                    <option value="latest">Newest Products</option>
+                    <option value="price_low">Price: Low to High</option>
+                    <option value="price_high">Price: High to Low</option>
+                    <option value="oldest">Oldest Products</option>
                 </select>
 
                 <!-- Search Input Pill -->
                 <div class="cmp-pill-search">
                     <i class="fa fa-search"></i>
-                    <input type="text" id="cmp-search-input" class="cmp-pill-input" placeholder="পণ্য দিয়ে খুঁজুন..." autocomplete="off">
+                    <input type="text" id="cmp-search-input" class="cmp-pill-input" placeholder="Search products..." autocomplete="off">
                 </div>
 
                 <!-- Countdown Timer Pill -->
                 @if($campaign_data->deadline)
                 <div class="cmp-timer-pill">
-                    <span class="cmp-timer-pill-title"><i class="fa fa-clock-o me-1"></i> অফারের সময়:</span>
+                    <span class="cmp-timer-pill-title"><i class="fa fa-clock-o me-1"></i> Offer Ends In:</span>
                     <div class="cmp-timer-digits" id="cmp-timer" data-deadline="{{ $campaign_data->deadline }}">
                         <span class="cmp-timer-num-box" id="t-days">00</span>:
                         <span class="cmp-timer-num-box" id="t-hours">00</span>:
@@ -394,7 +394,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content cmp-modal">
             <div class="cmp-modal-header d-flex justify-content-between align-items-center">
-                <h5 class="modal-title"><i class="fa fa-shopping-bag me-2"></i> সরাসরি অর্ডার করুন</h5>
+                <h5 class="modal-title"><i class="fa fa-shopping-bag me-2"></i> Quick Order</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
@@ -407,27 +407,27 @@
                         <img src="" id="modal_product_img" style="width: 60px; height: 60px; object-fit: cover;" class="rounded-2">
                         <div>
                             <h6 id="modal_product_name" class="fw-bold mb-1 text-dark" style="font-size: 14px;"></h6>
-                            <div class="text-success fw-bold" style="font-size: 15px;">মূল্য: ৳<span id="modal_product_price"></span></div>
+                            <div class="text-success fw-bold" style="font-size: 15px;">Price: ৳<span id="modal_product_price"></span></div>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold text-dark fs-6">আপনার নাম <span class="text-danger">*</span></label>
-                        <input type="text" name="name" class="form-control form-control-lg" placeholder="আপনার সম্পূর্ণ নাম লিখুন" required>
+                        <label class="form-label fw-semibold text-dark fs-6">Your Name <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control form-control-lg" placeholder="Enter your full name" required>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold text-dark fs-6">মোবাইল নাম্বার <span class="text-danger">*</span></label>
-                        <input type="text" name="phone" class="form-control form-control-lg" placeholder="১১ ডিজিটের মোবাইল নাম্বার" required>
+                        <label class="form-label fw-semibold text-dark fs-6">Phone Number <span class="text-danger">*</span></label>
+                        <input type="text" name="phone" class="form-control form-control-lg" placeholder="Enter 11-digit phone number" required>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold text-dark fs-6">সম্পূর্ণ ঠিকানা <span class="text-danger">*</span></label>
-                        <textarea name="address" class="form-control" rows="2" placeholder="জেলা, থানা, গ্রাম/রোড নাম..." required></textarea>
+                        <label class="form-label fw-semibold text-dark fs-6">Full Address <span class="text-danger">*</span></label>
+                        <textarea name="address" class="form-control" rows="2" placeholder="District, Thana, Road / Area name..." required></textarea>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold text-dark fs-6">ডেলিভারি এরিয়া <span class="text-danger">*</span></label>
+                        <label class="form-label fw-semibold text-dark fs-6">Delivery Area <span class="text-danger">*</span></label>
                         <select name="area" class="form-select form-select-lg" required>
                             @foreach($shippingcharge as $shipping)
                                 <option value="{{ $shipping->id }}">{{ $shipping->name }} (৳{{ $shipping->amount }})</option>
@@ -436,7 +436,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-success btn-lg w-100 fw-bold py-3 text-uppercase rounded-3 shadow">
-                        <i class="fa fa-check-circle me-2"></i> অর্ডার কনফার্ম করুন
+                        <i class="fa fa-check-circle me-2"></i> Confirm Order
                     </button>
                 </form>
             </div>

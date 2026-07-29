@@ -53,7 +53,7 @@
                     <div class="col-sm-6">
                         <div class="form-group mb-3">
                             <label for="top_title_1" class="form-label">Badge Tag (Top Title)</label>
-                            <input type="text" class="form-control @error('top_title_1') is-invalid @enderror" name="top_title_1" value="{{ old('top_title_1') }}" id="top_title_1" placeholder="e.g. বিশেষ ডিসকাউন্ট অফার">
+                            <input type="text" class="form-control @error('top_title_1') is-invalid @enderror" name="top_title_1" value="{{ old('top_title_1') }}" id="top_title_1" placeholder="e.g. Special Discount Offer">
                             @error('top_title_1')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -65,7 +65,7 @@
                     <div class="col-sm-6">
                         <div class="form-group mb-3">
                             <label for="heading_1" class="form-label">Main Heading</label>
-                            <input type="text" class="form-control @error('heading_1') is-invalid @enderror" name="heading_1" value="{{ old('heading_1') }}" id="heading_1" placeholder="e.g. ধামাকা অফার!">
+                            <input type="text" class="form-control @error('heading_1') is-invalid @enderror" name="heading_1" value="{{ old('heading_1') }}" id="heading_1" placeholder="e.g. Mega Discount Deal!">
                             @error('heading_1')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>

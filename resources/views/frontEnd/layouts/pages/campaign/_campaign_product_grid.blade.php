@@ -21,7 +21,7 @@
                         @endif
                     </div>
 
-                    <!-- Color Swatches Row (Relational UI detail from reference design) -->
+                    <!-- Color Swatches Row -->
                     <div class="cmp-color-swatches">
                         <span class="cmp-color-dot" style="background: #047857;"></span>
                         <span class="cmp-color-dot" style="background: #d97706;"></span>
@@ -50,7 +50,7 @@
                             data-price="{{ $product->new_price }}"
                             data-oldprice="{{ $product->old_price }}"
                             data-img="{{ asset($mainImage) }}">
-                        <i class="fa fa-shopping-bag"></i> অর্ডার করুন
+                        <i class="fa fa-shopping-bag"></i> Order Now
                     </button>
                 </div>
             </div>
@@ -64,8 +64,8 @@
 @else
     <div class="text-center py-5 bg-white rounded-4 shadow-sm my-4">
         <img src="{{ asset('frontEnd/img/no-product.png') }}" alt="No products" style="max-width: 110px; opacity: 0.6;" class="mb-3">
-        <h4 class="fw-bold text-dark mb-2">কোনো প্রোডাক্ট পাওয়া যায়নি</h4>
-        <p class="text-muted mb-3 fs-6">অনুগ্রহ করে ফিল্টার পরিবর্তন করে চেষ্টা করুন।</p>
-        <button type="button" class="btn btn-success rounded-pill px-4 btn-reset-filters fw-bold">সকল প্রোডাক্ট দেখুন</button>
+        <h4 class="fw-bold text-dark mb-2">No Products Found</h4>
+        <p class="text-muted mb-3 fs-6">Please try changing filters or search terms.</p>
+        <button type="button" class="btn btn-success rounded-pill px-4 btn-reset-filters fw-bold">View All Products</button>
     </div>
 @endif
