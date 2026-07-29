@@ -28,7 +28,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // Detect cPanel public_html or custom DOCUMENT_ROOT deployment
+        $this->app->bind('path.public', function () {
+            if (isset($_SERVER['DOCUMENT_ROOT']) && is_dir($_SERVER['DOCUMENT_ROOT']) && (file_exists($_SERVER['DOCUMENT_ROOT'] . '/index.php') || is_dir($_SERVER['DOCUMENT_ROOT'] . '/uploads'))) {
+                return $_SERVER['DOCUMENT_ROOT'];
+            } elseif (is_dir(base_path('../public_html'))) {
+                return base_path('../public_html');
+            }
+            return base_path('public');
+        });
     }
 
     /**
