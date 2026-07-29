@@ -11,9 +11,9 @@
         {{-- Badges --}}
         @if($product->old_price && $product->old_price > $product->new_price)
             @php $discount = round((($product->old_price - $product->new_price) / $product->old_price) * 100); @endphp
-            <span class="gani-badge gani-badge-dark">{{ $discount }}% ছাড়</span>
+            <span class="gani-badge gani-badge-dark">{{ $discount }}% OFF</span>
         @else
-            <span class="gani-badge gani-badge-gold">নতুন</span>
+            <span class="gani-badge gani-badge-gold">New</span>
         @endif
 
         {{-- Hover add-to-cart --}}
@@ -23,16 +23,16 @@
                     @csrf
                     <input type="hidden" name="id" value="{{ $product->id }}" />
                     <input type="hidden" name="qty" value="1" />
-                    <button type="submit" class="gani-add-cart-btn">কার্টে যোগ করুন</button>
+                    <button type="submit" class="gani-add-cart-btn">Add to Cart</button>
                 </form>
             @else
-                <a href="{{ route('product', $product->slug) }}" class="gani-add-cart-btn">কার্টে যোগ করুন</a>
+                <a href="{{ route('product', $product->slug) }}" class="gani-add-cart-btn">Add to Cart</a>
             @endif
         </div>
 
         {{-- Stock out overlay --}}
         @if($product->stock < 1)
-        <div class="gani-stock-overlay">স্টক আউট</div>
+        <div class="gani-stock-overlay">Stock Out</div>
         @endif
     </div>
 

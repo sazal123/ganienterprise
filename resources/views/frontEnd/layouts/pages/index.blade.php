@@ -38,7 +38,7 @@
         <div class="gani-hero-gradient"></div>
         <div class="gani-hero-content">
             <h2 class="gani-hero-subtitle">{!! nl2br(e($subtitle)) !!}</h2>
-            <h1 class="gani-hero-title">{{ e($title) }} <span class="gani-hero-title-accent">ছাড়</span></h1>
+            <h1 class="gani-hero-title">{{ e($title) }} <span class="gani-hero-title-accent">OFF</span></h1>
             <a href="{{ $slider->link ?? route('shop') }}" class="gani-hero-btn">{{ $btnText }}</a>
         </div>
     </div>
@@ -46,9 +46,9 @@
     <div class="gani-hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=2069&auto=format&fit=crop');">
         <div class="gani-hero-gradient"></div>
         <div class="gani-hero-content">
-            <h2 class="gani-hero-subtitle">গ্রীষ্মকালীন<br>অফার</h2>
-            <h1 class="gani-hero-title">৮০% <span class="gani-hero-title-accent">ছাড়</span></h1>
-            <a href="{{ route('shop') }}" class="gani-hero-btn">অফার উপভোগ করুন</a>
+            <h2 class="gani-hero-subtitle">Summer<br>Offer</h2>
+            <h1 class="gani-hero-title">80% <span class="gani-hero-title-accent">OFF</span></h1>
+            <a href="{{ route('shop') }}" class="gani-hero-btn">Enjoy Offer</a>
         </div>
     </div>
     @endforelse
