@@ -305,7 +305,13 @@
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-auto">
-                        <a href="{{route('home')}}" class="gani-header-logo">Gani<span class="text-gold">.</span></a>
+                        <a href="{{route('home')}}" class="gani-header-logo">
+                            @if(isset($generalsetting) && $generalsetting->white_logo)
+                                <img src="{{asset($generalsetting->white_logo)}}" alt="{{$generalsetting->name ?? ''}}" style="max-height: 45px;" />
+                            @else
+                                Gani<span class="text-gold">.</span>
+                            @endif
+                        </a>
                     </div>
                     <div class="col">
                         <nav class="gani-nav">

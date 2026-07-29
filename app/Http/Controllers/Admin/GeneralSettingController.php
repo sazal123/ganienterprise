@@ -42,10 +42,15 @@ class GeneralSettingController extends Controller
             'status' => 'required',
         ]);
 
-        // Ensure upload directory exists
-        $uploadpath = public_path('uploads/settings/');
-        if (!file_exists($uploadpath)) {
-            mkdir($uploadpath, 0755, true);
+        $dir1 = public_path('uploads/settings/');
+        $dir2 = base_path('uploads/settings/');
+        $dir3 = base_path('public/uploads/settings/');
+        $dir4 = base_path('../public_html/uploads/settings/');
+
+        foreach ([$dir1, $dir2, $dir3, $dir4] as $dir) {
+            if (!File::exists($dir)) {
+                @File::makeDirectory($dir, 0777, true, true);
+            }
         }
 
         // white logo
@@ -53,58 +58,63 @@ class GeneralSettingController extends Controller
         $name = strtolower(preg_replace('/\s+/', '-', time().'-white_logo.webp'));
         $imageUrl = 'public/uploads/settings/'.$name;
         $img = Image::make($image->getRealPath());
-        $img->encode('webp', 90);
+        try { $img->encode('webp', 90); } catch (\Exception $e) {}
         $img->resize(1000, null, function ($constraint) {
             $constraint->aspectRatio();
             $constraint->upsize();
         });
-        $img->save($uploadpath.$name);
+        $img->save($dir1.$name);
+        @copy($dir1.$name, $dir2.$name);
+        @copy($dir1.$name, $dir3.$name);
+        @copy($dir1.$name, $dir4.$name);
 
         // dark logo
         $image2 = $request->file('dark_logo');
         $name2 = strtolower(preg_replace('/\s+/', '-', time().'-dark_logo.webp'));
         $image2Url = 'public/uploads/settings/'.$name2;
         $img2 = Image::make($image2->getRealPath());
-        $img2->encode('webp', 90);
+        try { $img2->encode('webp', 90); } catch (\Exception $e) {}
         $img2->resize(1000, null, function ($constraint) {
             $constraint->aspectRatio();
             $constraint->upsize();
         });
-        $img2->save($uploadpath.$name2);
+        $img2->save($dir1.$name2);
+        @copy($dir1.$name2, $dir2.$name2);
+        @copy($dir1.$name2, $dir3.$name2);
+        @copy($dir1.$name2, $dir4.$name2);
 
         // OG Banner
         $image4 = $request->file('og_baner');
         $name4 = strtolower(preg_replace('/\s+/', '-', time().'-og_banner.webp'));
         $image4Url = 'public/uploads/settings/'.$name4;
         $img4 = Image::make($image4->getRealPath());
-        $img4->encode('webp', 90);
+        try { $img4->encode('webp', 90); } catch (\Exception $e) {}
         $img4->resize(1440, null, function ($constraint) {
             $constraint->aspectRatio();
             $constraint->upsize();
         });
-        $img4->save($uploadpath.$name4);
+        $img4->save($dir1.$name4);
+        @copy($dir1.$name4, $dir2.$name4);
+        @copy($dir1.$name4, $dir3.$name4);
+        @copy($dir1.$name4, $dir4.$name4);
 
-
-        // image with intervention
+        // favicon
         $image3 = $request->file('favicon');
         $name3 =  time().'-'.$image3->getClientOriginalName();
         $name3 = preg_replace('"\.(jpg|jpeg|png|webp)$"', '.png',$name3);
         $name3 = strtolower(preg_replace('/\s+/', '-', $name3));
-        $uploadpath3 = 'public/uploads/settings/';
-        $image3Url = $uploadpath3.$name3;
+        $image3Url = 'public/uploads/settings/'.$name3;
         $img3=Image::make($image3->getRealPath());
-        //$img3->encode('webp', 90);
-        $width3 = 256;
-        $height3 = 256;
-        //$img3->height() > $img3->width() ? $width3=null : $height3=null;
-        //$img3->resize($width3, $height3);
-        $img3->save($image3Url);
+        $img3->save($dir1.$name3);
+        @copy($dir1.$name3, $dir2.$name3);
+        @copy($dir1.$name3, $dir3.$name3);
+        @copy($dir1.$name3, $dir4.$name3);
 
         $input = $request->all();
         $input['white_logo'] = $imageUrl;
         $input['dark_logo'] = $image2Url;
         $input['favicon'] = $image3Url;
-		 $input['og_baner'] = $image4Url;
+        $input['og_baner'] = $image4Url;
         GeneralSetting::create($input);
         Toastr::success('Success','Data insert successfully');
         return redirect()->route('settings.index');
@@ -124,10 +134,15 @@ class GeneralSettingController extends Controller
         $update_data = GeneralSetting::find($request->id);
         $input = $request->all();
 
-        // Ensure upload directory exists
-        $uploadpath = public_path('uploads/settings/');
-        if (!file_exists($uploadpath)) {
-            mkdir($uploadpath, 0755, true);
+        $dir1 = public_path('uploads/settings/');
+        $dir2 = base_path('uploads/settings/');
+        $dir3 = base_path('public/uploads/settings/');
+        $dir4 = base_path('../public_html/uploads/settings/');
+
+        foreach ([$dir1, $dir2, $dir3, $dir4] as $dir) {
+            if (!File::exists($dir)) {
+                @File::makeDirectory($dir, 0777, true, true);
+            }
         }
 
         // new white logo
@@ -136,12 +151,15 @@ class GeneralSettingController extends Controller
             $name = strtolower(preg_replace('/\s+/', '-', time().'-white_logo.webp'));
             $imageUrl = 'public/uploads/settings/'.$name;
             $img = Image::make($image->getRealPath());
-            $img->encode('webp', 90);
+            try { $img->encode('webp', 90); } catch (\Exception $e) {}
             $img->resize(1000, null, function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
             });
-            $img->save($uploadpath.$name);
+            $img->save($dir1.$name);
+            @copy($dir1.$name, $dir2.$name);
+            @copy($dir1.$name, $dir3.$name);
+            @copy($dir1.$name, $dir4.$name);
             $input['white_logo'] = $imageUrl;
         }else{
             $input['white_logo'] = $update_data->white_logo;
@@ -152,12 +170,15 @@ class GeneralSettingController extends Controller
             $name2 = strtolower(preg_replace('/\s+/', '-', time().'-dark_logo.webp'));
             $image2Url = 'public/uploads/settings/'.$name2;
             $img2 = Image::make($image2->getRealPath());
-            $img2->encode('webp', 90);
+            try { $img2->encode('webp', 90); } catch (\Exception $e) {}
             $img2->resize(1000, null, function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
             });
-            $img2->save($uploadpath.$name2);
+            $img2->save($dir1.$name2);
+            @copy($dir1.$name2, $dir2.$name2);
+            @copy($dir1.$name2, $dir3.$name2);
+            @copy($dir1.$name2, $dir4.$name2);
             $input['dark_logo'] = $image2Url;
         }else{
             $input['dark_logo'] = $update_data->dark_logo;
@@ -169,12 +190,15 @@ class GeneralSettingController extends Controller
             $name4 = strtolower(preg_replace('/\s+/', '-', time().'-og_banner.webp'));
             $image4Url = 'public/uploads/settings/'.$name4;
             $img4 = Image::make($image4->getRealPath());
-            $img4->encode('webp', 90);
+            try { $img4->encode('webp', 90); } catch (\Exception $e) {}
             $img4->resize(1440, null, function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
             });
-            $img4->save($uploadpath.$name4);
+            $img4->save($dir1.$name4);
+            @copy($dir1.$name4, $dir2.$name4);
+            @copy($dir1.$name4, $dir3.$name4);
+            @copy($dir1.$name4, $dir4.$name4);
             $input['og_baner'] = $image4Url;
         }else{
             $input['og_baner'] = $update_data->og_baner;
@@ -186,9 +210,12 @@ class GeneralSettingController extends Controller
             $name3 = strtolower(preg_replace('/\s+/', '-', time().'-favicon.webp'));
             $image3Url = 'public/uploads/settings/'.$name3;
             $img3 = Image::make($image3->getRealPath());
-            $img3->encode('webp', 90);
+            try { $img3->encode('webp', 90); } catch (\Exception $e) {}
             $img3->resize(32, 32);
-            $img3->save($uploadpath.$name3);
+            $img3->save($dir1.$name3);
+            @copy($dir1.$name3, $dir2.$name3);
+            @copy($dir1.$name3, $dir3.$name3);
+            @copy($dir1.$name3, $dir4.$name3);
             $input['favicon'] = $image3Url;
         }else{
             $input['favicon'] = $update_data->favicon;
