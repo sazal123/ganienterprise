@@ -355,6 +355,24 @@
               <!-- nav items end -->
 
               <li>
+                <a href="#sidebar-offers" data-bs-toggle="collapse">
+                  <i data-feather="percent"></i>
+                  <span> Offer Page </span>
+                  <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebar-offers">
+                  <ul class="nav-second-level">
+                    <li>
+                      <a href="{{route('offer.create')}}"><i data-feather="plus-circle"></i> Create Offer</a>
+                    </li>
+                    <li>
+                      <a href="{{route('offer.index')}}"><i data-feather="list"></i> Manage Offers</a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              <li>
                 <a href="#sidebar-users" data-bs-toggle="collapse">
                   <i data-feather="user"></i>
                   <span> Users </span>

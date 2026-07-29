@@ -23,6 +23,7 @@ use App\Models\OrderDetails;
 use App\Models\Payment;
 use App\Models\Order;
 use App\Models\Review;
+use App\Models\Offer;
 use App\Models\Contact;
 use App\Models\GeneralSetting;
 use Session;
@@ -805,9 +806,57 @@ class FrontendController extends Controller
         }
     }
 
-    public function offers()
+    public function offers(Request $request)
     {
-        return view('frontEnd.layouts.pages.offers');
+        // Get active offer (or offer specified by slug)
+        $offerQuery = Offer::where('status', 1);
+
+        if ($request->filled('offer')) {
+            $offerQuery->where('slug', $request->offer);
+        }
+
+        $activeOffer = $offerQuery->orderBy('id', 'DESC')->first();
+
+        $products = collect();
+
+        if ($activeOffer) {
+            $productQuery = $activeOffer->products()
+                ->where('products.status', 1)
+                ->with(['image', 'images']);
+
+            // Optional category filter
+            if ($request->filled('category')) {
+                $productQuery->where('products.category_id', $request->category);
+            }
+
+            // Optional sorting
+            if ($request->filled('sort')) {
+                if ($request->sort == 'low_high') {
+                    $productQuery->orderBy('products.new_price', 'ASC');
+                } elseif ($request->sort == 'high_low') {
+                    $productQuery->orderBy('products.new_price', 'DESC');
+                } elseif ($request->sort == 'newest') {
+                    $productQuery->orderBy('products.id', 'DESC');
+                }
+            } else {
+                $productQuery->orderBy('offer_product.sort_order', 'ASC');
+            }
+
+            $products = $productQuery->paginate(24);
+        } else {
+            // Fallback: If no active offer created yet, display discounted products
+            $products = Product::where('status', 1)
+                ->whereNotNull('old_price')
+                ->whereColumn('old_price', '>', 'new_price')
+                ->with(['image', 'images'])
+                ->orderBy('id', 'DESC')
+                ->paginate(24);
+        }
+
+        // All active offers list for navigation tabs
+        $allOffers = Offer::where('status', 1)->select('id', 'title', 'slug', 'discount_tag')->get();
+
+        return view('frontEnd.layouts.pages.offers', compact('activeOffer', 'products', 'allOffers'));
     }
 
     public function schoolBagsLanding(Request $request)

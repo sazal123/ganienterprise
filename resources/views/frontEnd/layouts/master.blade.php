@@ -360,7 +360,8 @@
                             <a href="{{ url('category/'.$cat->slug) }}" class="gani-nav-link">{{ $cat->name }}</a>
                             @endforeach
 
-                            <a href="{{ route('shop') }}" class="gani-nav-link gani-nav-highlight">All Products</a>
+                            <a href="{{ route('offers') }}" class="gani-nav-link gani-nav-highlight"><i class="fa-solid fa-fire-flame-curved me-1 text-warning"></i> Offer</a>
+                            <a href="{{ route('shop') }}" class="gani-nav-link">All Products</a>
                         </nav>
                     </div>
                     <div class="col-auto">

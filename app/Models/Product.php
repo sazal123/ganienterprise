@@ -53,6 +53,12 @@ class Product extends Model
     {
         return $this->belongsToMany('App\Models\Color','productcolors')->withPivot('price','stock')->withTimestamps();
     }
+    public function offers()
+    {
+        return $this->belongsToMany(Offer::class, 'offer_product', 'product_id', 'offer_id')
+                    ->withPivot('custom_price', 'sort_order')
+                    ->withTimestamps();
+    }
 
     public function prosizes()
     {

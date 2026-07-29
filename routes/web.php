@@ -35,6 +35,7 @@ use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\TagManagerController;
 use App\Http\Controllers\Admin\StoryController;
+use App\Http\Controllers\Admin\OfferController;
 
 Auth::routes();
 
@@ -330,6 +331,16 @@ Route::group(['namespace'=>'Admin','middleware' => ['auth','lock','check_refer']
     Route::post('campaign/active', [CampaignController::class,'active'])->name('campaign.active');
     Route::post('campaign/destroy', [CampaignController::class,'destroy'])->name('campaign.destroy');
     Route::get('campaign/image/destroy', [CampaignController::class,'imgdestroy'])->name('campaign.image.destroy');
+
+    // offer management
+    Route::get('offer/manage', [OfferController::class,'index'])->name('offer.index');
+    Route::get('offer/create', [OfferController::class,'create'])->name('offer.create');
+    Route::post('offer/save', [OfferController::class,'store'])->name('offer.store');
+    Route::get('offer/{id}/edit', [OfferController::class,'edit'])->name('offer.edit');
+    Route::post('offer/update', [OfferController::class,'update'])->name('offer.update');
+    Route::post('offer/inactive', [OfferController::class,'inactive'])->name('offer.inactive');
+    Route::post('offer/active', [OfferController::class,'active'])->name('offer.active');
+    Route::post('offer/destroy', [OfferController::class,'destroy'])->name('offer.destroy');
 
     // settings route
     Route::get('settings/manage', [GeneralSettingController::class,'index'])->name('settings.index');
