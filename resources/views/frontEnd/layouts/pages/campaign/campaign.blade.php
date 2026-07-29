@@ -2,240 +2,185 @@
 @section('title', $campaign_data->name ?? 'বিশেষ ক্যাম্পেইন')
 @push('css')
 <style>
-/* ───── Campaign Landing Tokens & Styling ───── */
+/* ───── Campaign Page Base & Relational Theme Tokens ───── */
 :root {
-    --cmp-primary: #059669;
-    --cmp-primary-dark: #047857;
-    --cmp-accent: #f59e0b;
-    --cmp-dark-bg: #0f172a;
-    --cmp-border: #e2e8f0;
-    --cmp-text-main: #1e293b;
-    --cmp-text-muted: #64748b;
+    --cmp-primary: #047857;
+    --cmp-primary-dark: #064e3b;
+    --cmp-accent: #d97706;
+    --cmp-bg-canvas: #f4f1ea;
+    --cmp-card-bg: #e9e4d9;
+    --cmp-text-dark: #111827;
+    --cmp-text-muted: #4b5563;
+    --cmp-border: #d6d0c4;
 }
 
-/* ───── Hero Header Section ───── */
-.cmp-hero {
+/* Page Outer Container */
+.cmp-page-wrapper {
+    background-color: var(--cmp-bg-canvas);
+    padding: 30px 0 70px;
+    min-height: 100vh;
+}
+
+/* ───── Hero Header Section (Reference Design Match) ───── */
+.cmp-hero-card {
+    background: var(--cmp-card-bg);
+    border-radius: 24px;
+    padding: 45px 48px 36px;
     position: relative;
-    padding: 85px 0 75px;
-    color: #ffffff;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
     overflow: hidden;
-    min-height: 440px;
+    margin-bottom: 35px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+@if($campaign_data->banner)
+.cmp-hero-card.has-banner-bg {
+    background: linear-gradient(135deg, rgba(233, 228, 217, 0.92) 0%, rgba(222, 215, 201, 0.94) 100%), url("{{ asset($campaign_data->banner) }}") no-repeat center center / cover;
+}
+@endif
+
+/* Breadcrumb Navigation */
+.cmp-breadcrumb {
     display: flex;
     align-items: center;
-}
-.cmp-hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.75) 50%, rgba(6, 78, 59, 0.85) 100%);
-    z-index: 1;
-}
-.cmp-hero-content {
-    position: relative;
-    z-index: 2;
-}
-.cmp-hero-badge {
-    display: inline-flex;
-    align-items: center;
     gap: 8px;
-    background: rgba(245, 158, 11, 0.25);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--cmp-accent);
-    color: #fde047;
-    padding: 7px 22px;
-    border-radius: 50px;
-    font-size: 14px;
+    font-size: 11.5px;
     font-weight: 700;
-    margin-bottom: 18px;
-    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
-}
-.cmp-hero h1 {
-    font-size: 38px;
-    font-weight: 800;
-    line-height: 1.35;
-    margin-bottom: 16px;
-    color: #ffffff;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.4);
-}
-.cmp-hero p {
-    font-size: 16px;
-    color: #f1f5f9;
-    max-width: 780px;
-    line-height: 1.7;
-    margin: 0 auto 26px;
-    text-shadow: 0 1px 6px rgba(0,0,0,0.4);
-}
-
-/* Countdown Timer */
-.cmp-countdown-box {
-    display: flex;
-    gap: 14px;
-    margin-top: 10px;
-    justify-content: center;
-}
-.cmp-timer-unit {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 10px 20px;
-    border-radius: 12px;
-    text-align: center;
-    min-width: 80px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-}
-.cmp-timer-num {
-    font-size: 24px;
-    font-weight: 800;
-    color: #fde047;
-    display: block;
-}
-.cmp-timer-label {
-    font-size: 12px;
-    color: #e2e8f0;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 14px;
+}
+.cmp-breadcrumb i {
+    font-size: 10px;
+    color: #9ca3af;
 }
 
-/* ───── Category Navigation Tabs ───── */
-.cmp-cat-section {
-    background: #f8fafc;
-    padding: 20px 0 14px;
-    border-bottom: 1px solid var(--cmp-border);
-    position: sticky;
-    top: 60px;
-    z-index: 99;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+/* Main Giant Heading */
+.cmp-hero-title {
+    font-size: 50px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    color: var(--cmp-primary-dark);
+    line-height: 1.1;
+    margin-bottom: 14px;
+    font-family: 'Jost', 'Roboto', sans-serif;
 }
-.cmp-cat-nav {
+
+/* Description Text */
+.cmp-hero-desc {
+    font-size: 15.5px;
+    color: var(--cmp-text-muted);
+    max-width: 840px;
+    line-height: 1.65;
+    margin-bottom: 28px;
+}
+
+/* ───── Pill Controls Bar (Bottom of Hero Card) ───── */
+.cmp-pills-bar {
     display: flex;
     align-items: center;
-    gap: 10px;
-    overflow-x: auto;
-    padding-bottom: 6px;
-    scrollbar-width: thin;
-}
-.cmp-cat-tab {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 9px 18px;
-    background: #ffffff;
-    border: 1px solid var(--cmp-border);
-    border-radius: 50px;
-    color: var(--cmp-text-main);
-    font-size: 13.5px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.25s ease;
-}
-.cmp-cat-tab:hover {
-    border-color: var(--cmp-primary);
-    color: var(--cmp-primary);
-}
-.cmp-cat-tab.active {
-    background: var(--cmp-primary);
-    color: #ffffff;
-    border-color: var(--cmp-primary);
-    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
-}
-
-/* ───── Main Catalog Section ───── */
-.cmp-catalog-section {
-    padding: 30px 0 60px;
-    background: #f8fafc;
-    min-height: 500px;
-}
-
-/* Toolbar Controls */
-.cmp-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.cmp-pill-select, .cmp-pill-input {
     background: #ffffff;
-    padding: 16px 20px;
-    border-radius: 12px;
-    border: 1px solid var(--cmp-border);
-    margin-bottom: 24px;
-}
-.cmp-search-box {
-    position: relative;
-    min-width: 280px;
-    flex-grow: 1;
-    max-width: 400px;
-}
-.cmp-search-box input {
-    width: 100%;
-    padding: 9px 16px 9px 40px;
-    border: 1px solid var(--cmp-border);
-    border-radius: 50px;
+    border: 1px solid #d1d5db;
+    border-radius: 30px;
+    padding: 9px 20px;
     font-size: 13.5px;
-    background: #f8fafc;
-    transition: border-color 0.2s;
-}
-.cmp-search-box input:focus {
+    font-weight: 600;
+    color: var(--cmp-text-dark);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
     outline: none;
-    border-color: var(--cmp-primary);
-    background: #ffffff;
 }
-.cmp-search-box i {
+
+.cmp-pill-select:focus, .cmp-pill-input:focus {
+    border-color: var(--cmp-primary);
+    box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.15);
+}
+
+.cmp-pill-search {
+    position: relative;
+    flex-grow: 1;
+    max-width: 280px;
+}
+.cmp-pill-search input {
+    width: 100%;
+    padding-left: 38px;
+}
+.cmp-pill-search i {
     position: absolute;
-    left: 15px;
+    left: 14px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--cmp-text-muted);
+    color: #9ca3af;
+    font-size: 13px;
 }
 
-.cmp-sort-box {
-    display: flex;
+/* Countdown Timer Pill */
+.cmp-timer-pill {
+    background: var(--cmp-primary-dark);
+    color: #ffffff;
+    border-radius: 30px;
+    padding: 6px 18px;
+    display: inline-flex;
     align-items: center;
     gap: 10px;
+    box-shadow: 0 4px 14px rgba(6, 78, 59, 0.25);
+    margin-left: auto;
 }
-.cmp-sort-box label {
-    font-size: 13px;
-    color: var(--cmp-text-muted);
+.cmp-timer-pill-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #fde047;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     white-space: nowrap;
 }
-.cmp-sort-select {
-    padding: 8px 30px 8px 14px;
-    border: 1px solid var(--cmp-border);
-    border-radius: 8px;
-    font-size: 13px;
-    color: var(--cmp-text-main);
-    background: #ffffff;
-    cursor: pointer;
+.cmp-timer-digits {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.cmp-timer-num-box {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 800;
+    font-size: 14px;
+    color: #ffffff;
 }
 
-/* ───── Product Card Styling ───── */
+/* ───── Product Card Grid (Reference Design Match) ───── */
 .cmp-card {
     background: #ffffff;
-    border-radius: 14px;
-    border: 1px solid var(--cmp-border);
-    overflow: hidden;
+    border-radius: 20px;
+    padding: 14px;
     height: 100%;
     display: flex;
     flex-direction: column;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.03);
+    border: 1px solid rgba(0,0,0,0.02);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .cmp-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.08);
-    border-color: #cbd5e1;
+    transform: translateY(-6px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
 }
-.cmp-card-img-wrap {
+
+.cmp-card-img-box {
     position: relative;
     width: 100%;
-    padding-top: 100%;
-    background: #f1f5f9;
+    padding-top: 100%; /* 1:1 Aspect Ratio */
+    background: #fcfbf9;
+    border-radius: 16px;
     overflow: hidden;
+    margin-bottom: 12px;
 }
 .cmp-card-img {
     position: absolute;
@@ -243,252 +188,206 @@
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    padding: 12px;
     transition: transform 0.4s ease;
 }
 .cmp-card:hover .cmp-card-img {
     transform: scale(1.06);
 }
 
-.cmp-badge-discount {
+.cmp-card-badge {
     position: absolute;
     top: 10px;
     left: 10px;
-    background: #ef4444;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    z-index: 2;
-}
-.cmp-badge-new {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: var(--cmp-primary);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    z-index: 2;
-}
-
-.cmp-card-actions {
-    position: absolute;
-    bottom: -50px;
-    left: 0;
-    right: 0;
-    padding: 10px;
-    background: rgba(255,255,255,0.9);
-    backdrop-filter: blur(4px);
-    transition: bottom 0.3s ease;
-    display: flex;
-    justify-content: center;
-}
-.cmp-card:hover .cmp-card-actions {
-    bottom: 0;
-}
-.cmp-quick-order-btn {
-    width: 100%;
     background: var(--cmp-primary);
     color: #ffffff;
-    border: none;
-    padding: 8px 14px;
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 3px 8px;
     border-radius: 6px;
-    font-size: 12.5px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.cmp-quick-order-btn:hover {
-    background: var(--cmp-primary-dark);
+    z-index: 2;
 }
 
-.cmp-card-body {
-    padding: 14px;
+/* Color Variant Swatches (Reference Detail) */
+.cmp-color-swatches {
     display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 8px;
+}
+.cmp-color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.cmp-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cmp-text-dark);
+    line-height: 1.35;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 .cmp-card-title-link {
     text-decoration: none;
     color: inherit;
 }
-.cmp-card-title {
-    font-size: 13.5px;
-    font-weight: 600;
-    color: var(--cmp-text-main);
-    line-height: 1.4;
-    margin-bottom: 6px;
-    min-height: 38px;
-}
-.cmp-card-rating {
-    font-size: 11px;
-    margin-bottom: 8px;
-}
-.cmp-review-count {
-    color: var(--cmp-text-muted);
-    font-size: 11px;
-    margin-left: 4px;
-}
-.cmp-card-price-wrap {
+
+.cmp-card-prices {
     display: flex;
     align-items: baseline;
-    gap: 8px;
+    gap: 6px;
     margin-bottom: 12px;
-}
-.cmp-card-price {
-    font-size: 16px;
-    font-weight: 800;
-    color: var(--cmp-primary);
+    margin-top: auto;
 }
 .cmp-card-old-price {
     font-size: 12.5px;
-    color: var(--cmp-text-muted);
+    color: #9ca3af;
+    text-decoration: line-through;
 }
-.cmp-btn-details {
-    margin-top: auto;
-    display: block;
-    text-align: center;
-    padding: 7px 12px;
-    background: #f1f5f9;
-    color: var(--cmp-text-main);
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s;
+.cmp-card-new-price {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--cmp-text-dark);
 }
-.cmp-btn-details:hover {
+
+.cmp-btn-order {
+    width: 100%;
     background: var(--cmp-primary);
     color: #ffffff;
+    border: none;
+    padding: 9px 14px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+.cmp-btn-order:hover {
+    background: var(--cmp-primary-dark);
+    box-shadow: 0 4px 12px rgba(4, 120, 87, 0.3);
 }
 
-/* ───── Review Gallery Section ───── */
-.cmp-review-section {
-    background: #ffffff;
-    padding: 40px 0;
-    border-top: 1px solid var(--cmp-border);
-}
-.cmp-review-img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-    border-radius: 12px;
-    border: 1px solid var(--cmp-border);
-    transition: transform 0.3s;
-}
-.cmp-review-img:hover {
-    transform: scale(1.03);
-}
-
-/* ───── Quick Order Modal ───── */
+/* Quick Order Modal */
 .modal-content.cmp-modal {
-    border-radius: 16px;
+    border-radius: 20px;
     border: none;
     overflow: hidden;
 }
 .cmp-modal-header {
-    background: var(--cmp-primary);
+    background: var(--cmp-primary-dark);
     color: #ffffff;
-    padding: 16px 20px;
+    padding: 16px 22px;
 }
 .cmp-modal-header h5 {
     color: #ffffff;
     font-weight: 700;
     margin: 0;
 }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .cmp-hero-card {
+        padding: 28px 20px 24px;
+        border-radius: 18px;
+    }
+    .cmp-hero-title {
+        font-size: 32px;
+    }
+    .cmp-pill-search {
+        max-width: 100%;
+        width: 100%;
+    }
+    .cmp-timer-pill {
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+    }
+}
 </style>
 @endpush
 
 @section('content')
-@php
-    $heroBanner = $campaign_data->banner 
-        ? asset($campaign_data->banner) 
-        : asset('frontEnd/img/default-product.jpg');
-@endphp
+<div class="cmp-page-wrapper">
+    <div class="container">
+        
+        <!-- Hero Header Card (Reference Design Match) -->
+        <div class="cmp-hero-card {{ $campaign_data->banner ? 'has-banner-bg' : '' }}">
+            <!-- Breadcrumb Navigation -->
+            <div class="cmp-breadcrumb">
+                <span>হোম</span> <i class="fa fa-chevron-right"></i>
+                <span>ক্যাম্পেইন</span> <i class="fa fa-chevron-right"></i>
+                <span class="text-dark fw-bold">{{ $campaign_data->name }}</span>
+            </div>
 
-<!-- Dynamic Full-Width Hero Banner Section -->
-<section class="cmp-hero" style="background-image: url('{{ $heroBanner }}');">
-    <div class="cmp-hero-overlay"></div>
-    <div class="container cmp-hero-content">
-        <div class="row justify-content-center text-center">
-            <div class="col-lg-9 col-xl-8">
-                <span class="cmp-hero-badge mx-auto">
-                    <i class="fa fa-fire"></i> {{ $campaign_data->top_title_1 ?? 'বিশেষ ডিসকাউন্ট অফার' }}
-                </span>
+            <!-- Main Heading Title -->
+            <h1 class="cmp-hero-title">
+                {{ $campaign_data->heading_1 ?? $campaign_data->name }}
+            </h1>
 
-                <h1>{{ $campaign_data->heading_1 ?? $campaign_data->name }}</h1>
+            <!-- Description -->
+            <p class="cmp-hero-desc">
+                {!! nl2br(e($campaign_data->short_description ?? $campaign_data->description ?? 'সেরা কোয়ালিটির আসল পণ্য এখন পান আকর্ষনীয় অফার মূল্যে। ক্যাশ অন ডেলিভারিতে সরাসরি অর্ডার করুন।')) !!}
+            </p>
 
-                <p>
-                    {!! nl2br(e($campaign_data->short_description ?? $campaign_data->description ?? 'সেরা কোয়ালিটির আসল পণ্য এখন পান আকর্ষনীয় অফার মূল্যে। ক্যাশ অন ডেলিভারিতে সরাসরি অর্ডার করুন।')) !!}
-                </p>
+            <!-- Bottom Control Pills Bar -->
+            <div class="cmp-pills-bar">
+                <!-- Category Select Pill -->
+                @if(isset($categories) && $categories->count() > 0)
+                <select class="cmp-pill-select" id="cmp-cat-select">
+                    <option value="all">সকল ক্যাটাগরি (All Categories)</option>
+                    @foreach($categories as $cat)
+                        <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                    @endforeach
+                </select>
+                @endif
 
+                <!-- Sort Select Pill -->
+                <select class="cmp-pill-select" id="cmp-sort-select">
+                    <option value="latest">নতুন পণ্যসমূহ</option>
+                    <option value="price_low">মূল্য: কম থেকে বেশি</option>
+                    <option value="price_high">মূল্য: বেশি থেকে কম</option>
+                    <option value="oldest">পুরাতন পণ্যসমূহ</option>
+                </select>
+
+                <!-- Search Input Pill -->
+                <div class="cmp-pill-search">
+                    <i class="fa fa-search"></i>
+                    <input type="text" id="cmp-search-input" class="cmp-pill-input" placeholder="পণ্য দিয়ে খুঁজুন..." autocomplete="off">
+                </div>
+
+                <!-- Countdown Timer Pill -->
                 @if($campaign_data->deadline)
-                <div class="d-flex flex-column align-items-center gap-2 mt-3">
-                    <span class="fw-bold text-warning" style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">
-                        <i class="fa fa-clock-o me-1"></i> অফারের বাকী সময়:
-                    </span>
-                    <div class="cmp-countdown-box" id="cmp-timer" data-deadline="{{ $campaign_data->deadline }}">
-                        <div class="cmp-timer-unit"><span class="cmp-timer-num" id="t-days">00</span><span class="cmp-timer-label">দিন</span></div>
-                        <div class="cmp-timer-unit"><span class="cmp-timer-num" id="t-hours">00</span><span class="cmp-timer-label">ঘন্টা</span></div>
-                        <div class="cmp-timer-unit"><span class="cmp-timer-num" id="t-mins">00</span><span class="cmp-timer-label">মিনিট</span></div>
-                        <div class="cmp-timer-unit"><span class="cmp-timer-num" id="t-secs">00</span><span class="cmp-timer-label">সেকেন্ড</span></div>
+                <div class="cmp-timer-pill">
+                    <span class="cmp-timer-pill-title"><i class="fa fa-clock-o me-1"></i> অফারের সময়:</span>
+                    <div class="cmp-timer-digits" id="cmp-timer" data-deadline="{{ $campaign_data->deadline }}">
+                        <span class="cmp-timer-num-box" id="t-days">00</span>:
+                        <span class="cmp-timer-num-box" id="t-hours">00</span>:
+                        <span class="cmp-timer-num-box" id="t-mins">00</span>:
+                        <span class="cmp-timer-num-box" id="t-secs">00</span>
                     </div>
                 </div>
                 @endif
             </div>
         </div>
-    </div>
-</section>
 
-<!-- Dynamic Category Tabs -->
-@if(isset($categories) && $categories->count() > 0)
-<section class="cmp-cat-section">
-    <div class="container">
-        <div class="cmp-cat-nav">
-            <button type="button" class="cmp-cat-tab active" data-category="all">
-                <i class="fa fa-th-large"></i> সকল পণ্য (All Products)
-            </button>
-            @foreach($categories as $cat)
-                <button type="button" class="cmp-cat-tab" data-category="{{ $cat->id }}">
-                    <i class="fa fa-tag"></i> {{ $cat->name }}
-                </button>
-            @endforeach
-        </div>
-    </div>
-</section>
-@endif
-
-<!-- Main Dynamic Product Catalog -->
-<section class="cmp-catalog-section">
-    <div class="container">
-        <!-- Live Toolbar -->
-        <div class="cmp-toolbar">
-            <div class="cmp-search-box">
-                <i class="fa fa-search"></i>
-                <input type="text" id="cmp-search-input" placeholder="পণ্য বা মডেল দিয়ে খুঁজুন..." autocomplete="off">
-            </div>
-
-            <div class="cmp-sort-box">
-                <label for="cmp-sort-select"><i class="fa fa-sort"></i> সাজান:</label>
-                <select id="cmp-sort-select" class="cmp-sort-select">
-                    <option value="latest">নতুন কালেকশন</option>
-                    <option value="price_low">দাম: কম থেকে বেশি</option>
-                    <option value="price_high">দাম: বেশি থেকে কম</option>
-                    <option value="oldest">পুরাতন কালেকশন</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- AJAX Dynamic Product Grid -->
+        <!-- Dynamic Product Catalog Grid Container -->
         <div id="campaign-grid-container">
             @include('frontEnd.layouts.pages.campaign._campaign_product_grid', ['products' => $products])
         </div>
+
     </div>
-</section>
+</div>
 
 <!-- Quick Order Modal -->
 <div class="modal fade" id="quickOrderModal" tabindex="-1" aria-hidden="true">
@@ -553,11 +452,9 @@ $(document.body).ready(function() {
     let currentSearch = '';
     let currentSort = 'latest';
 
-    // Category Tab Click
-    $('.cmp-cat-tab').on('click', function() {
-        $('.cmp-cat-tab').removeClass('active');
-        $(this).addClass('active');
-        currentCategory = $(this).data('category');
+    // Category Pill Dropdown Select Trigger
+    $('#cmp-cat-select').on('change', function() {
+        currentCategory = $(this).val();
         fetchCampaignProducts(1);
     });
 
@@ -618,8 +515,7 @@ $(document.body).ready(function() {
         currentSort = 'latest';
         $('#cmp-search-input').val('');
         $('#cmp-sort-select').val('latest');
-        $('.cmp-cat-tab').removeClass('active');
-        $('.cmp-cat-tab[data-category="all"]').addClass('active');
+        $('#cmp-cat-select').val('all');
         fetchCampaignProducts(1);
     });
 
