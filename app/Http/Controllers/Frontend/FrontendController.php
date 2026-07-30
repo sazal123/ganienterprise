@@ -270,29 +270,69 @@ class FrontendController extends Controller
     public function collectionPrime(Request $request)
     {
         $products = Product::where(['status' => 1, 'is_prime' => 1])
-            ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock')
             ->with('image', 'procolors');
+
         if ($request->sort == 1) { $products = $products->orderBy('created_at', 'desc'); }
         elseif ($request->sort == 2) { $products = $products->orderBy('created_at', 'asc'); }
         elseif ($request->sort == 3) { $products = $products->orderBy('new_price', 'desc'); }
         elseif ($request->sort == 4) { $products = $products->orderBy('new_price', 'asc'); }
         else { $products = $products->latest(); }
+
+        $globalMin = Product::where(['status' => 1, 'is_prime' => 1])->min('new_price') ?? 0;
+        $globalMax = Product::where(['status' => 1, 'is_prime' => 1])->max('new_price') ?? 0;
+
+        if ($request->min_price && $request->max_price) {
+            $products = $products->where('new_price', '>=', $request->min_price)
+                                 ->where('new_price', '<=', $request->max_price);
+        }
+
         $products = $products->paginate(36);
-        return view('frontEnd.layouts.pages.shop', compact('products'));
+
+        $categories = Category::where('status', 1)
+            ->with(['subcategories' => function ($q) {
+                $q->where('status', 1)->select('id', 'slug', 'subcategoryName', 'category_id');
+            }])
+            ->select('id', 'name', 'slug')
+            ->get();
+
+        return view('frontEnd.layouts.pages.shop', compact(
+            'products', 'categories', 'globalMin', 'globalMax'
+        ));
     }
 
     public function collectionNew(Request $request)
     {
         $products = Product::where(['status' => 1, 'is_new' => 1])
-            ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock')
             ->with('image', 'procolors');
+
         if ($request->sort == 1) { $products = $products->orderBy('created_at', 'desc'); }
         elseif ($request->sort == 2) { $products = $products->orderBy('created_at', 'asc'); }
         elseif ($request->sort == 3) { $products = $products->orderBy('new_price', 'desc'); }
         elseif ($request->sort == 4) { $products = $products->orderBy('new_price', 'asc'); }
         else { $products = $products->latest(); }
+
+        $globalMin = Product::where(['status' => 1, 'is_new' => 1])->min('new_price') ?? 0;
+        $globalMax = Product::where(['status' => 1, 'is_new' => 1])->max('new_price') ?? 0;
+
+        if ($request->min_price && $request->max_price) {
+            $products = $products->where('new_price', '>=', $request->min_price)
+                                 ->where('new_price', '<=', $request->max_price);
+        }
+
         $products = $products->paginate(36);
-        return view('frontEnd.layouts.pages.shop', compact('products'));
+
+        $categories = Category::where('status', 1)
+            ->with(['subcategories' => function ($q) {
+                $q->where('status', 1)->select('id', 'slug', 'subcategoryName', 'category_id');
+            }])
+            ->select('id', 'name', 'slug')
+            ->get();
+
+        return view('frontEnd.layouts.pages.shop', compact(
+            'products', 'categories', 'globalMin', 'globalMax'
+        ));
     }
 
     public function flashsales(Request $request)
