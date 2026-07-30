@@ -123,41 +123,44 @@
                     
                         <tbody>
                             @php
-                                $total_purchase = 0;
-                                $total_qty = 0;
-                                $total_sale = 0;
+                                $detailRevenues = $detailRevenues ?? [];
+                                $page_total_purchase = 0;
+                                $page_total_qty = 0;
+                                $page_total_sale = 0;
                             @endphp
                             @foreach($orders as $key=>$value)
-                            
-                            <tr>
-                                <td>{{$value->order?$value->order->invoice_id:''}}</td>
-                                <td>{{$value->shipping?$value->shipping->name:''}}</td>
-                                <td>{{$value->shipping?$value->shipping->phone:''}}</td>
-                                <td>{{$value->product_name}}</td>
-                                <td>{{$value->purchase_price}}</td>
-                                <td>{{$value->sale_price}}</td>
-                                <td>{{$value->qty}}</td>
-                                <td>{{$value->qty*$value->sale_price}}</td>
-                            </tr>
                             @php
-                                $total_purchase += $value->qty*$value->purchase_price;
-                                $total_qty += $value->qty;
-                                $total_sale += $value->qty * $value->sale_price;
+                                $lineRevenue = $detailRevenues[$value->id] ?? (($value->sale_price - $value->product_discount) * $value->qty);
+                                $linePurchase = $value->purchase_price * $value->qty;
+                                $page_total_purchase += $linePurchase;
+                                $page_total_qty += $value->qty;
+                                $page_total_sale += $lineRevenue;
                             @endphp
+                            <tr>
+                                <td>{{$value->order ? $value->order->invoice_id : ''}}</td>
+                                <td>{{$value->shipping ? $value->shipping->name : ''}}</td>
+                                <td>{{$value->shipping ? $value->shipping->phone : ''}}</td>
+                                <td>{{$value->product_name}}</td>
+                                <td>৳{{number_format($value->purchase_price, 2)}}</td>
+                                <td>৳{{number_format($value->sale_price, 2)}}</td>
+                                <td>{{$value->qty}}</td>
+                                <td>৳{{number_format($lineRevenue, 2)}}</td>
+                            </tr>
                             @endforeach
                          </tbody>
                          <tfoot>
                              <tr>
-                                 <td colspan="5" class="text-end"><strong>Total</strong></td>
-                                 <td><strong>{{$total_purchase}}</strong></td>
-                                 <td><strong>{{$total_qty}}</strong></td>
-                                 <td><strong>{{$total_sale}}</strong></td>
+                                 <td colspan="4" class="text-end"><strong>Total</strong></td>
+                                 <td><strong>৳{{number_format($page_total_purchase, 2)}}</strong></td>
+                                 <td></td>
+                                 <td><strong>{{$page_total_qty}}</strong></td>
+                                 <td><strong>৳{{number_format($page_total_sale, 2)}}</strong></td>
                              </tr>
                              <tr>
                                  <td colspan="8" class="text-center">
-                                     <h5><strong>Total Purchase = {{$total_purchase}}</strong></h5>
-                                     <h5><strong>Total Sales = {{$total_sales}}</strong></h5>
-                                     <h5><strong>Total Profit = {{$total_sales-$total_purchase}}</strong></h5>
+                                     <h5><strong>Total Purchase = ৳{{number_format($total_purchase, 2)}}</strong></h5>
+                                     <h5><strong>Total Sales = ৳{{number_format($total_sales, 2)}}</strong></h5>
+                                     <h5><strong>Total Profit = ৳{{number_format($total_sales - $total_purchase, 2)}}</strong></h5>
                                  </td>
                              </tr>
                          </tfoot>

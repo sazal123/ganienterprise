@@ -697,12 +697,48 @@ class OrderController extends Controller
             });
         }
 
-        $total_purchase = $orders->sum(\DB::raw('purchase_price * qty'));
-        $total_item = $orders->sum('qty');
-        $total_sales = $orders->sum(\DB::raw('(sale_price - product_discount) * qty'));
+        // Fetch matching details to compute proportional line revenue including shipping fees and order discounts
+        $rawDetails = (clone $orders)->get();
+        $detailRevenues = [];
+        $total_purchase = 0;
+        $total_item = 0;
+        $total_sales = 0;
+
+        $groupedByOrder = $rawDetails->groupBy('order_id');
+        foreach ($groupedByOrder as $orderId => $details) {
+            $ord = $details->first()->order;
+            $itemSubtotal = 0;
+            foreach ($details as $d) {
+                $uPrice = (float)($d->sale_price ?? 0);
+                $uDisc  = (float)($d->product_discount ?? 0);
+                $uQty   = (int)($d->qty ?? 0);
+                $itemSubtotal += max(0, ($uPrice - $uDisc) * $uQty);
+            }
+
+            $orderTotalAmount = $ord ? (float)($ord->amount ?? 0) : $itemSubtotal;
+
+            foreach ($details as $d) {
+                $uPrice = (float)($d->sale_price ?? 0);
+                $uDisc  = (float)($d->product_discount ?? 0);
+                $uQty   = (int)($d->qty ?? 0);
+                $lineNet = max(0, ($uPrice - $uDisc) * $uQty);
+
+                if ($itemSubtotal > 0) {
+                    $lineFinal = ($lineNet / $itemSubtotal) * $orderTotalAmount;
+                } else {
+                    $lineFinal = $lineNet;
+                }
+
+                $detailRevenues[$d->id] = $lineFinal;
+                $total_purchase += (float)($d->purchase_price ?? 0) * $uQty;
+                $total_item += $uQty;
+                $total_sales += $lineFinal;
+            }
+        }
+
         $orders = $orders->orderBy('id', 'DESC')->paginate(20);
 
-        return view('backEnd.reports.order', compact('orders', 'users', 'order_statuses', 'total_purchase', 'total_item', 'total_sales'));
+        return view('backEnd.reports.order', compact('orders', 'users', 'order_statuses', 'detailRevenues', 'total_purchase', 'total_item', 'total_sales'));
     }
 
     public function order_create(){
