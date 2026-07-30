@@ -120,6 +120,7 @@
 <div class="summary">
 <div><span class="sub-total">Sub Total</span><span>{{ number_format($subTotal, 0) }}</span></div>
 <div><span class="sub-total">Discount</span><span>{{ number_format($order->discount, 0) }}</span></div>
+<div><span class="sub-total">Shipping Charge</span><span>{{ number_format($order->shipping_charge, 0) }}</span></div>
 <div><span class="sub-total">Total</span><span>{{ number_format($order->amount, 0) }}</span></div>
 </div>
 
