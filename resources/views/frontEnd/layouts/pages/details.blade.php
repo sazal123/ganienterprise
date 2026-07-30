@@ -170,7 +170,7 @@
 
 /* ── Color Swatches ── */
 .pdp-gallery-colors {
-    display: flex; align-items: center; gap: 10px;
+    display: none;
     margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0;
 }
 .pdp-gallery-colors-label { font-size: 12px; font-weight: 600; color: #666; white-space: nowrap; }
@@ -507,24 +507,49 @@
                     <div class="pdp-gallery-badge">-{{ $discount }}%</div>
                     @endif
 
+                    @php
+                        $sliderImages = collect();
+
+                        if ($productcolors->count() > 0) {
+                            foreach ($productcolors as $key => $procolor) {
+                                // Find image matching this color_id or fallback to general image at index or main image
+                                $colorImg = $details->images->where('color_id', $procolor->color_id)->first();
+                                if (!$colorImg) {
+                                    $colorImg = $details->images->get($key) ?? $details->image;
+                                }
+
+                                if ($colorImg) {
+                                    $sliderImages->push((object)[
+                                        'image' => $colorImg->image,
+                                        'color_id' => $procolor->color_id,
+                                        'color_name' => $procolor->color ? $procolor->color->colorName : '',
+                                    ]);
+                                }
+                            }
+                        } else {
+                            $images = $details->images->isEmpty() ? collect([$details->image]) : $details->images;
+                            foreach ($images as $img) {
+                                if ($img) {
+                                    $sliderImages->push((object)[
+                                        'image' => $img->image,
+                                        'color_id' => $img->color_id ?? '',
+                                        'color_name' => '',
+                                    ]);
+                                }
+                            }
+                        }
+                    @endphp
                     <div class="swiper pdp-main-swiper" id="pdpMainSwiper">
                         <div class="swiper-wrapper" id="pdpSwiperWrapper">
-                            @forelse($details->mainImages as $img)
-                            <div class="swiper-slide dimage_item" data-color-id="{{ $img->color_id ?? '' }}">
-                                <img src="{{ asset($img->image) }}" alt="{{ $details->name }}" />
+                            @forelse($sliderImages as $key => $sImg)
+                            <div class="swiper-slide dimage_item" data-color-id="{{ $sImg->color_id }}" data-index="{{ $key }}">
+                                <img src="{{ asset($sImg->image) }}" alt="{{ $details->name }}" />
                             </div>
                             @empty
-                            <div class="swiper-slide dimage_item">
+                            <div class="swiper-slide dimage_item" data-color-id="" data-index="0">
                                 <img src="{{ asset('frontEnd/img/default-product.jpg') }}" alt="{{ $details->name }}" />
                             </div>
                             @endforelse
-                            @foreach($details->images as $img)
-                                @if($img->color_id)
-                                <div class="swiper-slide dimage_item" data-color-id="{{ $img->color_id }}" style="display:none;">
-                                    <img src="{{ asset($img->image) }}" alt="{{ $details->name }}" />
-                                </div>
-                                @endif
-                            @endforeach
                         </div>
                         {{-- Zoom lens & result --}}
                         <div class="pdp-zoom-lens" id="pdpZoomLens"></div>
@@ -540,30 +565,18 @@
                 {{-- Thumbnails --}}
                 <div class="pdp-thumb-strip">
                     <div class="pdp-thumb-scroll" id="pdpThumbScroll">
-                        @forelse($details->mainImages as $key => $img)
+                        @forelse($sliderImages as $key => $sImg)
                         <div class="pdp-thumb-item {{ $key === 0 ? 'active' : '' }}"
                              data-index="{{ $key }}"
-                             data-src="{{ asset($img->image) }}"
-                             data-color-id="{{ $img->color_id ?? '' }}">
-                            <img src="{{ asset($img->image) }}" alt="" />
+                             data-src="{{ asset($sImg->image) }}"
+                             data-color-id="{{ $sImg->color_id }}">
+                            <img src="{{ asset($sImg->image) }}" alt="" />
                         </div>
                         @empty
                         <div class="pdp-thumb-item active" data-index="0" data-src="{{ asset('frontEnd/img/default-product.jpg') }}" data-color-id="">
                             <img src="{{ asset('frontEnd/img/default-product.jpg') }}" alt="" />
                         </div>
                         @endforelse
-                        @php $mainCount = $details->mainImages->count(); @endphp
-                        @foreach($details->images as $key => $img)
-                            @if($img->color_id)
-                            <div class="pdp-thumb-item"
-                                 data-index="{{ $mainCount + $loop->index }}"
-                                 data-src="{{ asset($img->image) }}"
-                                 data-color-id="{{ $img->color_id }}"
-                                 style="display:none;">
-                                <img src="{{ asset($img->image) }}" alt="" />
-                            </div>
-                            @endif
-                        @endforeach
                     </div>
                 </div>
 
@@ -970,6 +983,20 @@ $(document).ready(function() {
                 $('.pdp-thumb-item').removeClass('active');
                 if (colorId) {
                     $('.pdp-thumb-item:visible[data-color-id="' + colorId + '"]').first().addClass('active');
+
+                    // Auto-select corresponding color swatch on product details page
+                    $('.pdp-gallery-swatch').removeClass('active');
+                    $('.pdp-gallery-swatch[data-color-id="' + colorId + '"]').addClass('active');
+
+                    var $colorSwatch = $('.pdp-color-swatch[data-color-id="' + colorId + '"]');
+                    if ($colorSwatch.length) {
+                        $('.pdp-color-swatch').removeClass('active');
+                        $colorSwatch.addClass('active');
+                        $colorSwatch.find('input[type="radio"]').prop('checked', true);
+                        var colorName = $colorSwatch.attr('title') || '';
+                        if (colorName) $('#selectedColorName').text(colorName);
+                        if (typeof updateVariantPrice === 'function') updateVariantPrice();
+                    }
                 } else {
                     $('.pdp-thumb-item:visible').first().addClass('active');
                 }
@@ -1075,48 +1102,42 @@ $(document).ready(function() {
         mainSwiper.slideTo(idx);
     });
 
-    // ── Gallery color swatch click ──
-    $('.pdp-gallery-swatch').on('click', function() {
-        $('.pdp-gallery-swatch').removeClass('active');
-        $(this).addClass('active');
-        var colorId = $(this).data('color-id');
+    function selectColorById(colorId) {
+        if (!colorId) return;
 
-        // Sync product form color swatches
-        $('.pdp-color-swatch').removeClass('active');
-        $('.pdp-color-swatch[data-color-id="' + colorId + '"]').addClass('active')
-            .find('input[type="radio"]').prop('checked', true).trigger('change');
-
-        // Open modal with matching color image
+        // Slide main swiper to matching color image slide
         var $matchingSlide = $('.dimage_item[data-color-id="' + colorId + '"]').first();
         if ($matchingSlide.length) {
-            var imgSrc = $matchingSlide.find('img').attr('src');
-            if (imgSrc) {
-                $('#colorPreviewImg').attr('src', imgSrc);
-                $('#colorPreviewModal').modal('show');
+            var slideIdx = $matchingSlide.index();
+            if (typeof mainSwiper !== 'undefined' && mainSwiper.slideTo) {
+                mainSwiper.slideTo(slideIdx);
             }
         }
-    });
 
-    // ── Product form color swatch click (sync to gallery) ──
-    $('.pdp-color-swatch').on('click', function() {
-        $('.pdp-color-swatch').removeClass('active');
-        $(this).addClass('active');
-        $(this).find('input[type="radio"]').prop('checked', true).trigger('change');
-        var name = $(this).attr('title') || 'Selected';
-        $('#selectedColorName').text(name);
-        var colorId = $(this).data('color-id');
+        // Sync active states
         $('.pdp-gallery-swatch').removeClass('active');
         $('.pdp-gallery-swatch[data-color-id="' + colorId + '"]').addClass('active');
 
-        // Find matching color-specific image and open modal
-        var $matchingSlide = $('.dimage_item[data-color-id="' + colorId + '"]').first();
-        if ($matchingSlide.length) {
-            var imgSrc = $matchingSlide.find('img').attr('src');
-            if (imgSrc) {
-                $('#colorPreviewImg').attr('src', imgSrc);
-                $('#colorPreviewModal').modal('show');
-            }
+        var $colorSwatch = $('.pdp-color-swatch[data-color-id="' + colorId + '"]');
+        if ($colorSwatch.length) {
+            $('.pdp-color-swatch').removeClass('active');
+            $colorSwatch.addClass('active');
+            $colorSwatch.find('input[type="radio"]').prop('checked', true);
+            var name = $colorSwatch.attr('title') || '';
+            if (name) $('#selectedColorName').text(name);
+            if (typeof updateVariantPrice === 'function') updateVariantPrice();
         }
+    }
+
+    $('.pdp-gallery-swatch').on('click', function(e) {
+        e.preventDefault();
+        var colorId = $(this).data('color-id');
+        selectColorById(colorId);
+    });
+
+    $('.pdp-color-swatch').on('click', function(e) {
+        var colorId = $(this).data('color-id');
+        selectColorById(colorId);
     });
 
     // ── Color-variant radio change ──
