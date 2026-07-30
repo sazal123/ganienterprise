@@ -536,13 +536,26 @@ class OrderController extends Controller
         $revenueData = [];
 
         foreach ($completedOrders as $ord) {
-            $ordSubtotal = $ord->orderdetails->sum(function($d) {
-                return ((float)$d->sale_price * (int)$d->qty) - (float)($d->product_discount ?? 0);
+            // Calculate actual line totals (sale_price - per-unit product_discount) * qty
+            $itemSubtotal = 0;
+            foreach ($ord->orderdetails as $d) {
+                $unitPrice = (float)($d->sale_price ?? 0);
+                $unitDiscount = (float)($d->product_discount ?? 0);
+                $qty = (int)($d->qty ?? 0);
+                $itemSubtotal += ($unitPrice - $unitDiscount) * $qty;
+            }
+
+            // Total product-level discount for all items in order
+            $totalProductDiscount = $ord->orderdetails->sum(function($d) {
+                return (float)($d->product_discount ?? 0) * (int)($d->qty ?? 0);
             });
-            
-            $ordDiscount = (float) ($ord->discount ?? 0);
-            $discountRatio = ($ordSubtotal > 0 && $ordDiscount > 0) ? ($ordDiscount / $ordSubtotal) : 0;
-            if ($discountRatio > 1) $discountRatio = 1;
+
+            // Extra order-level discount (pos_discount / coupon beyond item discounts)
+            $orderTotalDiscount = (float)($ord->discount ?? 0);
+            $extraDiscount = max(0, $orderTotalDiscount - $totalProductDiscount);
+
+            $extraDiscountRatio = ($itemSubtotal > 0 && $extraDiscount > 0) ? ($extraDiscount / $itemSubtotal) : 0;
+            if ($extraDiscountRatio > 1) $extraDiscountRatio = 1;
 
             foreach ($ord->orderdetails as $d) {
                 $pid = $d->product_id;
@@ -550,11 +563,14 @@ class OrderController extends Controller
                     $salesData[$pid] = 0;
                     $revenueData[$pid] = 0;
                 }
-                $qty = (int) $d->qty;
+                $qty = (int)($d->qty ?? 0);
                 $salesData[$pid] += $qty;
 
-                $lineNet = ((float)$d->sale_price * $qty) - (float)($d->product_discount ?? 0);
-                $lineFinal = max(0, $lineNet * (1 - $discountRatio));
+                $unitPrice = (float)($d->sale_price ?? 0);
+                $unitDiscount = (float)($d->product_discount ?? 0);
+                $lineNet = ($unitPrice - $unitDiscount) * $qty;
+
+                $lineFinal = max(0, $lineNet * (1 - $extraDiscountRatio));
                 $revenueData[$pid] += $lineFinal;
             }
         }
