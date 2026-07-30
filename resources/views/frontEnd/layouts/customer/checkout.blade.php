@@ -171,15 +171,24 @@
                                                         class="fas fa-trash text-danger"></i></a>
                                             </td>
                                             <td class="text-left">
-                                                <a href="{{ route('product', $value->options->slug) }}"> <img
-                                                        src="{{ asset($value->options->image) }}" />
-                                                    {{ Str::limit($value->name, 20) }}</a>
-                                                @if ($value->options->product_size)
-                                                    <p>Size: {{ $value->options->product_size }}</p>
-                                                @endif
-                                                @if ($value->options->product_color)
-                                                    <p>Color: {{ $value->options->product_color }}</p>
-                                                @endif
+                                                <div class="d-flex align-items-center justify-content-between gap-2">
+                                                    <div>
+                                                        <a href="{{ route('product', $value->options->slug) }}" class="fw-semibold text-dark text-decoration-none">
+                                                            {{ Str::limit($value->name, 25) }}
+                                                        </a>
+                                                        @if ($value->options->product_size)
+                                                            <p class="mb-0 text-muted small">Size: {{ $value->options->product_size }}</p>
+                                                        @endif
+                                                        @if ($value->options->product_color)
+                                                            <p class="mb-0 text-muted small">Color: {{ $value->options->product_color }}</p>
+                                                        @endif
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <a href="{{ route('product', $value->options->slug) }}">
+                                                            <img src="{{ asset($value->options->image) }}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #eee;" alt="" />
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td class="cart_qty">
                                                 <div class="qty-cart vcart-qty">

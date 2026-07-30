@@ -22,7 +22,16 @@
            <a class="cart_remove" data-id="{{$value->rowId}}"><i class="fas fa-trash text-danger"></i></a>
           </td>
           <td class="text-left">
-           <a href="{{route('product',$value->options->slug)}}"> <img src="{{asset($value->options->image)}}" style="height:30px;width:30px" /> {{Str::limit($value->name,20)}}</a>
+           <div class="d-flex align-items-center justify-content-between gap-2">
+            <div>
+             <a href="{{route('product',$value->options->slug)}}" class="fw-semibold text-dark text-decoration-none">{{Str::limit($value->name,25)}}</a>
+            </div>
+            <div class="flex-shrink-0">
+             <a href="{{route('product',$value->options->slug)}}">
+              <img src="{{asset($value->options->image)}}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #eee;" alt="" />
+             </a>
+            </div>
+           </div>
             @php
                 $product = App\Models\Product::find($value->id);
             @endphp
