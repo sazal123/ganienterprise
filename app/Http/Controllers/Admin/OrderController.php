@@ -780,21 +780,20 @@ class OrderController extends Controller
         if ($qty < 1) $qty = 1;
 
         $price = $product->new_price;
-        if ($request->product_color) {
-            $color = \App\Models\Color::where('colorName', $request->product_color)->first();
-            if ($color) {
-                $proColor = \App\Models\Productcolor::where('product_id', $product->id)->where('color_id', $color->id)->first();
-                if ($proColor && $proColor->price > 0) {
-                    $price = $proColor->price;
-                }
-            }
-        }
         if ($request->product_size) {
             $size = \App\Models\Size::where('sizeName', $request->product_size)->first();
             if ($size) {
                 $proSize = \App\Models\Productsize::where('product_id', $product->id)->where('size_id', $size->id)->first();
                 if ($proSize && $proSize->price > 0) {
                     $price = $proSize->price;
+                }
+            }
+        } elseif ($request->product_color) {
+            $color = \App\Models\Color::where('colorName', $request->product_color)->first();
+            if ($color) {
+                $proColor = \App\Models\Productcolor::where('product_id', $product->id)->where('color_id', $color->id)->first();
+                if ($proColor && $proColor->price > 0) {
+                    $price = $proColor->price;
                 }
             }
         }

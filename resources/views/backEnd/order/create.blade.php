@@ -380,10 +380,19 @@ $(document).ready(function () {
   var base = parseFloat(selectedProductData.price) || 0;
   var colorExtra = parseFloat($('.color-btn.active').data('price')) || 0;
   var sizeExtra  = parseFloat($('.size-btn.active').data('price')) || 0;
-  var unitPrice  = (colorExtra > 0 ? colorExtra : base) + (sizeExtra > 0 ? sizeExtra : 0);
+
+  var unitPrice = base;
+  if (sizeExtra > 0) {
+   unitPrice = sizeExtra;
+  } else if (colorExtra > 0) {
+   unitPrice = colorExtra;
+  }
   if (unitPrice <= 0) unitPrice = base;
+
   var qty = parseInt($('#variantQty').val()) || 1;
-  $('#variantTotalPrice').text(unitPrice.toFixed(2));
+  var total = unitPrice * qty;
+
+  $('#variantTotalPrice').text(total.toFixed(2));
   $('#variantBasePrice').text(unitPrice.toFixed(2));
  }
 
