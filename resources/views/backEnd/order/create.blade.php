@@ -309,7 +309,7 @@ $(document).ready(function () {
       var cHtml = '';
       $.each(p.colors, function(i, c) {
        var swatch = c.code ? '<span class="color-swatch" style="background:'+c.code+';"></span>' : '';
-       cHtml += '<button type="button" class="btn btn-outline-dark btn-sm variant-btn color-btn" data-id="'+c.id+'" data-price="'+(c.price||'')+'" data-stock="'+(c.stock||'')+'">'
+       cHtml += '<button type="button" class="btn btn-outline-dark btn-sm variant-btn color-btn" data-id="'+c.id+'" data-name="'+c.name+'" data-price="'+(c.price||'')+'" data-stock="'+(c.stock||'')+'">'
              + swatch + c.name + (c.price ? ' <small class="text-muted">(৳'+c.price+')</small>' : '')
              + '</button> ';
       });
@@ -323,7 +323,7 @@ $(document).ready(function () {
       $('#variantSizeSection').show();
       var sHtml = '';
       $.each(p.sizes, function(i, s) {
-       sHtml += '<button type="button" class="btn btn-outline-dark btn-sm variant-btn size-btn" data-id="'+s.id+'" data-price="'+(s.price||'')+'" data-stock="'+(s.stock||'')+'">'
+       sHtml += '<button type="button" class="btn btn-outline-dark btn-sm variant-btn size-btn" data-id="'+s.id+'" data-name="'+s.name+'" data-price="'+(s.price||'')+'" data-stock="'+(s.stock||'')+'">'
              + s.name + (s.price ? ' <small class="text-muted">(৳'+s.price+')</small>' : '')
              + '</button> ';
       });
@@ -390,8 +390,8 @@ $(document).ready(function () {
  // ---- Add variant to cart ----
  $('#variantAddToCartBtn').click(function() {
   var productId = $('#variantProductId').val();
-  var colorName = $('.color-btn.active').text().trim().replace(/\(.*\)/,'').replace(/[0-9]/g,'').trim() || '';
-  var sizeName  = $('.size-btn.active').text().trim().replace(/\(.*\)/,'').replace(/[0-9]/g,'').trim() || '';
+  var colorName = $('.color-btn.active').data('name') || '';
+  var sizeName  = $('.size-btn.active').data('name') || '';
   var qty       = parseInt($('#variantQty').val()) || 1;
   addToCart(productId, colorName, sizeName, qty);
   $('#variantModal').modal('hide');

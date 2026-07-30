@@ -1115,9 +1115,16 @@ class OrderController extends Controller
 
                 // Deduct size variant stock if present
                 if ($detail->product_size) {
-                    $size = \App\Models\Size::where('sizeName', $detail->product_size)
+                    $size = \App\Models\Size::where('sizeName', trim($detail->product_size))
+                        ->orWhere('sizeName', 'LIKE', '%' . trim($detail->product_size) . '%')
                         ->orWhere('id', $detail->product_size)
                         ->first();
+                    if (!$size) {
+                        $productSize = \App\Models\Productsize::where('product_id', $product->id)->first();
+                        if ($productSize) {
+                            $size = \App\Models\Size::find($productSize->size_id);
+                        }
+                    }
                     if ($size) {
                         $proSize = \App\Models\Productsize::where('product_id', $product->id)
                             ->where('size_id', $size->id)
@@ -1160,9 +1167,16 @@ class OrderController extends Controller
 
                 // Restore size variant stock if present
                 if ($detail->product_size) {
-                    $size = \App\Models\Size::where('sizeName', $detail->product_size)
+                    $size = \App\Models\Size::where('sizeName', trim($detail->product_size))
+                        ->orWhere('sizeName', 'LIKE', '%' . trim($detail->product_size) . '%')
                         ->orWhere('id', $detail->product_size)
                         ->first();
+                    if (!$size) {
+                        $productSize = \App\Models\Productsize::where('product_id', $product->id)->first();
+                        if ($productSize) {
+                            $size = \App\Models\Size::find($productSize->size_id);
+                        }
+                    }
                     if ($size) {
                         $proSize = \App\Models\Productsize::where('product_id', $product->id)
                             ->where('size_id', $size->id)

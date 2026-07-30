@@ -225,7 +225,7 @@
                 var cHtml = '';
                 $.each(p.colors, function(i, c) {
                   var swatch = c.code ? '<span class="color-swatch" style="background:'+c.code+';"></span>' : '';
-                  cHtml += '<button type="button" class="btn btn-outline-dark btn-sm variant-btn color-btn" data-id="'+c.id+'" data-price="'+(c.price||'')+'">'+ swatch + c.name + (c.price ? ' <small>(৳'+c.price+')</small>' : '') + '</button> ';
+                  cHtml += '<button type="button" class="btn btn-outline-dark btn-sm variant-btn color-btn" data-id="'+c.id+'" data-name="'+c.name+'" data-price="'+(c.price||'')+'">'+ swatch + c.name + (c.price ? ' <small>(৳'+c.price+')</small>' : '') + '</button> ';
                 });
                 $('#variantColors').html(cHtml);
               } else { $('#variantColorSection').hide(); }
@@ -234,7 +234,7 @@
                 $('#variantSizeSection').show();
                 var sHtml = '';
                 $.each(p.sizes, function(i, s) {
-                  sHtml += '<button type="button" class="btn btn-outline-dark btn-sm variant-btn size-btn" data-id="'+s.id+'" data-price="'+(s.price||'')+'">'+ s.name + (s.price ? ' <small>(৳'+s.price+')</small>' : '') + '</button> ';
+                  sHtml += '<button type="button" class="btn btn-outline-dark btn-sm variant-btn size-btn" data-id="'+s.id+'" data-name="'+s.name+'" data-price="'+(s.price||'')+'">'+ s.name + (s.price ? ' <small>(৳'+s.price+')</small>' : '') + '</button> ';
                 });
                 $('#variantSizes').html(sHtml);
               } else { $('#variantSizeSection').hide(); }
@@ -272,8 +272,8 @@
 
       $('#variantAddToCartBtn').click(function() {
         var productId = $('#variantProductId').val();
-        var colorName = $('.color-btn.active').text().trim().replace(/\(.*\)/,'').replace(/[0-9]/g,'').trim() || '';
-        var sizeName  = $('.size-btn.active').text().trim().replace(/\(.*\)/,'').replace(/[0-9]/g,'').trim() || '';
+        var colorName = $('.color-btn.active').data('name') || '';
+        var sizeName  = $('.size-btn.active').data('name') || '';
         var qty       = parseInt($('#variantQty').val()) || 1;
         addToCart(productId, colorName, sizeName, qty);
         $('#variantModal').modal('hide');
