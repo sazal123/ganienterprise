@@ -44,13 +44,23 @@
             <div class="card-body">
                 <form class="no-print">
                     <div class="row">   
-                        <div class="col-sm-3">
+                        <div class="col-sm-2">
                             <div class="form-group">
                                <label for="keyword" class="form-label">Keyword</label>
                                 <input type="text" value="{{request()->get('keyword')}}" class="form-control" name="keyword">
                             </div>
                         </div>
-                        <!--col-sm-3-->
+                        <div class="col-sm-2">
+                            <div class="form-group mb-3">
+                                <label for="order_status" class="form-label">Order Status</label>
+                                <select class="form-control select2" name="order_status">
+                                    <option value="">All Statuses</option>
+                                    @foreach($order_statuses as $st)
+                                        <option value="{{$st->id}}" @if(request()->get('order_status') == $st->id) selected @endif>{{$st->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-sm-3">
                             <div class="form-group mb-3">
                                 <label for="user_id" class="form-label">Assign User </label>
@@ -60,21 +70,14 @@
                                         <option value="{{$value->id}}" @if(request()->get('user_id') == $value->id) selected @endif>{{$value->name}}</option>
                                     @endforeach
                                 </select>
-                                @error('user_id')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
                             </div>
                         </div>
-                        <!-- col end -->
-                        <div class="col-sm-3">
+                        <div class="col-sm-2">
                             <div class="form-group">
                                <label for="start_date" class="form-label">Start Date</label>
                                 <input type="date" value="{{request()->get('start_date')}}"  class="form-control flatdate" name="start_date">
                             </div>
                         </div>
-                        <!--col-sm-3--> 
                         <div class="col-sm-3">
                             <div class="form-group">
                                <label for="end_date" class="form-label">End Date</label>

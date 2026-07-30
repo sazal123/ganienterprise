@@ -634,12 +634,36 @@ class OrderController extends Controller
 
     public function order_report(Request $request){
         $users = User::where('status',1)->get();
-        $orders = OrderDetails::with('shipping', 'order')
-            ->whereHas('order', function ($q) {
-                $q->where('order_status', 6);
-            });
+        $order_statuses = \App\Models\OrderStatus::where('status',1)->get();
 
-        // Keyword search - search product name, invoice ID, and customer name
+        $completedStatusIds = \App\Models\OrderStatus::all()->filter(function($s) {
+            $name = strtolower(trim($s->name));
+            $slug = strtolower(trim($s->slug));
+            return in_array($name, ['completed', 'paid', 'paid/completed', 'paid / completed']) ||
+                   in_array($slug, ['completed', 'paid', 'paid-completed']);
+        })->pluck('id')->toArray();
+
+        $orders = OrderDetails::with(['shipping', 'order.status']);
+
+        // Filter by specific order status if selected by user
+        if ($request->order_status) {
+            $orders = $orders->whereHas('order', function ($q) use ($request) {
+                $q->where('order_status', $request->order_status);
+            });
+        } elseif (!$request->keyword && !$request->user_id && !$request->start_date && !$request->end_date) {
+            // Default filter to Paid/Completed orders if no filters set, fallback to all if none exist
+            $hasCompleted = OrderDetails::whereHas('order', function($q) use ($completedStatusIds) {
+                $q->whereIn('order_status', $completedStatusIds);
+            })->exists();
+
+            if ($hasCompleted) {
+                $orders = $orders->whereHas('order', function ($q) use ($completedStatusIds) {
+                    $q->whereIn('order_status', $completedStatusIds);
+                });
+            }
+        }
+
+        // Keyword search - search product name, invoice ID, customer name, customer phone
         if ($request->keyword) {
             $keyword = $request->keyword;
             $orders = $orders->where(function ($q) use ($keyword) {
@@ -675,9 +699,10 @@ class OrderController extends Controller
 
         $total_purchase = $orders->sum(\DB::raw('purchase_price * qty'));
         $total_item = $orders->sum('qty');
-        $total_sales = $orders->sum(\DB::raw('sale_price * qty'));
-        $orders = $orders->orderBy('id', 'DESC')->paginate(10);
-        return view('backEnd.reports.order', compact('orders', 'users', 'total_purchase', 'total_item', 'total_sales'));
+        $total_sales = $orders->sum(\DB::raw('(sale_price - product_discount) * qty'));
+        $orders = $orders->orderBy('id', 'DESC')->paginate(20);
+
+        return view('backEnd.reports.order', compact('orders', 'users', 'order_statuses', 'total_purchase', 'total_item', 'total_sales'));
     }
 
     public function order_create(){
