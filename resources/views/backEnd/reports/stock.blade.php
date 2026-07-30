@@ -188,7 +188,7 @@
            <span class="text-muted">—</span>
           @endif
          </td>
-         <td style="text-align:left;font-weight:600;"><a href="javascript:void(0)" class="product-variant-link" data-id="{{ $p->id }}" style="color:#0056b3;text-decoration:none;">{{ $p->name }}</a></td>
+         <td style="text-align:left;font-weight:600;"><a href="javascript:void(0)" class="product-variant-link" data-id="{{ $p->id }}" style="color:#0056b3;text-decoration:none;">{{ $p->name }}</a> <small class="text-muted fw-normal" style="font-size:11px;display:block;">(Buying: ৳{{ number_format($p->purchase_price, 2) }})</small></td>
          <td class="fw-semibold"><a href="javascript:void(0)" class="product-variant-link" data-id="{{ $p->id }}" style="color:#0056b3;text-decoration:none;">{{ $p->product_code }}</a></td>
          <td>{{ $colourCount > 0 ? $colourCount : '—' }}</td>
          <td>{{ $p->stock }}</td>
