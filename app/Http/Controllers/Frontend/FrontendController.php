@@ -513,10 +513,16 @@ class FrontendController extends Controller
         $totalReviews = $reviews->count();
 
         $productcolors = Productcolor::where('product_id', $details->id)
+            ->where(function($q) {
+                $q->whereNull('stock')->orWhere('stock', '>', 0);
+            })
             ->with('color')
             ->get();
 
         $productsizes = Productsize::where('product_id', $details->id)
+            ->where(function($q) {
+                $q->whereNull('stock')->orWhere('stock', '>', 0);
+            })
             ->with('size')
             ->get();
 

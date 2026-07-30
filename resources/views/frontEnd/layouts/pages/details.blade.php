@@ -645,18 +645,22 @@
                     {{-- Sizes --}}
                     @if($productsizes->count() > 0)
                     <div class="pdp-variant-section">
-                        <div class="pdp-variant-label">Size: <span class="attibute-name" id="selectedSizeName">Select a size</span></div>
+                        <div class="pdp-variant-label">Size: <span class="attibute-name" id="selectedSizeName">@if($productsizes->count() == 1){{ $productsizes->first()->size ? $productsizes->first()->size->sizeName : '' }}@else Select a size @endif</span></div>
                         <div class="pdp-size-options">
                             @foreach($productsizes as $prosize)
-                            <label class="pdp-size-btn @if($loop->first) active @endif">
+                            @php
+                                $isSingle = ($productsizes->count() == 1);
+                                $sizeName = $prosize->size ? $prosize->size->sizeName : '';
+                            @endphp
+                            <label class="pdp-size-btn @if($isSingle) active @endif">
                                 <input type="radio" name="product_size"
-                                       value="{{ $prosize->size ? $prosize->size->sizeName : '' }}"
+                                       value="{{ $sizeName }}"
                                        class="size-variant"
                                        data-price="{{ $prosize->price }}"
                                        data-stock="{{ $prosize->stock }}"
                                        data-size-id="{{ $prosize->size_id }}"
-                                       @if($loop->first) checked @endif />
-                                {{ $prosize->size ? $prosize->size->sizeName : '' }}
+                                       @if($isSingle) checked @endif />
+                                {{ $sizeName }}
                                 @if($prosize->price)
                                 <span class="size-price">+৳{{ $prosize->price }}</span>
                                 @endif
@@ -1144,6 +1148,29 @@ $(document).ready(function() {
         $('#selectedSizeName').text(name);
     });
 
+    // ── Size Validation on Form Submit ──
+    var totalSizesAvailable = {{ $productsizes->count() }};
+    $('#pdpForm').on('submit', function(e) {
+        if (totalSizesAvailable > 0) {
+            var selectedSizeVal = $('input[name="product_size"]:checked').val();
+            if (!selectedSizeVal) {
+                e.preventDefault();
+                if (typeof toastr !== 'undefined') {
+                    toastr.error('Please select a size before adding to cart.');
+                } else {
+                    alert('Please select a size before adding to cart.');
+                }
+                var $sizeSec = $('.pdp-variant-section').first();
+                if ($sizeSec.length) {
+                    $('html, body').animate({
+                        scrollTop: $sizeSec.offset().top - 100
+                    }, 300);
+                }
+                return false;
+            }
+        }
+    });
+
     // ── Variant pricing ──
     var basePrice = {{ $details->new_price }};
     var baseOldPrice = {{ $details->old_price ?? 0 }};
@@ -1158,6 +1185,10 @@ $(document).ready(function() {
     }
 
     $('.size-variant').on('change', function() { updateVariantPrice(); });
+
+    if (totalSizesAvailable === 1) {
+        updateVariantPrice();
+    }
 
     // Set first color name
     var firstColor = $('.pdp-color-swatch.active').attr('title');
