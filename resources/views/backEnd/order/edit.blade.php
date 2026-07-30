@@ -108,7 +108,7 @@
                             <div class="mb-2"><input type="number" class="form-control form-control-sm" placeholder="Phone Number" name="phone" value="{{$shippinginfo->phone}}" required></div>
                             <div class="mb-2"><input type="text" placeholder="Address" class="form-control form-control-sm" name="address" value="{{$shippinginfo->address}}" required></div>
                             <div class="mb-2">
-                              <select class="form-control form-control-sm" name="area" required>
+                              <select id="area" class="form-control form-control-sm" name="area" required>
                                <option value="">Delivery Area</option>
                                @foreach($shippingcharge as $sc)
                                <option value="{{$sc->id}}" @if($shippinginfo->area == $sc->name) selected @endif>{{$sc->name}}</option>

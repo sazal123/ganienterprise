@@ -536,26 +536,17 @@ class OrderController extends Controller
         $revenueData = [];
 
         foreach ($completedOrders as $ord) {
-            // Calculate actual line totals (sale_price - per-unit product_discount) * qty
+            // Calculate item subtotal after item-level product discounts
             $itemSubtotal = 0;
             foreach ($ord->orderdetails as $d) {
                 $unitPrice = (float)($d->sale_price ?? 0);
                 $unitDiscount = (float)($d->product_discount ?? 0);
                 $qty = (int)($d->qty ?? 0);
-                $itemSubtotal += ($unitPrice - $unitDiscount) * $qty;
+                $itemSubtotal += max(0, ($unitPrice - $unitDiscount) * $qty);
             }
 
-            // Total product-level discount for all items in order
-            $totalProductDiscount = $ord->orderdetails->sum(function($d) {
-                return (float)($d->product_discount ?? 0) * (int)($d->qty ?? 0);
-            });
-
-            // Extra order-level discount (pos_discount / coupon beyond item discounts)
-            $orderTotalDiscount = (float)($ord->discount ?? 0);
-            $extraDiscount = max(0, $orderTotalDiscount - $totalProductDiscount);
-
-            $extraDiscountRatio = ($itemSubtotal > 0 && $extraDiscount > 0) ? ($extraDiscount / $itemSubtotal) : 0;
-            if ($extraDiscountRatio > 1) $extraDiscountRatio = 1;
+            // Total amount for this order (includes delivery charge and accounts for discounts)
+            $orderTotalAmount = (float)($ord->amount ?? 0);
 
             foreach ($ord->orderdetails as $d) {
                 $pid = $d->product_id;
@@ -568,9 +559,13 @@ class OrderController extends Controller
 
                 $unitPrice = (float)($d->sale_price ?? 0);
                 $unitDiscount = (float)($d->product_discount ?? 0);
-                $lineNet = ($unitPrice - $unitDiscount) * $qty;
+                $lineNet = max(0, ($unitPrice - $unitDiscount) * $qty);
 
-                $lineFinal = max(0, $lineNet * (1 - $extraDiscountRatio));
+                if ($itemSubtotal > 0) {
+                    $lineFinal = ($lineNet / $itemSubtotal) * $orderTotalAmount;
+                } else {
+                    $lineFinal = 0;
+                }
                 $revenueData[$pid] += $lineFinal;
             }
         }
