@@ -28,11 +28,23 @@
         <div class="card-body">
           <form action="{{route('products.store')}}" method="POST" class="row" data-parsley-validate="" enctype="multipart/form-data">
             @csrf
-            <div class="col-sm-6">
+            <div class="col-sm-4">
               <div class="form-group mb-3">
                 <label for="name" class="form-label">Product Name *</label>
                 <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" id="name" required="" />
                 @error('name')
+                <span class="invalid-feedback" role="alert">
+                  <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+              </div>
+            </div>
+            <!-- col-end -->
+            <div class="col-sm-4">
+              <div class="form-group mb-3">
+                <label for="product_code" class="form-label">Product Code <small class="text-muted">(Optional)</small></label>
+                <input type="text" class="form-control @error('product_code') is-invalid @enderror" name="product_code" value="{{ old('product_code') }}" id="product_code" placeholder="Auto-generated if blank" />
+                @error('product_code')
                 <span class="invalid-feedback" role="alert">
                   <strong>{{ $message }}</strong>
                 </span>

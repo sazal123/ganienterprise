@@ -72,8 +72,8 @@ class ProductController extends Controller
             'new_price' => 'required',
             'purchase_price' => 'required',
             'stock' => 'required',
-            'category_id' => 'required',
             'description' => 'required',
+            'product_code' => 'nullable|unique:products,product_code',
         ]);
         $last_id = Product::orderBy('id', 'desc')->select('id')->first();
         $last_id = $last_id?$last_id->id+1:1;
@@ -87,7 +87,7 @@ class ProductController extends Controller
         $input['flashsale'] = $request->flashsale?1:0;
         $input['is_new'] = $request->is_new?1:0;
         $input['is_prime'] = $request->is_prime?1:0;
-        $input['product_code'] = 'P' . str_pad($last_id, 4, '0', STR_PAD_LEFT);
+        $input['product_code'] = $request->product_code ? trim($request->product_code) : ('P' . str_pad($last_id, 4, '0', STR_PAD_LEFT));
         $save_data = Product::create($input);
 
         // Save size variants with price and stock
@@ -99,7 +99,7 @@ class ProductController extends Controller
                     'stock' => $request->sizeStock[$sizeId] ?? null,
                 ];
             }
-            $save_data->sizes()->attach($sizeData);
+            $save_data->sizes()->sync($sizeData);
         }
 
         // Save color variants with price and stock
@@ -111,43 +111,23 @@ class ProductController extends Controller
                     'stock' => $request->colorStock[$colorId] ?? null,
                 ];
             }
-            $save_data->colors()->attach($colorData);
+            $save_data->colors()->sync($colorData);
         }
 
-        // image with intervention
+        // image upload
         $images = $request->file('image');
         if($images){
             foreach ($images as $key => $image) {
                 $name =  time().'-'.$image->getClientOriginalName();
-                $name = strtolower(preg_replace('/\s+/', '-', $name));
-            	$uploadPath = 'public/uploads/product/';
-            	$image->move($uploadPath,$name);
-            	$imageUrl =$uploadPath.$name;
+                $name = str_replace(' ', '-', $name);
+                $uploadPath = 'public/uploads/product/';
+                $image->move($uploadPath,$name);
+                $imageUrl =$uploadPath.$name;
 
                 $pimage             = new Productimage();
                 $pimage->product_id = $save_data->id;
                 $pimage->image      = $imageUrl;
                 $pimage->save();
-            }
-
-        }
-
-        // Save color-specific images
-        if($request->hasFile('colorImage')){
-            foreach($request->file('colorImage') as $colorId => $image){
-                if($image){
-                    $name = time().'-'.$image->getClientOriginalName();
-                    $name = strtolower(preg_replace('/\s+/', '-', $name));
-                    $uploadPath = 'public/uploads/product/';
-                    $image->move($uploadPath, $name);
-                    $imageUrl = $uploadPath.$name;
-
-                    $pimage = new Productimage();
-                    $pimage->product_id = $save_data->id;
-                    $pimage->color_id = $colorId;
-                    $pimage->image = $imageUrl;
-                    $pimage->save();
-                }
             }
         }
 

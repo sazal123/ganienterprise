@@ -30,11 +30,23 @@
           <form action="{{route('products.update')}}" method="POST" class="row" data-parsley-validate="" enctype="multipart/form-data" name="editForm">
             @csrf
             <input type="hidden" value="{{$edit_data->id}}" name="id" />
-            <div class="col-sm-6">
+            <div class="col-sm-4">
               <div class="form-group mb-3">
                 <label for="name" class="form-label">Product Name *</label>
                 <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{$edit_data->name }}" id="name" required="" />
                 @error('name')
+                <span class="invalid-feedback" role="alert">
+                  <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+              </div>
+            </div>
+            <!-- col-end -->
+            <div class="col-sm-4">
+              <div class="form-group mb-3">
+                <label for="product_code" class="form-label">Product Code *</label>
+                <input type="text" class="form-control @error('product_code') is-invalid @enderror" name="product_code" value="{{ old('product_code', $edit_data->product_code) }}" id="product_code" required="" />
+                @error('product_code')
                 <span class="invalid-feedback" role="alert">
                   <strong>{{ $message }}</strong>
                 </span>
