@@ -86,7 +86,7 @@
                                   </div>
                                 </td>
                                 <td style="font-size:12px;">{{$value->price}}</td>
-                                <td><input type="number" class="form-control form-control-sm product_discount" style="width:55px;" value="{{$value->options->product_discount}}" placeholder="0" data-id="{{$value->rowId}}"></td>
+                                <td><input type="number" class="form-control form-control-sm product_discount" style="width:55px !important;" value="{{$value->options->product_discount}}" placeholder="0" data-id="{{$value->rowId}}"></td>
                                 <td style="font-size:12px;">{{($value->price - $value->options->product_discount)*$value->qty}}</td>
                                 <td><button type="button" class="btn btn-danger btn-xs cart_remove" data-id="{{$value->rowId}}"><i class="fa fa-times"></i></button></td>
                               </tr>

@@ -20,7 +20,7 @@
     </div>
   </td>
   <td>৳{{$value->price}}</td>
-  <td><input type="number" class="form-control form-control-sm product_discount" style="width:65px;" value="{{$value->options->product_discount}}" placeholder="0" data-id="{{$value->rowId}}" /></td>
+  <td><input type="number" class="form-control form-control-sm product_discount" style="width:65px !important;" value="{{$value->options->product_discount}}" placeholder="0" data-id="{{$value->rowId}}" /></td>
   <td class="fw-semibold">৳{{($value->price - $value->options->product_discount)*$value->qty}}</td>
   <td><button type="button" class="btn btn-danger btn-sm cart_remove" data-id="{{$value->rowId}}"><i class="fa fa-times"></i></button></td>
 </tr>
