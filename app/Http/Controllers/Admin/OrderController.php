@@ -748,15 +748,37 @@ class OrderController extends Controller
     }
     public function cart_add(Request $request){
         $product = Product::select('id','name','stock','new_price','old_price','purchase_price','slug')->where(['id' => $request->id])->first();
-        $qty = 1;
+        $qty = (int) ($request->qty ?? $request->quantity ?? 1);
+        if ($qty < 1) $qty = 1;
+
+        $price = $product->new_price;
+        if ($request->product_color) {
+            $color = \App\Models\Color::where('colorName', $request->product_color)->first();
+            if ($color) {
+                $proColor = \App\Models\Productcolor::where('product_id', $product->id)->where('color_id', $color->id)->first();
+                if ($proColor && $proColor->price > 0) {
+                    $price = $proColor->price;
+                }
+            }
+        }
+        if ($request->product_size) {
+            $size = \App\Models\Size::where('sizeName', $request->product_size)->first();
+            if ($size) {
+                $proSize = \App\Models\Productsize::where('product_id', $product->id)->where('size_id', $size->id)->first();
+                if ($proSize && $proSize->price > 0) {
+                    $price = $proSize->price;
+                }
+            }
+        }
+
         $cartinfo = Cart::instance('pos_shopping')->add([
             'id' => $product->id,
             'name' => $product->name,
             'qty' => $qty,
-            'price' => $product->new_price,
+            'price' => $price,
             'options' => [
                 'slug' => $product->slug,
-                'image' => $product->image->image,
+                'image' => $product->image ? $product->image->image : '',
                 'old_price' => $product->old_price,
                 'purchase_price' => $product->purchase_price,
                 'product_discount' => 0,
@@ -1073,39 +1095,36 @@ class OrderController extends Controller
 
             $product = Product::find($detail->product_id);
             if ($product) {
-                $product->stock = max(0, (int)$product->stock - $qty);
-                $product->save();
+                // Keep main product page stock untouched ($product->stock is NOT modified)
 
                 // Deduct color variant stock if present
                 if ($detail->product_color) {
-                    $color = \App\Models\Color::where('colorName', $detail->product_color)->first();
+                    $color = \App\Models\Color::where('colorName', $detail->product_color)
+                        ->orWhere('id', $detail->product_color)
+                        ->first();
                     if ($color) {
-                        $colorPivot = \DB::table('color_product')
-                            ->where('product_id', $product->id)
+                        $proColor = \App\Models\Productcolor::where('product_id', $product->id)
                             ->where('color_id', $color->id)
                             ->first();
-                        if ($colorPivot && isset($colorPivot->stock) && $colorPivot->stock > 0) {
-                            \DB::table('color_product')
-                                ->where('product_id', $product->id)
-                                ->where('color_id', $color->id)
-                                ->decrement('stock', min($qty, (int)$colorPivot->stock));
+                        if ($proColor && $proColor->stock !== null) {
+                            $proColor->stock = max(0, (int)$proColor->stock - $qty);
+                            $proColor->save();
                         }
                     }
                 }
 
                 // Deduct size variant stock if present
                 if ($detail->product_size) {
-                    $size = \App\Models\Size::where('sizeName', $detail->product_size)->first();
+                    $size = \App\Models\Size::where('sizeName', $detail->product_size)
+                        ->orWhere('id', $detail->product_size)
+                        ->first();
                     if ($size) {
-                        $sizePivot = \DB::table('product_size')
-                            ->where('product_id', $product->id)
+                        $proSize = \App\Models\Productsize::where('product_id', $product->id)
                             ->where('size_id', $size->id)
                             ->first();
-                        if ($sizePivot && isset($sizePivot->stock) && $sizePivot->stock > 0) {
-                            \DB::table('product_size')
-                                ->where('product_id', $product->id)
-                                ->where('size_id', $size->id)
-                                ->decrement('stock', min($qty, (int)$sizePivot->stock));
+                        if ($proSize && $proSize->stock !== null) {
+                            $proSize->stock = max(0, (int)$proSize->stock - $qty);
+                            $proSize->save();
                         }
                     }
                 }
@@ -1121,28 +1140,37 @@ class OrderController extends Controller
 
             $product = Product::find($detail->product_id);
             if ($product) {
-                $product->stock = (int)$product->stock + $qty;
-                $product->save();
+                // Keep main product page stock untouched ($product->stock is NOT modified)
 
                 // Restore color variant stock if present
                 if ($detail->product_color) {
-                    $color = \App\Models\Color::where('colorName', $detail->product_color)->first();
+                    $color = \App\Models\Color::where('colorName', $detail->product_color)
+                        ->orWhere('id', $detail->product_color)
+                        ->first();
                     if ($color) {
-                        \DB::table('color_product')
-                            ->where('product_id', $product->id)
+                        $proColor = \App\Models\Productcolor::where('product_id', $product->id)
                             ->where('color_id', $color->id)
-                            ->increment('stock', $qty);
+                            ->first();
+                        if ($proColor && $proColor->stock !== null) {
+                            $proColor->stock = (int)$proColor->stock + $qty;
+                            $proColor->save();
+                        }
                     }
                 }
 
                 // Restore size variant stock if present
                 if ($detail->product_size) {
-                    $size = \App\Models\Size::where('sizeName', $detail->product_size)->first();
+                    $size = \App\Models\Size::where('sizeName', $detail->product_size)
+                        ->orWhere('id', $detail->product_size)
+                        ->first();
                     if ($size) {
-                        \DB::table('product_size')
-                            ->where('product_id', $product->id)
+                        $proSize = \App\Models\Productsize::where('product_id', $product->id)
                             ->where('size_id', $size->id)
-                            ->increment('stock', $qty);
+                            ->first();
+                        if ($proSize && $proSize->stock !== null) {
+                            $proSize->stock = (int)$proSize->stock + $qty;
+                            $proSize->save();
+                        }
                     }
                 }
             }

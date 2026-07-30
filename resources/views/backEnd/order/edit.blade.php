@@ -274,11 +274,13 @@
         var productId = $('#variantProductId').val();
         var colorName = $('.color-btn.active').text().trim().replace(/\(.*\)/,'').replace(/[0-9]/g,'').trim() || '';
         var sizeName  = $('.size-btn.active').text().trim().replace(/\(.*\)/,'').replace(/[0-9]/g,'').trim() || '';
-        addToCart(productId, colorName, sizeName);
+        var qty       = parseInt($('#variantQty').val()) || 1;
+        addToCart(productId, colorName, sizeName, qty);
         $('#variantModal').modal('hide');
       });
 
-      function addToCart(productId, color, size) {
+      function addToCart(productId, color, size, qty) {
+        qty = qty || 1;
         // Check for duplicate: same product + same color + same size already in cart
         var duplicate = false;
         $('#cartTable tr').each(function() {
@@ -304,7 +306,7 @@
 
         $.ajax({
           cache: false, type:"GET",
-          data: { id: productId, product_color: color, product_size: size },
+          data: { id: productId, product_color: color, product_size: size, qty: qty },
           url: "{{route('admin.order.cart_add')}}",
           dataType:"json",
           success: function() { refreshCart(); resetProductSelect(); },
