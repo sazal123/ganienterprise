@@ -45,8 +45,17 @@ class OrderController extends Controller
             }
            $show_data = $show_data->paginate(10);
         }else{
-            $order_status = OrderStatus::where('slug',$slug)->withCount('orders')->first();
-            $show_data = Order::where(['order_status'=>$order_status->id])->latest()->with('shipping','status')->paginate(10);
+            $order_status = OrderStatus::where('slug', $slug)->withCount('orders')->first();
+            if (!$order_status) {
+                $order_status = (object) [
+                    'id' => 0,
+                    'name' => ucfirst($slug),
+                    'orders_count' => 0,
+                ];
+                $show_data = Order::where('id', 0)->paginate(10);
+            } else {
+                $show_data = Order::where(['order_status' => $order_status->id])->latest()->with('shipping', 'status')->paginate(10);
+            }
         }
         $users = User::get();
         $steadfast = Courierapi::where(['status'=>1, 'type'=>'steadfast'])->first();
@@ -222,9 +231,19 @@ class OrderController extends Controller
         $link = OrderStatus::find($request->status)->slug;
         $order = Order::find($request->id);
         $courier = $order->order_status;
-        $order->order_status = $request->status;
+        $new_status = $request->status;
+        $order->order_status = $new_status;
         $order->admin_note = $request->admin_note;
         $order->save();
+
+        $was_completed = self::isPaidOrCompletedStatus($courier);
+        $is_completed = self::isPaidOrCompletedStatus($new_status);
+
+        if ($is_completed && !$was_completed) {
+            self::deductOrderStock($order->id);
+        } elseif ($was_completed && !$is_completed) {
+            self::restoreOrderStock($order->id);
+        }
 
         $shipping_update = Shipping::where('order_id', $order->id)->first();
         $shippingfee = ShippingCharge::find($request->area);
@@ -298,13 +317,24 @@ class OrderController extends Controller
         $sms_gateway = SmsGateway::where('status', 1)->first();
         $site_setting = GeneralSetting::where('status', 1)->first();
         // Update order statuses
+        $new_status = $request->order_status;
         $orders = Order::whereIn('id', $request->input('order_ids'))->get();
 
         foreach ($orders as $order) {
-
-            $order->order_status= $request->order_status;
+            $prev_status = $order->order_status;
+            $order->order_status = $new_status;
             $order->update();
-            $orderStatus = OrderStatus::find($request->order_status);
+
+            $was_completed = self::isPaidOrCompletedStatus($prev_status);
+            $is_completed = self::isPaidOrCompletedStatus($new_status);
+
+            if ($is_completed && !$was_completed) {
+                self::deductOrderStock($order->id);
+            } elseif ($was_completed && !$is_completed) {
+                self::restoreOrderStock($order->id);
+            }
+
+            $orderStatus = OrderStatus::find($new_status);
 
             //Send SMS to the customer
             if ($sms_gateway) {
@@ -335,19 +365,6 @@ class OrderController extends Controller
             }
         }
 
-        if($request->order_status == 5){
-            $orders = Order::whereIn('id', $request->input('order_ids'))->get();
-            foreach($orders as $order){
-                $orders_details = OrderDetails::select('id','order_id','product_id')->where('order_id',$order->id)->get();
-                foreach($orders_details as $order_details){
-                    $product = Product::select('id','stock')->find($order_details->product_id);
-                    $product->stock -= $order_details->qty;
-                    $product->save();
-                }
-
-
-            }
-        }
         return response()->json(['status'=>'success','message'=>'Order status change successfully']);
     }
 
@@ -502,12 +519,19 @@ class OrderController extends Controller
 
         $products = $query->orderBy('name', 'ASC')->paginate(50);
 
-        // Pre-compute total sales qty per product from completed orders (status=6)
+        // Pre-compute total sales qty per product from completed/paid orders
         $productIds = $products->pluck('id');
+        $completedStatusIds = \App\Models\OrderStatus::all()->filter(function($s) {
+            $name = strtolower(trim($s->name));
+            $slug = strtolower(trim($s->slug));
+            return in_array($name, ['completed', 'paid', 'paid/completed', 'paid / completed']) ||
+                   in_array($slug, ['completed', 'paid', 'paid-completed']);
+        })->pluck('id')->toArray();
+
         $salesData = \App\Models\OrderDetails::selectRaw('product_id, SUM(qty) as total_sold')
             ->whereIn('product_id', $productIds)
-            ->whereHas('order', function ($q) {
-                $q->where('order_status', 6);
+            ->whereHas('order', function ($q) use ($completedStatusIds) {
+                $q->whereIn('order_status', $completedStatusIds);
             })
             ->groupBy('product_id')
             ->pluck('total_sold', 'product_id');
@@ -719,8 +743,8 @@ class OrderController extends Controller
         Session::forget('pos_shipping');
         Session::forget('pos_discount');
         Session::forget('product_discount');
-        Toastr::success('Thanks, Your order place successfully', 'Success!');
-        return redirect('admin/order/pending');
+        Toastr::success('Thanks, Your order placed successfully', 'Success!');
+        return redirect('admin/order/all');
     }
     public function cart_add(Request $request){
         $product = Product::select('id','name','stock','new_price','old_price','purchase_price','slug')->where(['id' => $request->id])->first();
@@ -887,27 +911,31 @@ class OrderController extends Controller
     public function order_edit($invoice_id){
         $products = Product::select('id','name','new_price','product_code')->where(['status'=>1])->get();
         $shippingcharge = ShippingCharge::where('status',1)->get();
-        $order = Order::where('invoice_id',$invoice_id)->first();
+        $order = Order::where('invoice_id', $invoice_id)->first() ?? Order::find($invoice_id);
+        if (!$order) {
+            Toastr::error('Order not found', 'Failed!');
+            return redirect()->route('admin.orders', ['slug' => 'all']);
+        }
         $cartinfo  = Cart::instance('pos_shopping')->destroy();
-        $shippinginfo  = Shipping::where('order_id',$order->id)->first();
-        Session::put('product_discount',$order->discount);
-        Session::put('pos_shipping',$order->shipping_charge);
-        $orderdetails = OrderDetails::where('order_id',$order->id)->get();
+        $shippinginfo  = Shipping::where('order_id', $order->id)->first() ?? new Shipping();
+        Session::put('product_discount', $order->discount);
+        Session::put('pos_shipping', $order->shipping_charge);
+        $orderdetails = OrderDetails::where('order_id', $order->id)->get();
         foreach($orderdetails as $ordetails){
-        $cartinfo = Cart::instance('pos_shopping')->add([
-            'id' => $ordetails->product_id,
-            'name' => $ordetails->product_name,
-            'qty' => $ordetails->qty,
-            'price' => $ordetails->sale_price,
-            'options' => [
-                'image' => $ordetails->image->image,
-                'purchase_price' => $ordetails->purchase_price,
-                'product_discount' => $ordetails->product_discount,
-                'details_id' => $ordetails->id,
-                'product_size'=>$ordetails->product_size,
-                'product_color'=>$ordetails->product_color,
-            ],
-        ]);
+            $cartinfo = Cart::instance('pos_shopping')->add([
+                'id' => $ordetails->product_id,
+                'name' => $ordetails->product_name,
+                'qty' => $ordetails->qty,
+                'price' => $ordetails->sale_price,
+                'options' => [
+                    'image' => $ordetails->image ? $ordetails->image->image : '',
+                    'purchase_price' => $ordetails->purchase_price,
+                    'product_discount' => $ordetails->product_discount,
+                    'details_id' => $ordetails->id,
+                    'product_size' => $ordetails->product_size,
+                    'product_color' => $ordetails->product_color,
+                ],
+            ]);
         }
         $cartinfo  = Cart::instance('pos_shopping')->content();
         return view('backEnd.order.edit',compact('products','cartinfo','shippingcharge','shippinginfo','order'));
@@ -948,37 +976,50 @@ class OrderController extends Controller
             $customer_id = $store->id;
         }
 
-         // order data save
-        $order                   =  Order::where('id',$request->order_id)->first();
-        $order->invoice_id       = rand(11111,99999);
-        $order->amount           = ($subtotal + $shippingfee->amount) - $discount;
+        // order data save
+        $orderId = $request->order_id ?? $request->id ?? $request->hidden_id;
+        $order = Order::find($orderId);
+        if (!$order) {
+            Toastr::error('Order not found', 'Failed!');
+            return redirect()->back();
+        }
+
+        if (!$order->invoice_id) {
+            $order->invoice_id = rand(11111, 99999);
+        }
+        $order->amount           = ($subtotal + ($shippingfee ? $shippingfee->amount : 0)) - $discount;
         $order->discount         = $discount ? $discount : 0;
-        $order->shipping_charge  = $shippingfee->amount;
-        $order->customer_id      =  $customer_id;
-        $order->order_status     = 1;
+        $order->shipping_charge  = $shippingfee ? $shippingfee->amount : 0;
+        $order->customer_id      = $customer_id;
+        $order->order_status     = $order->order_status ?? 1;
         $order->note             = $request->note;
         $order->order_date       = $request->order_date;
         $order->delivery_date    = $request->delivery_date;
         $order->save();
 
-
         // shipping data save
-        $shipping              =   Shipping::where('order_id',$request->order_id)->first();
-        $shipping->order_id    =   $order->id;
-        $shipping->customer_id =   $customer_id;
-        $shipping->name        =   $request->name;
-        $shipping->phone       =   $request->phone;
-        $shipping->address     =   $request->address;
-        $shipping->area        =   $shippingfee->name;
+        $shipping = Shipping::where('order_id', $order->id)->first();
+        if (!$shipping) {
+            $shipping = new Shipping();
+        }
+        $shipping->order_id    = $order->id;
+        $shipping->customer_id = $customer_id;
+        $shipping->name        = $request->name;
+        $shipping->phone       = $request->phone;
+        $shipping->address     = $request->address;
+        $shipping->area        = $shippingfee ? $shippingfee->name : 'N/A';
         $shipping->save();
 
         // payment data save
-        $payment                 =  Payment::where('order_id',$request->order_id)->first();
+        $payment = Payment::where('order_id', $order->id)->first();
+        if (!$payment) {
+            $payment = new Payment();
+        }
         $payment->order_id       = $order->id;
         $payment->customer_id    = $customer_id;
-        $payment->payment_method = 'Cash On Delivery';
+        $payment->payment_method = $request->payment_method ?? 'Cash On Delivery';
         $payment->amount         = $order->amount;
-        $payment->payment_status = 'pending';
+        $payment->payment_status = $payment->payment_status ?? 'pending';
         $payment->save();
 
        // order details data save
@@ -1020,8 +1061,103 @@ class OrderController extends Controller
         Session::forget('pos_shipping');
         Session::forget('pos_discount');
         Session::forget('product_discount');
-        Toastr::success('Thanks, Your order place successfully', 'Success!');
-        return redirect('admin/order/pending');
+        Toastr::success('Thanks, Your order updated successfully', 'Success!');
+        return redirect('admin/order/all');
+    }
+
+    public static function deductOrderStock($order_id) {
+        $orderDetails = OrderDetails::where('order_id', $order_id)->get();
+        foreach ($orderDetails as $detail) {
+            $qty = (int)$detail->qty;
+            if ($qty <= 0) continue;
+
+            $product = Product::find($detail->product_id);
+            if ($product) {
+                $product->stock = max(0, (int)$product->stock - $qty);
+                $product->save();
+
+                // Deduct color variant stock if present
+                if ($detail->product_color) {
+                    $color = \App\Models\Color::where('colorName', $detail->product_color)->first();
+                    if ($color) {
+                        $colorPivot = \DB::table('color_product')
+                            ->where('product_id', $product->id)
+                            ->where('color_id', $color->id)
+                            ->first();
+                        if ($colorPivot && isset($colorPivot->stock) && $colorPivot->stock > 0) {
+                            \DB::table('color_product')
+                                ->where('product_id', $product->id)
+                                ->where('color_id', $color->id)
+                                ->decrement('stock', min($qty, (int)$colorPivot->stock));
+                        }
+                    }
+                }
+
+                // Deduct size variant stock if present
+                if ($detail->product_size) {
+                    $size = \App\Models\Size::where('sizeName', $detail->product_size)->first();
+                    if ($size) {
+                        $sizePivot = \DB::table('product_size')
+                            ->where('product_id', $product->id)
+                            ->where('size_id', $size->id)
+                            ->first();
+                        if ($sizePivot && isset($sizePivot->stock) && $sizePivot->stock > 0) {
+                            \DB::table('product_size')
+                                ->where('product_id', $product->id)
+                                ->where('size_id', $size->id)
+                                ->decrement('stock', min($qty, (int)$sizePivot->stock));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static function restoreOrderStock($order_id) {
+        $orderDetails = OrderDetails::where('order_id', $order_id)->get();
+        foreach ($orderDetails as $detail) {
+            $qty = (int)$detail->qty;
+            if ($qty <= 0) continue;
+
+            $product = Product::find($detail->product_id);
+            if ($product) {
+                $product->stock = (int)$product->stock + $qty;
+                $product->save();
+
+                // Restore color variant stock if present
+                if ($detail->product_color) {
+                    $color = \App\Models\Color::where('colorName', $detail->product_color)->first();
+                    if ($color) {
+                        \DB::table('color_product')
+                            ->where('product_id', $product->id)
+                            ->where('color_id', $color->id)
+                            ->increment('stock', $qty);
+                    }
+                }
+
+                // Restore size variant stock if present
+                if ($detail->product_size) {
+                    $size = \App\Models\Size::where('sizeName', $detail->product_size)->first();
+                    if ($size) {
+                        \DB::table('product_size')
+                            ->where('product_id', $product->id)
+                            ->where('size_id', $size->id)
+                            ->increment('stock', $qty);
+                    }
+                }
+            }
+        }
+    }
+
+    public static function isPaidOrCompletedStatus($status_id) {
+        if (!$status_id) return false;
+        $status = \App\Models\OrderStatus::find($status_id);
+        if (!$status) return false;
+        $name = strtolower(trim($status->name));
+        $slug = strtolower(trim($status->slug));
+        
+        return in_array($name, ['completed', 'paid', 'paid/completed', 'paid / completed']) ||
+               in_array($slug, ['completed', 'paid', 'paid-completed']);
     }
 
 }
