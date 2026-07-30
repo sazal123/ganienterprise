@@ -72,19 +72,19 @@
 
      <!-- Summary Cards -->
      @php
+       $revenueData = $revenueData ?? [];
        $totalSellingValue = $products->sum(function($p) { return $p->new_price * $p->stock; });
        $totalRemainingStock = $products->sum(function($p) use ($salesData) {
            return max($p->stock - ($salesData[$p->id] ?? 0), 0);
        });
-       $totalSalesRevenue = $products->sum(function($p) use ($salesData) {
-           $sold = $salesData[$p->id] ?? 0;
-           return $sold * $p->new_price;
+       $totalSalesRevenue = $products->sum(function($p) use ($revenueData) {
+           return $revenueData[$p->id] ?? 0;
        });
        $totalCostOfSold = $products->sum(function($p) use ($salesData) {
            $sold = $salesData[$p->id] ?? 0;
            return $sold * $p->purchase_price;
        });
-       $netProfit = $totalSalesRevenue - $totalBuyingCost;
+       $netProfit = $totalSalesRevenue - $totalCostOfSold;
      @endphp
      <div class="row g-2 mb-3">
       <div class="col-md-2">
@@ -171,7 +171,7 @@
           $unitPrice = $p->new_price;
           $remainPrice = $unitPrice * $remainQty;
           $colourCount = $p->procolors->count();
-          $salesRevenue = $soldQty * $unitPrice;
+          $salesRevenue = $revenueData[$p->id] ?? 0;
 
           $grandTotalStock += $p->stock;
           $grandTotalSales += $soldQty;

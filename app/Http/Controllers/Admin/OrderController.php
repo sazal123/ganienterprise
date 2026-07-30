@@ -519,7 +519,7 @@ class OrderController extends Controller
 
         $products = $query->orderBy('name', 'ASC')->paginate(50);
 
-        // Pre-compute total sales qty per product from completed/paid orders
+        // Pre-compute total sales qty and net sales revenue per product from completed/paid orders
         $productIds = $products->pluck('id');
         $completedStatusIds = \App\Models\OrderStatus::all()->filter(function($s) {
             $name = strtolower(trim($s->name));
@@ -528,13 +528,36 @@ class OrderController extends Controller
                    in_array($slug, ['completed', 'paid', 'paid-completed']);
         })->pluck('id')->toArray();
 
-        $salesData = \App\Models\OrderDetails::selectRaw('product_id, SUM(qty) as total_sold')
-            ->whereIn('product_id', $productIds)
-            ->whereHas('order', function ($q) use ($completedStatusIds) {
-                $q->whereIn('order_status', $completedStatusIds);
-            })
-            ->groupBy('product_id')
-            ->pluck('total_sold', 'product_id');
+        $completedOrders = \App\Models\Order::whereIn('order_status', $completedStatusIds)
+            ->with(['orderdetails'])
+            ->get();
+
+        $salesData = [];
+        $revenueData = [];
+
+        foreach ($completedOrders as $ord) {
+            $ordSubtotal = $ord->orderdetails->sum(function($d) {
+                return ((float)$d->sale_price * (int)$d->qty) - (float)($d->product_discount ?? 0);
+            });
+            
+            $ordDiscount = (float) ($ord->discount ?? 0);
+            $discountRatio = ($ordSubtotal > 0 && $ordDiscount > 0) ? ($ordDiscount / $ordSubtotal) : 0;
+            if ($discountRatio > 1) $discountRatio = 1;
+
+            foreach ($ord->orderdetails as $d) {
+                $pid = $d->product_id;
+                if (!isset($salesData[$pid])) {
+                    $salesData[$pid] = 0;
+                    $revenueData[$pid] = 0;
+                }
+                $qty = (int) $d->qty;
+                $salesData[$pid] += $qty;
+
+                $lineNet = ((float)$d->sale_price * $qty) - (float)($d->product_discount ?? 0);
+                $lineFinal = max(0, $lineNet * (1 - $discountRatio));
+                $revenueData[$pid] += $lineFinal;
+            }
+        }
 
         $categories = \App\Models\Category::where('status', 1)->get();
 
@@ -554,7 +577,7 @@ class OrderController extends Controller
         }
 
         return view('backEnd.reports.stock', compact(
-            'products', 'categories', 'salesData',
+            'products', 'categories', 'salesData', 'revenueData',
             'totalStockQty', 'totalSoldQty', 'totalBuyingCost', 'totalRemainingPrice'
         ));
     }
@@ -739,6 +762,11 @@ class OrderController extends Controller
             $order_details->qty              =   $cart->qty;
             $order_details->save();
         }
+
+        if (self::isPaidOrCompletedStatus($order->order_status)) {
+            self::deductOrderStock($order->id);
+        }
+
         Cart::instance('pos_shopping')->destroy();
         Session::forget('pos_shipping');
         Session::forget('pos_discount');
@@ -1006,6 +1034,14 @@ class OrderController extends Controller
             return redirect()->back();
         }
 
+        $prev_status = $order->order_status;
+        $new_status  = $request->order_status ?? $request->status ?? $prev_status;
+
+        // If order was in Paid/Completed status, temporarily restore variant stock before applying item updates
+        if (self::isPaidOrCompletedStatus($prev_status)) {
+            self::restoreOrderStock($order->id);
+        }
+
         if (!$order->invoice_id) {
             $order->invoice_id = rand(11111, 99999);
         }
@@ -1013,7 +1049,7 @@ class OrderController extends Controller
         $order->discount         = $discount ? $discount : 0;
         $order->shipping_charge  = $shippingfee ? $shippingfee->amount : 0;
         $order->customer_id      = $customer_id;
-        $order->order_status     = $order->order_status ?? 1;
+        $order->order_status     = $new_status;
         $order->note             = $request->note;
         $order->order_date       = $request->order_date;
         $order->delivery_date    = $request->delivery_date;
@@ -1077,8 +1113,13 @@ class OrderController extends Controller
                 $order_details->qty              =   $cart->qty;
                 $order_details->save();
             }
-
         }
+
+        // If order status is Paid/Completed after update, deduct variant stock for current items
+        if (self::isPaidOrCompletedStatus($new_status)) {
+            self::deductOrderStock($order->id);
+        }
+
         Cart::instance('pos_shopping')->destroy();
         Session::forget('pos_shipping');
         Session::forget('pos_discount');
