@@ -74,13 +74,33 @@ class ProductController extends Controller
             'stock' => 'required',
             'description' => 'required',
             'product_code' => 'nullable|unique:products,product_code',
+            'pro_video' => 'nullable|file|mimes:mp4,mov,ogg,qt,webm,avi,mkv,flv,wmv,3gp|max:102400',
         ]);
         $last_id = Product::orderBy('id', 'desc')->select('id')->first();
         $last_id = $last_id?$last_id->id+1:1;
-        $input = $request->except(['image','files','proSize','proColor','sizePrice','sizeStock','colorPrice','colorStock','colorImage']);
+        $input = $request->except(['image','files','proSize','proColor','sizePrice','sizeStock','colorPrice','colorStock','colorImage','pro_video']);
 
         $input['slug'] = strtolower(preg_replace('/[\/\s]+/', '-', $request->name.'-'.$last_id));
-        $input['pro_video'] = $this->getYouTubeVideoId($request->pro_video);
+
+        // Video upload handling
+        $video = $request->file('pro_video');
+        if ($video) {
+            $dir1 = public_path('uploads/product/video/');
+            $dir2 = base_path('public/uploads/product/video/');
+            $dir3 = base_path('../public_html/uploads/product/video/');
+            foreach ([$dir1, $dir2, $dir3] as $dir) {
+                if (!File::exists($dir)) {
+                    @File::makeDirectory($dir, 0777, true, true);
+                }
+            }
+            $name = time() . '-' . str_replace(' ', '-', $video->getClientOriginalName());
+            $uploadPath = 'public/uploads/product/video/';
+            $video->move($uploadPath, $name);
+            $input['pro_video'] = $uploadPath . $name;
+        } else {
+            $input['pro_video'] = null;
+        }
+
         $input['status'] = $request->status?1:0;
         $input['topsale'] = $request->topsale?1:0;
         $input['feature_product'] = $request->feature_product?1:0;
@@ -184,12 +204,12 @@ class ProductController extends Controller
             'new_price' => 'required',
             'purchase_price' => 'required',
             'stock' => 'required',
-            'category_id' => 'required',
             'description' => 'required',
+            'pro_video' => 'nullable|file|mimes:mp4,mov,ogg,qt,webm,avi,mkv,flv,wmv,3gp|max:102400',
         ]);
 
         $update_data = Product::find($request->id);
-        $input = $request->except(['image','files','proSize','proColor','sizePrice','sizeStock','colorPrice','colorStock','colorImage']);
+        $input = $request->except(['image','files','proSize','proColor','sizePrice','sizeStock','colorPrice','colorStock','colorImage','pro_video']);
         $last_id = Product::orderBy('id', 'desc')->select('id')->first();
         $input['slug'] = strtolower(preg_replace('/[\/\s]+/', '-', $request->name.'-'.$last_id->id));
         $input['status'] = $request->status?1:0;
@@ -198,7 +218,39 @@ class ProductController extends Controller
         $input['flashsale'] = $request->flashsale?1:0;
         $input['is_new'] = $request->is_new?1:0;
         $input['is_prime'] = $request->is_prime?1:0;
-        $input['pro_video'] = $this->getYouTubeVideoId($request->pro_video);
+
+        // Video upload handling & deleting old video
+        $video = $request->file('pro_video');
+        if ($video) {
+            if ($update_data->pro_video) {
+                if (File::exists(public_path($update_data->pro_video))) {
+                    @File::delete(public_path($update_data->pro_video));
+                }
+                if (File::exists(base_path($update_data->pro_video))) {
+                    @File::delete(base_path($update_data->pro_video));
+                }
+                if (File::exists($update_data->pro_video)) {
+                    @File::delete($update_data->pro_video);
+                }
+            }
+
+            $dir1 = public_path('uploads/product/video/');
+            $dir2 = base_path('public/uploads/product/video/');
+            $dir3 = base_path('../public_html/uploads/product/video/');
+            foreach ([$dir1, $dir2, $dir3] as $dir) {
+                if (!File::exists($dir)) {
+                    @File::makeDirectory($dir, 0777, true, true);
+                }
+            }
+
+            $name = time() . '-' . str_replace(' ', '-', $video->getClientOriginalName());
+            $uploadPath = 'public/uploads/product/video/';
+            $video->move($uploadPath, $name);
+            $input['pro_video'] = $uploadPath . $name;
+        } else {
+            $input['pro_video'] = $update_data->pro_video;
+        }
+
         $update_data->update($input);
 
         // Sync size variants with price and stock
@@ -297,6 +349,17 @@ class ProductController extends Controller
     public function destroy(Request $request)
     {
         $delete_data = Product::find($request->hidden_id);
+        if ($delete_data && $delete_data->pro_video) {
+            if (File::exists(public_path($delete_data->pro_video))) {
+                @File::delete(public_path($delete_data->pro_video));
+            }
+            if (File::exists(base_path($delete_data->pro_video))) {
+                @File::delete(base_path($delete_data->pro_video));
+            }
+            if (File::exists($delete_data->pro_video)) {
+                @File::delete($delete_data->pro_video);
+            }
+        }
         $delete_data->delete();
         Toastr::success('Success','Data delete successfully');
         return redirect()->back();

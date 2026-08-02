@@ -223,8 +223,18 @@
             </div>
             <div class="col-sm-6">
               <div class="form-group mb-3">
-                <label for="pro_video" class="form-label">Product Video (Optional)</label>
-                <input type="text" class="form-control @error('pro_video') is-invalid @enderror" name="pro_video" value="{{ $edit_data->pro_video }}" id="pro_video" />
+                <label for="pro_video" class="form-label">Product Video (Optional, Max 100MB)</label>
+                <input type="file" class="form-control @error('pro_video') is-invalid @enderror" name="pro_video" id="pro_video" accept="video/*" />
+                <small class="text-muted d-block mt-1">Upload video file (MP4, WebM, MOV, AVI, etc. Max 100MB)</small>
+                @if($edit_data->pro_video)
+                  <div class="mt-2">
+                    @if(Str::startsWith($edit_data->pro_video, 'http') || !str_contains($edit_data->pro_video, '.'))
+                      <span class="badge bg-secondary">Legacy Link/ID: {{ $edit_data->pro_video }}</span>
+                    @else
+                      <video src="{{ asset($edit_data->pro_video) }}" controls style="max-width: 220px; max-height: 130px; border-radius: 6px; border: 1px solid #ddd;"></video>
+                    @endif
+                  </div>
+                @endif
                 @error('pro_video')
                 <span class="invalid-feedback" role="alert">
                   <strong>{{ $message }}</strong>

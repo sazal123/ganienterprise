@@ -205,8 +205,9 @@
             </div>
             <div class="col-sm-6">
               <div class="form-group mb-3">
-                <label for="pro_video" class="form-label">Product Video (Optional)</label>
-                <input type="text" class="form-control @error('pro_video') is-invalid @enderror" name="pro_unit" value="{{ old('pro_video') }}" id="pro_video" />
+                <label for="pro_video" class="form-label">Product Video (Optional, Max 100MB)</label>
+                <input type="file" class="form-control @error('pro_video') is-invalid @enderror" name="pro_video" id="pro_video" accept="video/*" />
+                <small class="text-muted d-block mt-1">Upload video file (MP4, WebM, MOV, AVI, etc. Max 100MB)</small>
                 @error('pro_video')
                 <span class="invalid-feedback" role="alert">
                   <strong>{{ $message }}</strong>
