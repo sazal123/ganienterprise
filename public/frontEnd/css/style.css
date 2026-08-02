@@ -5810,6 +5810,10 @@ a:hover .gani-product-name,
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
+.gani-header-logo img {
+    transform: scale(2.5);
+}
+
 .gani-header-logo {
     font-family: 'Playfair Display', serif;
     font-size: 28px;
