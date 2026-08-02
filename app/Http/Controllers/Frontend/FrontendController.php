@@ -472,13 +472,19 @@ class FrontendController extends Controller
 
     public function subcategory($slug, Request $request)
     {
-        $soldShow = $request->sold=='show'?true:false;
-        $subcategory = Subcategory::where(['slug' => $slug, 'status' => 1])->first();
+        $soldShow = $request->sold == 'show' ? true : false;
+        $subcategory = Subcategory::where(['slug' => $slug, 'status' => 1])->firstOrFail();
+
+        // Global price range for slider
+        $globalMin = Product::where(['status' => 1, 'subcategory_id' => $subcategory->id])->min('new_price');
+        $globalMax = Product::where(['status' => 1, 'subcategory_id' => $subcategory->id])->max('new_price');
+
         $products = Product::where(['status' => 1, 'subcategory_id' => $subcategory->id])
-            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'subcategory_id','sold','stock');
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'subcategory_id', 'sold', 'stock')
+            ->with(['image', 'images', 'procolors', 'prosizes']);
+
         $childcategories = Childcategory::where('subcategory_id', $subcategory->id)->get();
 
-        // return $request->sort;
         if ($request->sort == 1) {
             $products = $products->orderBy('created_at', 'desc');
         } elseif ($request->sort == 2) {
@@ -495,41 +501,45 @@ class FrontendController extends Controller
             $products = $products->latest();
         }
 
-        $min_price = $products->min('new_price');
-        $max_price = $products->max('new_price');
-        if($request->min_price && $request->max_price){
-            $products = $products->where('new_price','>=',$request->min_price);
-            $products = $products->where('new_price','<=',$request->max_price);
+        if ($request->min_price && $request->max_price) {
+            $products = $products->where('new_price', '>=', $request->min_price)
+                                 ->where('new_price', '<=', $request->max_price);
         }
 
         $selectedChildcategories = $request->input('childcategory', []);
         $products = $products->when($selectedChildcategories, function ($query) use ($selectedChildcategories) {
-            return $query->whereHas('childcategory', function ($subQuery) use ($selectedChildcategories) {
-                $subQuery->whereIn('id', $selectedChildcategories);
-            });
+            return $query->whereIn('childcategory_id', $selectedChildcategories);
         });
 
-        $products = $products->paginate(24);
-        // return $products;
-        $impproducts = Product::where(['status' => 1, 'topsale' => 1])
-            ->with('image')
-            ->limit(6)
+        $products = $products->paginate(24)->appends($request->all());
+
+        $categories = Category::where('status', 1)
+            ->with(['subcategories' => function ($q) {
+                $q->where('status', 1)->select('id', 'slug', 'subcategoryName', 'category_id');
+            }])
             ->select('id', 'name', 'slug')
             ->get();
 
-        return view('frontEnd.layouts.pages.subcategory', compact('subcategory', 'products', 'impproducts', 'childcategories', 'max_price', 'min_price','soldShow'));
+        return view('frontEnd.layouts.pages.subcategory', compact(
+            'subcategory', 'products', 'childcategories',
+            'globalMin', 'globalMax', 'soldShow', 'categories'
+        ));
     }
 
     public function products($slug, Request $request)
     {
-        $soldShow = $request->sold=='show'?true:false;
-        $childcategory = Childcategory::where(['slug' => $slug, 'status' => 1])->first();
+        $soldShow = $request->sold == 'show' ? true : false;
+        $childcategory = Childcategory::where(['slug' => $slug, 'status' => 1])->firstOrFail();
+
+        $globalMin = Product::where(['status' => 1, 'childcategory_id' => $childcategory->id])->min('new_price');
+        $globalMax = Product::where(['status' => 1, 'childcategory_id' => $childcategory->id])->max('new_price');
+
+        $products = Product::where(['status' => 1, 'childcategory_id' => $childcategory->id])
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'subcategory_id', 'childcategory_id', 'sold', 'stock')
+            ->with(['image', 'images', 'procolors', 'prosizes']);
+
         $childcategories = Childcategory::where('subcategory_id', $childcategory->subcategory_id)->get();
-        $products = Product::where(['status' => 1, 'childcategory_id' => $childcategory->id])->with('category')
-            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'subcategory_id', 'childcategory_id','sold','stock');
 
-
-        // return $request->sort;
         if ($request->sort == 1) {
             $products = $products->orderBy('created_at', 'desc');
         } elseif ($request->sort == 2) {
@@ -546,22 +556,24 @@ class FrontendController extends Controller
             $products = $products->latest();
         }
 
-        $min_price = $products->min('new_price');
-        $max_price = $products->max('new_price');
-        if($request->min_price && $request->max_price){
-            $products = $products->where('new_price','>=',$request->min_price);
-            $products = $products->where('new_price','<=',$request->max_price);
+        if ($request->min_price && $request->max_price) {
+            $products = $products->where('new_price', '>=', $request->min_price)
+                                 ->where('new_price', '<=', $request->max_price);
         }
 
-        $products = $products->paginate(24);
-        // return $products;
-        $impproducts = Product::where(['status' => 1, 'topsale' => 1])
-            ->with('image')
-            ->limit(6)
-            ->select('id', 'name', 'slug','stock')
+        $products = $products->paginate(24)->appends($request->all());
+
+        $categories = Category::where('status', 1)
+            ->with(['subcategories' => function ($q) {
+                $q->where('status', 1)->select('id', 'slug', 'subcategoryName', 'category_id');
+            }])
+            ->select('id', 'name', 'slug')
             ->get();
 
-        return view('frontEnd.layouts.pages.childcategory', compact('childcategory', 'products', 'impproducts', 'min_price', 'max_price', 'childcategories','soldShow'));
+        return view('frontEnd.layouts.pages.childcategory', compact(
+            'childcategory', 'products', 'childcategories',
+            'globalMin', 'globalMax', 'soldShow', 'categories'
+        ));
     }
 
 
