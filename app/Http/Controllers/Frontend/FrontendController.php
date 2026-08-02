@@ -724,7 +724,12 @@ class FrontendController extends Controller
     }
     public function districts(Request $request)
     {
-        $areas = District::where(['district' => $request->id])->pluck('area_name', 'id');
+        $districtName = $request->id ?? $request->district ?? $request->district_name;
+        if (!empty($districtName)) {
+            $areas = District::where('district', trim($districtName))->pluck('area_name', 'id');
+        } else {
+            $areas = [];
+        }
         return response()->json($areas);
     }
     public function campaign(Request $request, $slug)

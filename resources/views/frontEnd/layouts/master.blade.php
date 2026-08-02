@@ -836,28 +836,54 @@
         <script>
             $(document).on("change", ".district", function () {
                 var id = $(this).val();
+                var $areaSelect = $(this).closest('form').find('.area');
+                if (!$areaSelect.length) {
+                    $areaSelect = $('.area');
+                }
+                var selectedAreaId = $areaSelect.data('selected') || $areaSelect.val();
+
                 if (id) {
+                    var districtsUrl = "{{ route('districts', [], false) }}";
                     $.ajax({
                         type: "GET",
                         data: { id: id },
-                        url: "{{route('districts')}}",
+                        url: districtsUrl,
+                        dataType: "json",
                         success: function (res) {
-                            if (res) {
-                                $(".area").empty();
-                                $(".area").append('<option value="">Select..</option>');
+                            $areaSelect.empty();
+                            $areaSelect.append('<option value="">Select..</option>');
+                            if (res && Object.keys(res).length > 0) {
                                 $.each(res, function (key, value) {
-                                    $(".area").append('<option value="' + key + '">' + value + "</option>");
+                                    var isSelected = (selectedAreaId && selectedAreaId == key) ? 'selected' : '';
+                                    $areaSelect.append('<option value="' + key + '" ' + isSelected + '>' + value + "</option>");
                                 });
-                                $(".area").trigger('change');
-                            } else {
-                                $(".area").empty();
-                                $(".area").trigger('change');
                             }
+                            $areaSelect.trigger('change');
                         },
+                        error: function () {
+                            $.ajax({
+                                type: "GET",
+                                data: { id: id },
+                                url: "/districts",
+                                dataType: "json",
+                                success: function (res) {
+                                    $areaSelect.empty();
+                                    $areaSelect.append('<option value="">Select..</option>');
+                                    if (res && Object.keys(res).length > 0) {
+                                        $.each(res, function (key, value) {
+                                            var isSelected = (selectedAreaId && selectedAreaId == key) ? 'selected' : '';
+                                            $areaSelect.append('<option value="' + key + '" ' + isSelected + '>' + value + "</option>");
+                                        });
+                                    }
+                                    $areaSelect.trigger('change');
+                                }
+                            });
+                        }
                     });
                 } else {
-                    $(".area").empty();
-                    $(".area").trigger('change');
+                    $areaSelect.empty();
+                    $areaSelect.append('<option value="">Select..</option>');
+                    $areaSelect.trigger('change');
                 }
             });
         </script>
