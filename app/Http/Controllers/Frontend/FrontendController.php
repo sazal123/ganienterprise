@@ -153,6 +153,48 @@ class FrontendController extends Controller
             ->select('id', 'name', 'slug', 'image')
             ->get();
 
+        // School Bag category & products for Homepage tab
+        $schoolBagCat = Category::where('slug', 'school-bag')->orWhere('name', 'like', '%school%bag%')->first();
+        $schoolBagProducts = collect();
+        if ($schoolBagCat) {
+            $schoolBagProducts = Product::where(['status' => 1, 'category_id' => $schoolBagCat->id])
+                ->select('id', 'name', 'slug', 'new_price', 'old_price', 'sold', 'stock')
+                ->with('image', 'images', 'prosizes', 'procolors')
+                ->latest()
+                ->limit(8)
+                ->get();
+        }
+        if ($schoolBagProducts->isEmpty()) {
+            $schoolBagProducts = Product::where('status', 1)
+                ->where('name', 'like', '%bag%')
+                ->select('id', 'name', 'slug', 'new_price', 'old_price', 'sold', 'stock')
+                ->with('image', 'images', 'prosizes', 'procolors')
+                ->latest()
+                ->limit(8)
+                ->get();
+        }
+
+        // Ladies Bag category & products for Homepage tab
+        $ladiesBagCat = Category::where('slug', 'ladies-bag')->orWhere('name', 'like', '%ladies%bag%')->first();
+        $ladiesBagProducts = collect();
+        if ($ladiesBagCat) {
+            $ladiesBagProducts = Product::where(['status' => 1, 'category_id' => $ladiesBagCat->id])
+                ->select('id', 'name', 'slug', 'new_price', 'old_price', 'sold', 'stock')
+                ->with('image', 'images', 'prosizes', 'procolors')
+                ->latest()
+                ->limit(8)
+                ->get();
+        }
+        if ($ladiesBagProducts->isEmpty()) {
+            $ladiesBagProducts = Product::where('status', 1)
+                ->whereIn('category_id', [19, 24, 25, 26])
+                ->select('id', 'name', 'slug', 'new_price', 'old_price', 'sold', 'stock')
+                ->with('image', 'images', 'prosizes', 'procolors')
+                ->latest()
+                ->limit(8)
+                ->get();
+        }
+
         // Clothing spotlight categories
         $spotlightCategories = Category::where(['status' => 1, 'spotlight' => 1])
             ->select('id', 'name', 'slug', 'image')
@@ -179,7 +221,8 @@ class FrontendController extends Controller
             'sliders', 'frontcategory', 'trendingProducts', 'newProducts', 'primeProducts', 'topCategoryProducts',
             'hotdeal_top', 'hotdeal_bottom', 'homeproducts', 'sliderbottomads', 'footertopads',
             'flas_sales', 'campaognads', 'reviews', 'all_products', 'homeCategories',
-            'primeDropBanner', 'primeDropProducts', 'spotlightCategories'
+            'primeDropBanner', 'primeDropProducts', 'spotlightCategories',
+            'schoolBagProducts', 'ladiesBagProducts', 'schoolBagCat', 'ladiesBagCat'
         ));
     }
 

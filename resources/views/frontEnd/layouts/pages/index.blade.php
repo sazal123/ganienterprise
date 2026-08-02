@@ -339,46 +339,127 @@
 @endif
 
 {{-- ============================================================ --}}
-{{-- TSHIRTS & CLOTHING SPOTLIGHT — Admin-manageable via spotlight toggle --}}
+{{-- SCHOOL BAG & LADIES BAG TABBED SECTION --}}
 {{-- ============================================================ --}}
-@if($spotlightCategories->count() > 0)
-<section class="gani-section" style="background: #f8f8f6;">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="gani-section-title">Tshirts & Clothing</h2>
-            <div class="gani-divider mx-auto"></div>
-        </div>
-        <div class="row g-4">
-            @foreach($spotlightCategories as $cat)
-            @php
-                $catImg = $cat->image;
-                if ($catImg && str_starts_with($catImg, 'public/')) { $catImg = substr($catImg, 7); }
-            @endphp
-            <div class="col-6 col-md-g5">
-                <a href="{{ route('category', $cat->slug) }}" class="gani-spotlight-card gani-clothing-card" style="border-radius:8px;overflow:hidden;">
-                    <div style="position:relative;aspect-ratio:3/4;overflow:hidden;">
-                        @if($cat->image)
-                            <img src="{{ asset($catImg) }}" alt="{{ $cat->name }}" class="w-100 h-100 object-fit-cover gani-clothing-img" />
-                        @else
-                            <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background:linear-gradient(135deg,#C9A84C,#8B6914);">
-                                <span class="text-white fw-bold" style="font-size:40px;font-family:'Playfair Display',serif;">{{ mb_substr($cat->name,0,1) }}</span>
-                            </div>
-                        @endif
-                        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 50%);"></div>
-                        <div style="position:absolute;bottom:0;left:0;right:0;padding:20px;">
-                            <h3 class="gani-clothing-name">{{ $cat->name }}</h3>
-                        </div>
-                    </div>
-                </a>
+<style>
+.bag-section-wrapper {
+    background: #ffffff;
+    padding: 50px 0 60px;
+}
+.bag-tab-nav-bar {
+    position: relative;
+    border-bottom: 1px solid #eaeaea;
+    margin-bottom: 40px;
+}
+.bag-tab-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin: 0 auto;
+}
+.bag-tab-btn {
+    background: none;
+    border: none;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #999999;
+    padding: 12px 16px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.bag-tab-btn:hover {
+    color: #111111;
+}
+.bag-tab-btn.active {
+    color: #111111;
+}
+.bag-tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #C9A84C;
+}
+</style>
+
+<section class="bag-section-wrapper">
+    {{-- Centered Tab Bar with Full-Width Gray Bottom Line --}}
+    <div class="bag-tab-nav-bar">
+        <div class="container">
+            <div class="bag-tab-nav">
+                <button class="bag-tab-btn active" data-target="#tab-school-bag">
+                    SCHOOL BAG
+                </button>
+                <button class="bag-tab-btn" data-target="#tab-ladies-bag">
+                    LADIES BAG
+                </button>
             </div>
-            @endforeach
         </div>
-        <div class="text-center mt-4">
-            <a href="{{ route('shop') }}" class="gani-view-all-btn">View All</a>
+    </div>
+
+    <div class="container">
+        {{-- Tab Content Panes --}}
+        <div class="tab-content">
+            {{-- School Bag Tab --}}
+            <div class="tab-pane fade show active" id="tab-school-bag">
+                @if($schoolBagProducts->count() > 0)
+                <div class="row g-4">
+                    @foreach($schoolBagProducts as $product)
+                    <div class="col-6 col-md-g5">
+                        @include('frontEnd.layouts.pages._product_card_folks', ['product' => $product])
+                    </div>
+                    @endforeach
+                </div>
+                <div class="text-center mt-5">
+                    <a href="{{ $schoolBagCat ? route('category', $schoolBagCat->slug) : route('shop') }}" class="gani-view-all-btn">VIEW ALL</a>
+                </div>
+                @else
+                <p class="text-center text-muted py-4">No School Bag products found</p>
+                @endif
+            </div>
+
+            {{-- Ladies Bag Tab --}}
+            <div class="tab-pane fade" id="tab-ladies-bag">
+                @if($ladiesBagProducts->count() > 0)
+                <div class="row g-4">
+                    @foreach($ladiesBagProducts as $product)
+                    <div class="col-6 col-md-g5">
+                        @include('frontEnd.layouts.pages._product_card_folks', ['product' => $product])
+                    </div>
+                    @endforeach
+                </div>
+                <div class="text-center mt-5">
+                    <a href="{{ $ladiesBagCat ? route('category', $ladiesBagCat->slug) : route('shop') }}" class="gani-view-all-btn">VIEW ALL</a>
+                </div>
+                @else
+                <p class="text-center text-muted py-4">No Ladies Bag products found</p>
+                @endif
+            </div>
         </div>
     </div>
 </section>
-@endif
+
+@push('script')
+<script>
+$(document).ready(function() {
+    $('.bag-tab-btn').on('click', function() {
+        $('.bag-tab-btn').removeClass('active');
+        $(this).addClass('active');
+
+        var target = $(this).data('target');
+        $('.tab-pane').removeClass('show active');
+        $(target).addClass('show active');
+    });
+});
+</script>
+@endpush
 
 
 {{-- ============================================================ --}}
