@@ -154,20 +154,20 @@ class CustomerManageController extends Controller
         // Handle image upload
         $image = $request->file('image');
         if ($image) {
-            $name = time() . '-' . $image->getClientOriginalName();
-            $name = preg_replace('/\.(jpg|jpeg|png|webp)$/', '.webp', $name);
-            $name = strtolower(preg_replace('/\s+/', '-', $name));
+            $name = time() . '-' . str_replace(' ', '-', $image->getClientOriginalName());
             $uploadpath = 'public/uploads/customer/';
+
+            $dir1 = public_path('uploads/customer/');
+            $dir2 = base_path('public/uploads/customer/');
+            $dir3 = base_path('../public_html/uploads/customer/');
+            foreach ([$dir1, $dir2, $dir3] as $dir) {
+                if (!File::exists($dir)) {
+                    @File::makeDirectory($dir, 0777, true, true);
+                }
+            }
+
+            $image->move($uploadpath, $name);
             $imageUrl = $uploadpath . $name;
-            $img = Image::make($image->getRealPath());
-            $img->encode('webp', 90);
-            $width = 100;
-            $height = 100;
-            $img->height() > $img->width() ? $width = null : $height = null;
-            $img->resize($width, $height, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $img->save($imageUrl);
             $input['image'] = $imageUrl;
         }
 
@@ -209,22 +209,24 @@ class CustomerManageController extends Controller
         // Handle image
         $image = $request->file('image');
         if ($image) {
-            $name = time() . '-' . $image->getClientOriginalName();
-            $name = preg_replace('/\.(jpg|jpeg|png|webp)$/', '.webp', $name);
-            $name = strtolower(preg_replace('/\s+/', '-', $name));
+            $name = time() . '-' . str_replace(' ', '-', $image->getClientOriginalName());
             $uploadpath = 'public/uploads/customer/';
+
+            $dir1 = public_path('uploads/customer/');
+            $dir2 = base_path('public/uploads/customer/');
+            $dir3 = base_path('../public_html/uploads/customer/');
+            foreach ([$dir1, $dir2, $dir3] as $dir) {
+                if (!File::exists($dir)) {
+                    @File::makeDirectory($dir, 0777, true, true);
+                }
+            }
+
+            $image->move($uploadpath, $name);
             $imageUrl = $uploadpath . $name;
-            $img = Image::make($image->getRealPath());
-            $img->encode('webp', 90);
-            $width = 100;
-            $height = 100;
-            $img->height() > $img->width() ? $width = null : $height = null;
-            $img->resize($width, $height, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $img->save($imageUrl);
             $input['image'] = $imageUrl;
-            File::delete($update_data->image);
+            if ($update_data->image && File::exists($update_data->image)) {
+                @File::delete($update_data->image);
+            }
         } else {
             $input['image'] = $update_data->image;
         }

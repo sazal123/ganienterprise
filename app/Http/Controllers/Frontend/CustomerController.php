@@ -450,6 +450,16 @@ class CustomerController extends Controller
         if ($image) {
             $name = time() . '-' . str_replace(' ', '-', $image->getClientOriginalName());
             $uploadPath = 'public/uploads/customer/';
+
+            $dir1 = public_path('uploads/customer/');
+            $dir2 = base_path('public/uploads/customer/');
+            $dir3 = base_path('../public_html/uploads/customer/');
+            foreach ([$dir1, $dir2, $dir3] as $dir) {
+                if (!File::exists($dir)) {
+                    @File::makeDirectory($dir, 0777, true, true);
+                }
+            }
+
             $image->move($uploadPath, $name);
             $imageUrl = $uploadPath . $name;
         } else {
