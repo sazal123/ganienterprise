@@ -286,14 +286,14 @@
 .pdp-actions { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
 .pdp-add-cart {
     flex: 1; min-width: 180px; padding: 14px 28px;
-    background: #3c7d17; color: #fff;
+    background: #000; color: #fff;
     border: none; border-radius: 8px; font-size: 14px; font-weight: 700;
     cursor: pointer; transition: all 0.25s ease;
     text-transform: uppercase; letter-spacing: 1px;
     box-shadow: 0 3px 10px rgba(60,125,23,0.25);
 }
 .pdp-add-cart:hover {
-    background: #2d5d11; color: #fff;
+    background: #000; color: #fff;
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(60,125,23,0.35);
 }
@@ -347,10 +347,10 @@
     align-items: center; justify-content: center; gap: 6px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
-.pdp-call-btn { background: #3c7d17; color: #fff; }
-.pdp-call-btn:hover { background: #2d5d11; color: #fff; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(60,125,23,0.25); }
-.pdp-whatsapp-btn { background: #25D366; color: #fff; }
-.pdp-whatsapp-btn:hover { background: #1da851; color: #fff; transform: translateY(-1px); }
+.pdp-call-btn { background: #000; color: #fff; }
+.pdp-call-btn:hover { background: #000; color: #fff; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(60,125,23,0.25); }
+.pdp-whatsapp-btn { background: #000; color: #fff; }
+.pdp-whatsapp-btn:hover { background: #000; color: #fff; transform: translateY(-1px); }
 
 /* ── Shipping Table ── */
 .pdp-shipping-table { margin-bottom: 20px; }
@@ -358,7 +358,7 @@
     width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #eee; border-radius: 6px; overflow: hidden;
 }
 .pdp-shipping-table th {
-    background: #3c7d17; color: #fff; padding: 8px 12px; text-align: center; font-weight: 600;
+    background: #000; color: #fff; padding: 8px 12px; text-align: center; font-weight: 600;
 }
 .pdp-shipping-table td { padding: 8px 12px; border-bottom: 1px solid #f0f0f0; color: #555; }
 .pdp-shipping-table tr:last-child td { border-bottom: none; }
@@ -612,15 +612,9 @@
                     <span class="pdp-save-badge">SAVE {{ $discount }}%</span>
                     @endif
                 </div>
-
-                {{-- Installment / Shipping --}}
-                <div class="pdp-installment">
-                    <i class="fa-solid fa-credit-card"></i>
-                    <span>Buy Now, Pay Later! — Easy EMI Available</span>
-                </div>
                 <div class="pdp-shipping-info">
                     <i class="fa-solid fa-truck"></i>
-                    <span>Estimated Delivery: 7–10 Days · Ship From: Overseas</span>
+                    <span>Estimated Delivery: 2-3 Days · Ship From: {{ $details->ship_from ?? 'Dhaka' }}</span>
                 </div>
 
                 {{-- Variants --}}
@@ -724,12 +718,6 @@
                         @endforeach
                     </div>
                     @else
-                    <div class="pdp-features">
-                        <span class="pdp-feature-item"><i class="fa-solid fa-check-circle"></i> Premium Quality</span>
-                        <span class="pdp-feature-item"><i class="fa-solid fa-check-circle"></i> Adjustable Strap</span>
-                        <span class="pdp-feature-item"><i class="fa-solid fa-check-circle"></i> With Zip</span>
-                        <span class="pdp-feature-item"><i class="fa-solid fa-check-circle"></i> Interior Pocket</span>
-                    </div>
                     @endif
 
                     {{-- Trust Badges --}}
