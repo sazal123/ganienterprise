@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\ApiIntegrationController;
 use App\Http\Controllers\Admin\GeneralSettingController;
 use App\Http\Controllers\Admin\SocialMediaController;
 use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\BannerCategoryController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\NoticeController;
@@ -68,7 +69,7 @@ Route::group(['namespace'=>'Frontend', 'middleware' => ['ipcheck','check_refer']
     Route::get('product/{id}', [FrontendController::class, 'details'])->name('product');
     Route::get('quick-view', [FrontendController::class, 'quickview'])->name('quickview');
     Route::get('/shipping-charge', [FrontendController::class, 'shipping_charge'])->name('shipping.charge');
-    Route::get('site/contact-us', [FrontendController::class, 'contact'])->name('contact');
+    Route::match(['get', 'post'], 'site/contact-us', [FrontendController::class, 'contact'])->name('contact');
     Route::get('/page/{slug}', [FrontendController::class, 'page'])->name('page');
     Route::get('districts', [FrontendController::class, 'districts'])->name('districts');
     Route::get('/campaign/{slug}', [FrontendController::class, 'campaign'])->name('campaign');
@@ -495,5 +496,11 @@ Route::group(['namespace'=>'Admin','middleware' => ['auth','lock','check_refer']
     Route::post('customer/ip-store', [CustomerManageController::class,'ipblock_store'])->name('customers.ipblock.store');
     Route::post('customer/ip-update', [CustomerManageController::class,'ipblock_update'])->name('customers.ipblock.update');
     Route::post('customer/ip-destroy', [CustomerManageController::class,'ipblock_destroy'])->name('customers.ipblock.destroy');
+
+    // Customer Queries / Contact Messages
+    Route::get('contact-messages', [ContactMessageController::class, 'index'])->name('contact_messages.index');
+    Route::get('contact-messages/{id}/edit', [ContactMessageController::class, 'edit'])->name('contact_messages.edit');
+    Route::post('contact-messages/update', [ContactMessageController::class, 'update'])->name('contact_messages.update');
+    Route::post('contact-messages/destroy', [ContactMessageController::class, 'destroy'])->name('contact_messages.destroy');
 
 });

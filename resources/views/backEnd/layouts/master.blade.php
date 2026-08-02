@@ -420,6 +420,9 @@
                       <a href="{{route('contact.index')}}"><i data-feather="file-plus"></i> Contact</a>
                     </li>
                     <li>
+                      <a href="{{route('contact_messages.index')}}"><i data-feather="mail"></i> Customer Queries</a>
+                    </li>
+                    <li>
                       <a href="{{route('pages.index')}}"><i data-feather="file-plus"></i> Create Page</a>
                     </li>
                     <li>

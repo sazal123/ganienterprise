@@ -25,6 +25,7 @@ use App\Models\Order;
 use App\Models\Review;
 use App\Models\Offer;
 use App\Models\Contact;
+use App\Models\ContactMessage;
 use App\Models\GeneralSetting;
 use Session;
 use Cart;
@@ -704,14 +705,24 @@ class FrontendController extends Controller
     public function contact(Request $request)
     {
         // Check if form data is present
-        if ($request->has(['name', 'phone', 'email', 'subject', 'message'])) {
+        if ($request->isMethod('post') || $request->has(['name', 'phone', 'email', 'subject', 'message'])) {
             // Validate input
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'phone' => 'required|numeric',
+                'phone' => 'required|string|max:50',
                 'email' => 'required|email|max:255',
                 'subject' => 'required|string|max:255',
                 'message' => 'required|string',
+            ]);
+
+            // Save customer query to database
+            ContactMessage::create([
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'email' => $request->email,
+                'subject' => $request->subject,
+                'message' => $request->message,
+                'status' => 'Pending',
             ]);
 
             // Prepare data for email
@@ -723,22 +734,21 @@ class FrontendController extends Controller
                 'message' => $request->message,
             ];
 
-
             // Send email to contact email from admin panel
             $contact = Contact::where('status', 1)->first();
             if ($contact && $contact->email) {
                 try {
                     Mail::to($contact->email)->send(new ContactMail($data));
                 } catch (\Exception $e) {
-                    \Log::error('Email sending failed: ' . $e->getMessage());
+                    Log::error('Email sending failed: ' . $e->getMessage());
                 }
             }
 
-            // Redirect to the same page with a success message in query parameters
-            return redirect()->route('contact')->with('success', 'Your message has been sent successfully!');
+            Toastr::success('Success', 'Thank you! Your message has been sent successfully.');
+            return redirect()->route('contact')->with('success', 'Thank you! Your message has been sent successfully.');
         }
 
-        // Load the contact form view with any success message
+        // Load the contact form view
         return view('frontEnd.layouts.pages.contact');
     }
 
