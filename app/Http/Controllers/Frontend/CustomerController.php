@@ -28,6 +28,7 @@ use Mail;
 use Str;
 use DB;
 use Illuminate\Support\Facades\Log;
+use File;
 class CustomerController extends Controller
 {
     function __construct()
@@ -443,23 +444,15 @@ class CustomerController extends Controller
     }
     public function profile_update(Request $request)
     {
-        $update_data = Customer::where(['id'=>Auth::guard('customer')->user()->id])->firstOrFail();
+        $update_data = Customer::where(['id' => Auth::guard('customer')->user()->id])->firstOrFail();
 
         $image = $request->file('image');
-        if($image){
-            // image with intervention 
-            $name =  time().'-'.$image->getClientOriginalName();
-            $name = preg_replace('"\.(jpg|jpeg|png|webp)$"', '.webp',$name);
-            $name = strtolower(Str::slug($name));
-            $uploadpath = 'public/uploads/customer/';
-            $imageUrl = $uploadpath.$name; 
-            $img = Image::make($image->getRealPath());
-            $img->encode('webp', 90);
-            $width = 120;
-            $height = 120;
-            $img->resize($width, $height);
-            $img->save($imageUrl);
-        }else{
+        if ($image) {
+            $name = time() . '-' . str_replace(' ', '-', $image->getClientOriginalName());
+            $uploadPath = 'public/uploads/customer/';
+            $image->move($uploadPath, $name);
+            $imageUrl = $uploadPath . $name;
+        } else {
             $imageUrl = $update_data->image;
         }
 
@@ -472,8 +465,8 @@ class CustomerController extends Controller
         $update_data->image       =   $imageUrl;
         $update_data->save();
 
-        Toastr::success('Your profile update successfully', 'Success!');
-       return redirect()->route('customer.account');
+        Toastr::success('Your profile updated successfully', 'Success!');
+        return redirect()->route('customer.account');
     }
 
     public function order_track(){

@@ -834,24 +834,31 @@
         <script></script>
         <script></script>
         <script>
-            $(".district").on("change", function () {
+            $(document).on("change", ".district", function () {
                 var id = $(this).val();
-                $.ajax({
-                    type: "GET",
-                    data: { id: id },
-                    url: "{{route('districts')}}",
-                    success: function (res) {
-                        if (res) {
-                            $(".area").empty();
-                            $(".area").append('<option value="">Select..</option>');
-                            $.each(res, function (key, value) {
-                                $(".area").append('<option value="' + key + '" >' + value + "</option>");
-                            });
-                        } else {
-                            $(".area").empty();
-                        }
-                    },
-                });
+                if (id) {
+                    $.ajax({
+                        type: "GET",
+                        data: { id: id },
+                        url: "{{route('districts')}}",
+                        success: function (res) {
+                            if (res) {
+                                $(".area").empty();
+                                $(".area").append('<option value="">Select..</option>');
+                                $.each(res, function (key, value) {
+                                    $(".area").append('<option value="' + key + '">' + value + "</option>");
+                                });
+                                $(".area").trigger('change');
+                            } else {
+                                $(".area").empty();
+                                $(".area").trigger('change');
+                            }
+                        },
+                    });
+                } else {
+                    $(".area").empty();
+                    $(".area").trigger('change');
+                }
             });
         </script>
         <script>
