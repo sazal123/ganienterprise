@@ -191,6 +191,83 @@
 }
 .pdp-gallery-swatch:hover .swatch-tooltip { display: block; }
 
+/* ── Alibaba Style Media Toggle Bar ── */
+.pdp-media-toggle-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+.pdp-media-toggle-bar {
+    display: inline-flex;
+    background: #eef0f3;
+    padding: 3px;
+    border-radius: 20px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);
+}
+.pdp-media-toggle-btn {
+    border: none;
+    background: transparent;
+    padding: 6px 18px;
+    border-radius: 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+}
+.pdp-media-toggle-btn.active {
+    background: #ffffff;
+    color: #000000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.pdp-media-toggle-btn:hover:not(.active) {
+    color: #000000;
+}
+
+/* Video Thumbnail with Play Badge */
+.pdp-thumb-video-item {
+    position: relative;
+    cursor: pointer;
+}
+.pdp-thumb-play-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 11px;
+    transition: background 0.2s ease;
+}
+.pdp-thumb-video-item:hover .pdp-thumb-play-overlay {
+    background: rgba(0,0,0,0.6);
+}
+.pdp-thumb-play-overlay i {
+    background: rgba(0,0,0,0.7);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 2px;
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.pdp-video-stage-wrapper {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
 @media (max-width: 991px) {
     .pdp-gallery, .pdp-info { flex: 0 0 100%; max-width: 100%; }
     .pdp-thumb-item { flex: 0 0 64px; width: 64px; height: 64px; }
@@ -199,6 +276,7 @@
 }
 @media (max-width: 576px) {
     .pdp-gallery-badge { top: 10px; left: 10px; padding: 5px 12px; font-size: 11px; }
+    .pdp-video-stage-wrapper { min-height: 280px; }
 }
 
 /* ── Product Info ── */
@@ -560,7 +638,38 @@
                         <div class="swiper-button-next"></div>
                         <div class="swiper-pagination pdp-swiper-pagination"></div>
                     </div>
+
+                    {{-- Alibaba Style Video Stage --}}
+                    @if($details->pro_video)
+                    <div class="pdp-video-stage-wrapper" id="pdpVideoStageWrapper" style="display: none;">
+                        @if(Str::startsWith($details->pro_video, 'http') || !str_contains($details->pro_video, '.'))
+                            <iframe id="pdpIframeVideo" src="https://www.youtube.com/embed/{{ $details->pro_video }}?enablejsapi=1"
+                                    title="Product Video" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen style="width: 100%; height: 100%; min-height: 400px; border-radius: 8px; border: none;"></iframe>
+                        @else
+                            <video id="pdpHtml5Video" controls style="width: 100%; height: 100%; max-height: 480px; border-radius: 8px; background: #000; display: block; margin: 0 auto;" preload="metadata">
+                                <source src="{{ asset($details->pro_video) }}">
+                                Your browser does not support the video tag.
+                            </video>
+                        @endif
+                    </div>
+                    @endif
                 </div>
+
+                {{-- Alibaba Style Media Toggle Pills --}}
+                @if($details->pro_video)
+                <div class="pdp-media-toggle-wrapper">
+                    <div class="pdp-media-toggle-bar">
+                        <button type="button" class="pdp-media-toggle-btn active" id="pdpTogglePhotosBtn">
+                            <i class="fa-regular fa-image me-1"></i> Photos
+                        </button>
+                        <button type="button" class="pdp-media-toggle-btn" id="pdpToggleVideoBtn">
+                            <i class="fa-solid fa-circle-play me-1"></i> Video
+                        </button>
+                    </div>
+                </div>
+                @endif
 
                 {{-- Thumbnails --}}
                 <div class="pdp-thumb-strip">
@@ -577,6 +686,18 @@
                             <img src="{{ asset('frontEnd/img/default-product.jpg') }}" alt="" />
                         </div>
                         @endforelse
+
+                        @if($details->pro_video)
+                        <div class="pdp-thumb-item pdp-thumb-video-item" id="pdpThumbVideoItem" title="Watch Product Video">
+                            @php
+                                $thumbImg = $sliderImages->first() ? asset($sliderImages->first()->image) : asset('frontEnd/img/default-product.jpg');
+                            @endphp
+                            <img src="{{ $thumbImg }}" alt="Video" />
+                            <div class="pdp-thumb-play-overlay">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
 
@@ -1084,10 +1205,61 @@ $(document).ready(function() {
         }
     });
 
+    // ═══════════════════════════════════════════
+    //  ALIBABA STYLE VIDEO & PHOTOS TOGGLE
+    // ═══════════════════════════════════════════
+
+    function showPhotosStage() {
+        $('#pdpVideoStageWrapper').hide();
+        $('#pdpMainSwiper').show();
+        $('#pdpTogglePhotosBtn').addClass('active');
+        $('#pdpToggleVideoBtn').removeClass('active');
+        $('#pdpThumbVideoItem').removeClass('active');
+
+        var v = document.getElementById('pdpHtml5Video');
+        if (v && typeof v.pause === 'function') {
+            v.pause();
+        }
+    }
+
+    function showVideoStage() {
+        $('#pdpMainSwiper').hide();
+        if (typeof $zoomLens !== 'undefined') $zoomLens.removeClass('show');
+        if (typeof $zoomResult !== 'undefined') $zoomResult.removeClass('show');
+        $('#pdpVideoStageWrapper').show();
+
+        $('#pdpToggleVideoBtn').addClass('active');
+        $('#pdpTogglePhotosBtn').removeClass('active');
+
+        $('.pdp-thumb-item').removeClass('active');
+        $('#pdpThumbVideoItem').addClass('active');
+
+        var v = document.getElementById('pdpHtml5Video');
+        if (v && typeof v.play === 'function') {
+            v.play().catch(function(e) { console.log('Autoplay prevented:', e); });
+        }
+    }
+
+    $('#pdpTogglePhotosBtn').on('click', function() {
+        showPhotosStage();
+        $('.pdp-thumb-item:not(#pdpThumbVideoItem)').first().addClass('active');
+    });
+
+    $('#pdpToggleVideoBtn, #pdpThumbVideoItem').on('click', function() {
+        showVideoStage();
+    });
+
     // ── Thumbnail click ──
-    $('.pdp-thumb-item').on('click', function() {
+    $('.pdp-thumb-item:not(#pdpThumbVideoItem)').on('click', function() {
+        showPhotosStage();
         var idx = $(this).data('index');
-        mainSwiper.slideTo(idx);
+        if (typeof mainSwiper !== 'undefined' && mainSwiper.slideTo && typeof idx !== 'undefined') {
+            mainSwiper.slideTo(idx);
+        }
+    });
+
+    $('.pdp-gallery-swatch, .pdp-color-swatch').on('click', function() {
+        showPhotosStage();
     });
 
     function selectColorById(colorId) {
