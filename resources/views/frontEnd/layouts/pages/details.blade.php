@@ -260,12 +260,34 @@
 }
 
 .pdp-video-stage-wrapper {
+    position: relative;
     width: 100%;
     height: 100%;
     min-height: 400px;
     background: #000;
     border-radius: 8px;
     overflow: hidden;
+}
+.pdp-video-nav-prev,
+.pdp-video-nav-next {
+    z-index: 10;
+    color: #ffffff !important;
+    background: rgba(0, 0, 0, 0.4);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.pdp-video-nav-prev:after,
+.pdp-video-nav-next:after {
+    font-size: 16px;
+    font-weight: bold;
+}
+.pdp-video-nav-prev:hover,
+.pdp-video-nav-next:hover {
+    background: rgba(0, 0, 0, 0.7);
 }
 
 @media (max-width: 991px) {
@@ -590,31 +612,51 @@
 
                         if ($productcolors->count() > 0) {
                             foreach ($productcolors as $key => $procolor) {
-                                // Find image matching this color_id or fallback to general image at index or main image
                                 $colorImg = $details->images->where('color_id', $procolor->color_id)->first();
                                 if (!$colorImg) {
                                     $colorImg = $details->images->get($key) ?? $details->image;
                                 }
 
-                                if ($colorImg) {
+                                if ($colorImg && is_object($colorImg) && !empty($colorImg->image)) {
                                     $sliderImages->push((object)[
                                         'image' => $colorImg->image,
+                                        'color_id' => $procolor->color_id,
+                                        'color_name' => $procolor->color ? $procolor->color->colorName : '',
+                                    ]);
+                                } elseif (is_string($colorImg) && !empty($colorImg)) {
+                                    $sliderImages->push((object)[
+                                        'image' => $colorImg,
                                         'color_id' => $procolor->color_id,
                                         'color_name' => $procolor->color ? $procolor->color->colorName : '',
                                     ]);
                                 }
                             }
                         } else {
-                            $images = $details->images->isEmpty() ? collect([$details->image]) : $details->images;
-                            foreach ($images as $img) {
-                                if ($img) {
-                                    $sliderImages->push((object)[
-                                        'image' => $img->image,
-                                        'color_id' => $img->color_id ?? '',
-                                        'color_name' => '',
-                                    ]);
+                            if ($details->images && $details->images->count() > 0) {
+                                foreach ($details->images as $img) {
+                                    if ($img && !empty($img->image)) {
+                                        $sliderImages->push((object)[
+                                            'image' => $img->image,
+                                            'color_id' => $img->color_id ?? '',
+                                            'color_name' => '',
+                                        ]);
+                                    }
                                 }
+                            } elseif ($details->image) {
+                                $sliderImages->push((object)[
+                                    'image' => $details->image,
+                                    'color_id' => '',
+                                    'color_name' => '',
+                                ]);
                             }
+                        }
+
+                        if ($sliderImages->isEmpty()) {
+                            $sliderImages->push((object)[
+                                'image' => 'frontEnd/img/default-product.jpg',
+                                'color_id' => '',
+                                'color_name' => '',
+                            ]);
                         }
                     @endphp
                     <div class="swiper pdp-main-swiper" id="pdpMainSwiper">
@@ -628,6 +670,23 @@
                                 <img src="{{ asset('frontEnd/img/default-product.jpg') }}" alt="{{ $details->name }}" />
                             </div>
                             @endforelse
+
+                            {{-- Native Swiper Video Slide --}}
+                            @if($details->pro_video)
+                            <div class="swiper-slide pdp-video-slide-item" data-is-video="1">
+                                @if(Str::startsWith($details->pro_video, 'http') || !str_contains($details->pro_video, '.'))
+                                    <iframe id="pdpIframeVideo" src="https://www.youtube.com/embed/{{ $details->pro_video }}?enablejsapi=1"
+                                            title="Product Video" frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowfullscreen style="width: 100%; height: 100%; min-height: 400px; border-radius: 8px; border: none;"></iframe>
+                                @else
+                                    <video id="pdpHtml5Video" controls style="width: 100%; height: 100%; max-height: 480px; border-radius: 8px; background: #000; display: block; margin: 0 auto;" preload="metadata">
+                                        <source src="{{ asset($details->pro_video) }}">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                @endif
+                            </div>
+                            @endif
                         </div>
                         {{-- Zoom lens & result --}}
                         <div class="pdp-zoom-lens" id="pdpZoomLens"></div>
@@ -638,23 +697,6 @@
                         <div class="swiper-button-next"></div>
                         <div class="swiper-pagination pdp-swiper-pagination"></div>
                     </div>
-
-                    {{-- Alibaba Style Video Stage --}}
-                    @if($details->pro_video)
-                    <div class="pdp-video-stage-wrapper" id="pdpVideoStageWrapper" style="display: none;">
-                        @if(Str::startsWith($details->pro_video, 'http') || !str_contains($details->pro_video, '.'))
-                            <iframe id="pdpIframeVideo" src="https://www.youtube.com/embed/{{ $details->pro_video }}?enablejsapi=1"
-                                    title="Product Video" frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen style="width: 100%; height: 100%; min-height: 400px; border-radius: 8px; border: none;"></iframe>
-                        @else
-                            <video id="pdpHtml5Video" controls style="width: 100%; height: 100%; max-height: 480px; border-radius: 8px; background: #000; display: block; margin: 0 auto;" preload="metadata">
-                                <source src="{{ asset($details->pro_video) }}">
-                                Your browser does not support the video tag.
-                            </video>
-                        @endif
-                    </div>
-                    @endif
                 </div>
 
                 {{-- Alibaba Style Media Toggle Pills --}}
@@ -688,11 +730,12 @@
                         @endforelse
 
                         @if($details->pro_video)
+                        @php
+                            $thumbImageObj = $sliderImages->first();
+                            $thumbImgSrc = ($thumbImageObj && !empty($thumbImageObj->image)) ? asset($thumbImageObj->image) : asset('frontEnd/img/default-product.jpg');
+                        @endphp
                         <div class="pdp-thumb-item pdp-thumb-video-item" id="pdpThumbVideoItem" title="Watch Product Video">
-                            @php
-                                $thumbImg = $sliderImages->first() ? asset($sliderImages->first()->image) : asset('frontEnd/img/default-product.jpg');
-                            @endphp
-                            <img src="{{ $thumbImg }}" alt="Video" />
+                            <img src="{{ $thumbImgSrc }}" alt="Video" />
                             <div class="pdp-thumb-play-overlay">
                                 <i class="fa-solid fa-play"></i>
                             </div>
@@ -1088,36 +1131,62 @@ $(document).ready(function() {
         on: {
             slideChange: function() {
                 var activeSlide = this.slides[this.activeIndex];
-                var colorId = $(activeSlide).data('color-id');
-                $('.pdp-thumb-item').removeClass('active');
-                if (colorId) {
-                    $('.pdp-thumb-item:visible[data-color-id="' + colorId + '"]').first().addClass('active');
+                var isVideo = $(activeSlide).data('is-video');
 
-                    // Auto-select corresponding color swatch on product details page
-                    $('.pdp-gallery-swatch').removeClass('active');
-                    $('.pdp-gallery-swatch[data-color-id="' + colorId + '"]').addClass('active');
+                if (isVideo) {
+                    $('#pdpToggleVideoBtn').addClass('active');
+                    $('#pdpTogglePhotosBtn').removeClass('active');
+                    $('.pdp-thumb-item').removeClass('active');
+                    $('#pdpThumbVideoItem').addClass('active');
 
-                    var $colorSwatch = $('.pdp-color-swatch[data-color-id="' + colorId + '"]');
-                    if ($colorSwatch.length) {
-                        $('.pdp-color-swatch').removeClass('active');
-                        $colorSwatch.addClass('active');
-                        $colorSwatch.find('input[type="radio"]').prop('checked', true);
-                        var colorName = $colorSwatch.attr('title') || '';
-                        if (colorName) $('#selectedColorName').text(colorName);
-                        if (typeof updateVariantPrice === 'function') updateVariantPrice();
+                    if (typeof $zoomLens !== 'undefined') $zoomLens.removeClass('show');
+                    if (typeof $zoomResult !== 'undefined') $zoomResult.removeClass('show');
+
+                    var v = document.getElementById('pdpHtml5Video');
+                    if (v && typeof v.play === 'function') {
+                        v.play().catch(function(e) { console.log('Autoplay prevented:', e); });
                     }
                 } else {
-                    $('.pdp-thumb-item:visible').first().addClass('active');
+                    $('#pdpTogglePhotosBtn').addClass('active');
+                    $('#pdpToggleVideoBtn').removeClass('active');
+                    $('#pdpThumbVideoItem').removeClass('active');
+
+                    var v = document.getElementById('pdpHtml5Video');
+                    if (v && typeof v.pause === 'function') {
+                        v.pause();
+                    }
+
+                    var colorId = $(activeSlide).data('color-id');
+                    $('.pdp-thumb-item:not(#pdpThumbVideoItem)').removeClass('active');
+                    if (colorId) {
+                        $('.pdp-thumb-item:visible[data-color-id="' + colorId + '"]').first().addClass('active');
+                        $('.pdp-gallery-swatch').removeClass('active');
+                        $('.pdp-gallery-swatch[data-color-id="' + colorId + '"]').addClass('active');
+
+                        var $colorSwatch = $('.pdp-color-swatch[data-color-id="' + colorId + '"]');
+                        if ($colorSwatch.length) {
+                            $('.pdp-color-swatch').removeClass('active');
+                            $colorSwatch.addClass('active');
+                            $colorSwatch.find('input[type="radio"]').prop('checked', true);
+                            var colorName = $colorSwatch.attr('title') || '';
+                            if (colorName) $('#selectedColorName').text(colorName);
+                            if (typeof updateVariantPrice === 'function') updateVariantPrice();
+                        }
+                    } else {
+                        var idx = $(activeSlide).data('index');
+                        $('.pdp-thumb-item[data-index="' + idx + '"]').addClass('active');
+                    }
+
+                    bindZoomToSlide(activeSlide);
                 }
-                // Re-bind zoom to new active slide
-                bindZoomToSlide(activeSlide);
             },
             init: function() {
-                // Bind zoom to first slide after Swiper initializes
                 var that = this;
                 setTimeout(function() {
                     var firstSlide = that.slides[that.activeIndex];
-                    if (firstSlide) bindZoomToSlide(firstSlide);
+                    if (firstSlide && !$(firstSlide).data('is-video')) {
+                        bindZoomToSlide(firstSlide);
+                    }
                 }, 100);
             }
         }
@@ -1209,57 +1278,37 @@ $(document).ready(function() {
     //  ALIBABA STYLE VIDEO & PHOTOS TOGGLE
     // ═══════════════════════════════════════════
 
-    function showPhotosStage() {
-        $('#pdpVideoStageWrapper').hide();
-        $('#pdpMainSwiper').show();
-        $('#pdpTogglePhotosBtn').addClass('active');
-        $('#pdpToggleVideoBtn').removeClass('active');
-        $('#pdpThumbVideoItem').removeClass('active');
-
-        var v = document.getElementById('pdpHtml5Video');
-        if (v && typeof v.pause === 'function') {
-            v.pause();
-        }
-    }
-
-    function showVideoStage() {
-        $('#pdpMainSwiper').hide();
-        if (typeof $zoomLens !== 'undefined') $zoomLens.removeClass('show');
-        if (typeof $zoomResult !== 'undefined') $zoomResult.removeClass('show');
-        $('#pdpVideoStageWrapper').show();
-
-        $('#pdpToggleVideoBtn').addClass('active');
-        $('#pdpTogglePhotosBtn').removeClass('active');
-
-        $('.pdp-thumb-item').removeClass('active');
-        $('#pdpThumbVideoItem').addClass('active');
-
-        var v = document.getElementById('pdpHtml5Video');
-        if (v && typeof v.play === 'function') {
-            v.play().catch(function(e) { console.log('Autoplay prevented:', e); });
-        }
-    }
-
     $('#pdpTogglePhotosBtn').on('click', function() {
-        showPhotosStage();
-        $('.pdp-thumb-item:not(#pdpThumbVideoItem)').first().addClass('active');
+        if (typeof mainSwiper !== 'undefined') {
+            mainSwiper.slideTo(0);
+        }
     });
 
     $('#pdpToggleVideoBtn, #pdpThumbVideoItem').on('click', function() {
-        showVideoStage();
+        if (typeof mainSwiper !== 'undefined') {
+            var videoIdx = $('.pdp-video-slide-item').index();
+            if (videoIdx !== -1) {
+                mainSwiper.slideTo(videoIdx);
+            }
+        }
     });
 
     // ── Thumbnail click ──
     $('.pdp-thumb-item:not(#pdpThumbVideoItem)').on('click', function() {
-        showPhotosStage();
         var idx = $(this).data('index');
-        if (typeof mainSwiper !== 'undefined' && mainSwiper.slideTo && typeof idx !== 'undefined') {
+        if (typeof mainSwiper !== 'undefined' && typeof idx !== 'undefined') {
             mainSwiper.slideTo(idx);
         }
     });
 
     $('.pdp-gallery-swatch, .pdp-color-swatch').on('click', function() {
-        showPhotosStage();
+        if (typeof mainSwiper !== 'undefined' && $(this).data('color-id')) {
+            var colorId = $(this).data('color-id');
+            var $matchingSlide = $('.dimage_item[data-color-id="' + colorId + '"]').first();
+            if ($matchingSlide.length) {
+                mainSwiper.slideTo($matchingSlide.index());
+            }
+        }
     });
 
     function selectColorById(colorId) {
