@@ -1215,8 +1215,9 @@ section.slider-section {
 
 .footer-about a img {
     height: auto;
-    width: 110px;
+    width: 60px;
     object-fit: contain;
+    transform: scale(3);
 }
 
 .footer-menu .title a {
