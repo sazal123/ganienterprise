@@ -654,18 +654,43 @@ class FrontendController extends Controller
     }
     public function search(Request $request)
     {
-        $products = Product::select('id', 'name', 'slug', 'new_price', 'old_price','stock')
-            ->where('status', 1)
-            ->with('image');
+        $products = Product::where('status', 1)
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'stock')
+            ->with(['image', 'images', 'procolors', 'prosizes']);
+
         if ($request->keyword) {
-            $products = $products->where('name', 'LIKE', '%' . $request->keyword . "%");
+            $kw = trim($request->keyword);
+            $products = $products->where(function($q) use ($kw) {
+                $q->where('name', 'LIKE', '%' . $kw . '%')
+                  ->orWhere('product_code', 'LIKE', '%' . $kw . '%');
+            });
         }
+
         if ($request->category) {
             $products = $products->where('category_id', $request->category);
         }
-        $products = $products->paginate(36);
+
+        if ($request->sort == 1) {
+            $products = $products->orderBy('created_at', 'desc');
+        } elseif ($request->sort == 2) {
+            $products = $products->orderBy('created_at', 'asc');
+        } elseif ($request->sort == 3) {
+            $products = $products->orderBy('new_price', 'desc');
+        } elseif ($request->sort == 4) {
+            $products = $products->orderBy('new_price', 'asc');
+        } elseif ($request->sort == 5) {
+            $products = $products->orderBy('name', 'asc');
+        } elseif ($request->sort == 6) {
+            $products = $products->orderBy('name', 'desc');
+        } else {
+            $products = $products->latest();
+        }
+
+        $products = $products->paginate(24)->appends($request->all());
         $keyword = $request->keyword;
-        return view('frontEnd.layouts.pages.search', compact('products', 'keyword'));
+        $categories = Category::where('status', 1)->select('id', 'name', 'slug')->get();
+
+        return view('frontEnd.layouts.pages.search', compact('products', 'keyword', 'categories'));
     }
 
     public function shipping_charge(Request $request)

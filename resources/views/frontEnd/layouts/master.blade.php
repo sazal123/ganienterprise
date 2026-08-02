@@ -242,16 +242,16 @@
             <div class="container d-flex align-items-center justify-content-center gap-2 gap-md-4 flex-wrap">
                 <span class="d-flex align-items-center gap-2">
                     <i class="fa-solid fa-clock fa-fade"></i>
-                    সময় শেষ হয়ে আসছে... ফ্রি শিপিং শেষ হতে বাকি!
+                    Hurry! Free Shipping Ends Soon!
                 </span>
                 <div id="gani-countdown-timer" class="d-flex align-items-center gap-2 gap-md-3 fw-bold">
-                    <div class="d-flex align-items-center gap-1"><span id="gani-cd-days" class="gani-cd-num">০০</span> দিন</div>
+                    <div class="d-flex align-items-center gap-1"><span id="gani-cd-days" class="gani-cd-num">00</span> Days</div>
                     <span class="d-none d-md-inline">:</span>
-                    <div class="d-flex align-items-center gap-1"><span id="gani-cd-hours" class="gani-cd-num">২১</span> ঘণ্টা</div>
+                    <div class="d-flex align-items-center gap-1"><span id="gani-cd-hours" class="gani-cd-num">21</span> Hours</div>
                     <span class="d-none d-md-inline">:</span>
-                    <div class="d-flex align-items-center gap-1"><span id="gani-cd-minutes" class="gani-cd-num">০০</span> মিনিট</div>
+                    <div class="d-flex align-items-center gap-1"><span id="gani-cd-minutes" class="gani-cd-num">00</span> Mins</div>
                     <span class="d-none d-md-inline">:</span>
-                    <div class="d-flex align-items-center gap-1"><span id="gani-cd-seconds" class="gani-cd-num">৫০</span> সেকেন্ড</div>
+                    <div class="d-flex align-items-center gap-1"><span id="gani-cd-seconds" class="gani-cd-num">50</span> Secs</div>
                 </div>
             </div>
         </div>
@@ -266,7 +266,7 @@
                 <div class="d-flex align-items-center gap-3">
                     @if(Auth::guard('customer')->user())
                         <a href="{{route('customer.account')}}" class="gani-top-link"><i class="fa-regular fa-user me-1"></i> {{ Str::limit(Auth::guard('customer')->user()->name, 14) }}</a>
-                        <a href="{{ route('logout') }}" class="gani-top-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">লগআউট</a>
+                        <a href="{{ route('logout') }}" class="gani-top-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">@csrf</form>
                     @else
                         <a href="{{route('customer.login')}}" class="gani-top-link"><i class="fa-regular fa-user me-1"></i> Login / Register</a>
@@ -385,7 +385,7 @@
             <div class="gani-search-dropdown" id="ganiSearchDropdown">
                 <div class="container">
                     <form action="{{route('search')}}" class="gani-search-form">
-                        <input type="text" name="keyword" placeholder="পণ্য সার্চ করুন..." class="gani-search-input" autocomplete="off" />
+                        <input type="text" name="keyword" placeholder="Search Products..." class="gani-search-input" autocomplete="off" />
                         <button type="submit" class="gani-search-submit"><i class="fa-solid fa-search"></i></button>
                         <button type="button" class="gani-search-close" id="ganiSearchClose"><i class="fa-solid fa-xmark"></i></button>
                     </form>
@@ -409,13 +409,13 @@
                 </a>
                 @else
                 <a href="{{route('customer.login')}}" class="gani-sidebar-user">
-                    <i class="fa-regular fa-user-circle fs-5 me-2"></i> লগইন / রেজিস্টার
+                    <i class="fa-regular fa-user-circle fs-5 me-2"></i> Login / Register
                 </a>
                 @endif
                 <hr class="my-2" />
                 <nav class="gani-sidebar-nav">
-                    <a href="{{route('home')}}" class="gani-sidebar-link"><i class="fa-solid fa-home me-2"></i> হোম</a>
-                    <a href="{{route('shop')}}" class="gani-sidebar-link"><i class="fa-solid fa-store me-2"></i> সকল পণ্য</a>
+                    <a href="{{route('home')}}" class="gani-sidebar-link"><i class="fa-solid fa-home me-2"></i> Home</a>
+                    <a href="{{route('shop')}}" class="gani-sidebar-link"><i class="fa-solid fa-store me-2"></i> Shop All</a>
                     @foreach($menucategories as $cat)
                     <div class="gani-sidebar-accordion">
                         <button class="gani-sidebar-acc-btn">
@@ -433,7 +433,7 @@
                         @endif
                     </div>
                     @endforeach
-                    <a href="{{route('customer.order_track')}}" class="gani-sidebar-link"><i class="fa-solid fa-truck me-2"></i> অর্ডার ট্র্যাক</a>
+                    <a href="{{route('customer.order_track')}}" class="gani-sidebar-link"><i class="fa-solid fa-truck me-2"></i> Track Order</a>
                 </nav>
             </div>
         </div>
