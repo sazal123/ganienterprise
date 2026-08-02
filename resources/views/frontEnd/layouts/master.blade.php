@@ -355,9 +355,36 @@
                                 </div>
                             </div>
 
-                            {{-- Quick links to first few categories --}}
+                            {{-- Quick links to first few categories with hover subcategory & childcategory dropdowns --}}
                             @foreach($menucategories->take(6) as $cat)
-                            <a href="{{ url('category/'.$cat->slug) }}" class="gani-nav-link">{{ $cat->name }}</a>
+                                @if($cat->subcategories->count() > 0)
+                                <div class="gani-nav-dropdown">
+                                    <a href="{{ url('category/'.$cat->slug) }}" class="gani-nav-link dropdown-toggle">
+                                        {{ $cat->name }}
+                                    </a>
+                                    <div class="gani-dropdown-menu">
+                                        @foreach($cat->subcategories as $sub)
+                                            @if($sub->childcategories->count() > 0)
+                                            <div class="gani-dropdown-sub">
+                                                <a href="{{ url('subcategory/'.$sub->slug) }}" class="gani-dropdown-item d-flex justify-content-between align-items-center">
+                                                    {{ $sub->subcategoryName }}
+                                                    <i class="fa-solid fa-chevron-right gani-sub-arrow"></i>
+                                                </a>
+                                                <div class="gani-sub-menu">
+                                                    @foreach($sub->childcategories as $child)
+                                                    <a href="{{ url('products/'.$child->slug) }}" class="gani-dropdown-item">{{ $child->childcategoryName }}</a>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                            @else
+                                            <a href="{{ url('subcategory/'.$sub->slug) }}" class="gani-dropdown-item">{{ $sub->subcategoryName }}</a>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                </div>
+                                @else
+                                <a href="{{ url('category/'.$cat->slug) }}" class="gani-nav-link">{{ $cat->name }}</a>
+                                @endif
                             @endforeach
 
                             <a href="{{ route('offers') }}" class="gani-nav-link gani-nav-highlight"><i class="fa-solid fa-fire-flame-curved me-1 text-warning"></i> Offer</a>
