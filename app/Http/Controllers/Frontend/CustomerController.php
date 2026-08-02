@@ -420,8 +420,14 @@ class CustomerController extends Controller
     }
     public function invoice(Request $request)
     {
-        $order = Order::where(['id'=>$request->id,'customer_id'=>Auth::guard('customer')->user()->id])->with('orderdetails','payment','shipping','customer')->firstOrFail();
-        return view('frontEnd.layouts.customer.invoice',compact('order'));
+        $order = Order::where(['id' => $request->id, 'customer_id' => Auth::guard('customer')->user()->id])
+            ->with('orderdetails.product.category', 'payment', 'shipping', 'customer', 'paymentHistories')
+            ->firstOrFail();
+
+        $totalPaid = $order->paymentHistories ? $order->paymentHistories->sum('amount') : 0;
+        $dueAmount = max($order->amount - $totalPaid, 0);
+
+        return view('frontEnd.layouts.customer.invoice', compact('order', 'totalPaid', 'dueAmount'));
     } 
     public function order_note(Request $request)
     {
