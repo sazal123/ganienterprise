@@ -643,7 +643,7 @@ class OrderController extends Controller
                    in_array($slug, ['completed', 'paid', 'paid-completed']);
         })->pluck('id')->toArray();
 
-        $orders = OrderDetails::with(['shipping', 'order.status']);
+        $orders = OrderDetails::has('order')->with(['shipping', 'order.status']);
 
         // Filter by specific order status if selected by user
         if ($request->order_status) {
