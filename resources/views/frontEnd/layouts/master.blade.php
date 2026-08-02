@@ -282,7 +282,7 @@
                     <i class="fa-solid fa-bars"></i>
                 </button>
                 <a href="{{route('home')}}" class="gani-mobile-logo-link">
-                    <img src="{{asset($generalsetting->white_logo)}}" alt="{{$generalsetting->name}}" class="gani-mobile-logo-img" />
+                    <img src="{{asset($generalsetting->dark_logo ?? $generalsetting->white_logo)}}" alt="{{$generalsetting->name}}" class="gani-mobile-logo-img" />
                 </a>
                 <div class="d-flex align-items-center gap-3">
                     <a href="{{route('customer.order_track')}}" class="gani-mobile-icon"><i class="fa-solid fa-truck"></i></a>
@@ -306,8 +306,8 @@
                 <div class="row align-items-center">
                     <div class="col-auto">
                         <a href="{{route('home')}}" class="gani-header-logo">
-                            @if(isset($generalsetting) && $generalsetting->white_logo)
-                                <img src="{{asset($generalsetting->white_logo)}}" alt="{{$generalsetting->name ?? ''}}" style="max-height: 45px;" />
+                            @if(isset($generalsetting) && ($generalsetting->dark_logo || $generalsetting->white_logo))
+                                <img src="{{asset($generalsetting->dark_logo ?? $generalsetting->white_logo)}}" alt="{{$generalsetting->name ?? ''}}" style="max-height: 45px;" />
                             @else
                                 Gani<span class="text-gold">.</span>
                             @endif
@@ -398,7 +398,7 @@
         <div class="gani-mobile-sidebar" id="ganiMobileSidebar">
             <div class="gani-sidebar-header">
                 <a href="{{route('home')}}" class="gani-sidebar-logo">
-                    <img src="{{asset($generalsetting->white_logo)}}" alt="" class="gani-sidebar-logo-img" />
+                    <img src="{{asset($generalsetting->dark_logo ?? $generalsetting->white_logo)}}" alt="" class="gani-sidebar-logo-img" />
                 </a>
                 <button class="gani-sidebar-close" id="ganiSidebarClose"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -490,10 +490,10 @@
                         <div class="col-sm-4 mb-3 mb-sm-0">
                             <div class="footer-about">
                                 <a href="{{route('home')}}">
-                                    <img src="{{asset($generalsetting->white_logo)}}" alt="" />
+                                    <img src="{{asset($generalsetting->white_logo ?? $generalsetting->dark_logo)}}" alt="{{$generalsetting->name}}" />
                                 </a>
-                                <p>{{$contact->address}}</p>
-                                <a href="tel:{{$contact->hotline}}" class="footer-hotlint">{{$contact->hotline}}</a>
+                                <p><i class="fa-solid fa-location-dot me-2 text-warning"></i>{{$contact->address}}</p>
+                                <a href="tel:{{$contact->hotline}}" class="footer-hotlint"><i class="fa-solid fa-phone me-2"></i>{{$contact->hotline}}</a>
                             </div>
                         </div>
                         <!-- col end -->
