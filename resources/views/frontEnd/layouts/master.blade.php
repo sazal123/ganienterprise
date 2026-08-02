@@ -1098,6 +1098,41 @@
                 updateTimer();
                 setInterval(updateTimer, 1000);
             });
+
+            // Product Card Image Hover Swap (2nd image & color swatches)
+            $(document).on('mouseenter', '.gani-product-card .gani-product-img-wrap', function() {
+                var $img = $(this).find('.gani-product-img');
+                var hoverImg = $img.attr('data-hover-img');
+                if ($img.length && hoverImg) {
+                    $img.attr('src', hoverImg);
+                }
+            });
+
+            $(document).on('mouseleave', '.gani-product-card .gani-product-img-wrap', function() {
+                var $img = $(this).find('.gani-product-img');
+                var mainImg = $img.attr('data-main-img');
+                if ($img.length && mainImg) {
+                    $img.attr('src', mainImg);
+                }
+            });
+
+            $(document).on('mouseenter', '.gani-swatch-btn', function() {
+                var $card = $(this).closest('.gani-product-card');
+                var $img = $card.find('.gani-product-img');
+                var swapUrl = $(this).attr('data-swap-img');
+                if ($img.length && swapUrl) {
+                    $img.attr('src', swapUrl);
+                }
+            });
+
+            $(document).on('mouseleave', '.gani-swatch-btn', function() {
+                var $card = $(this).closest('.gani-product-card');
+                var $img = $card.find('.gani-product-img');
+                var mainImg = $img.attr('data-main-img');
+                if ($img.length && mainImg) {
+                    $img.attr('src', mainImg);
+                }
+            });
         </script>
 
         <!-- Google Tag Manager (noscript) -->

@@ -1,11 +1,20 @@
 <div class="gani-product-card">
     <div class="gani-product-img-wrap">
         <a href="{{ route('product', $product->slug) }}" class="d-block w-100 h-100">
-            @php $mainImage = $product->image ? $product->image->image : 'frontEnd/img/default-product.jpg'; @endphp
+            @php 
+                $mainImage = $product->image ? $product->image->image : 'frontEnd/img/default-product.jpg'; 
+                $secondImgObj = ($product->images && $product->images->count() > 1) 
+                    ? $product->images->get(1) 
+                    : ($product->images ? $product->images->first() : null);
+                $secondImage = ($secondImgObj && $secondImgObj->image && $secondImgObj->image != $mainImage) 
+                    ? $secondImgObj->image 
+                    : null;
+            @endphp
             <img src="{{ asset($mainImage) }}"
                  alt="{{ $product->name }}"
                  class="w-100 h-100 object-fit-cover gani-product-img"
-                 data-main-img="{{ asset($mainImage) }}" />
+                 data-main-img="{{ asset($mainImage) }}"
+                 @if($secondImage) data-hover-img="{{ asset($secondImage) }}" @endif />
         </a>
 
         {{-- Badges --}}
