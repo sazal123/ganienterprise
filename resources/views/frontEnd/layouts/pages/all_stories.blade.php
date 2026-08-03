@@ -15,12 +15,14 @@
             @php
                 $thumb = $story->thumbnail;
                 if ($thumb && str_starts_with($thumb, 'public/')) { $thumb = substr($thumb, 7); }
+                $video = $story->video;
+                if ($video && str_starts_with($video, 'public/')) { $video = substr($video, 7); }
                 $storyProduct = $story->product;
                 $prodImg = $storyProduct && $storyProduct->image ? $storyProduct->image->image : '';
             @endphp
             <div class="col-6 col-md-g5 mb-4">
                 <div class="gani-story-card"
-                     data-video="{{ asset($story->video) }}"
+                     data-video="{{ asset($video) }}"
                      data-thumb="{{ $thumb ? asset($thumb) : asset('frontEnd/img/default-product.jpg') }}"
                      data-prod-img="{{ $prodImg ? asset($prodImg) : '' }}"
                      data-prod-name="{{ $storyProduct ? $storyProduct->name : '' }}"
@@ -32,7 +34,7 @@
                      data-prod-link="{{ $storyProduct ? route('product', $storyProduct->slug) : '#' }}"
                      data-add-to-cart="{{ $storyProduct && $storyProduct->procolors->isEmpty() && $storyProduct->prosizes->isEmpty() && $storyProduct->stock > 0 ? route('cart.store') : '' }}">
                     <div class="gani-story-thumb-wrap">
-                        <video src="{{ asset($story->video) }}" class="gani-story-video" muted playsinline loop preload="auto" poster="{{ $thumb ? asset($thumb) : asset('frontEnd/img/default-product.jpg') }}"></video>
+                        <video src="{{ asset($video) }}" class="gani-story-video" muted playsinline loop autoplay preload="auto" poster="{{ $thumb ? asset($thumb) : asset('frontEnd/img/default-product.jpg') }}"></video>
                         <div class="gani-story-play-indicator"><i class="fa-solid fa-volume-xmark"></i></div>
                     </div>
                     <div class="gani-story-info">
@@ -163,6 +165,14 @@ function closeStoryModal() {
 }
 
 $(document).ready(function() {
+    $('.gani-story-video').each(function() {
+        this.muted = true;
+        var p = this.play();
+        if (p !== undefined) {
+            p.catch(function(e) {});
+        }
+    });
+
     $('.gani-story-card').on('click', function(e) {
         if ($(e.target).closest('form, button, a').length) return;
         openStoryModal($(this));
