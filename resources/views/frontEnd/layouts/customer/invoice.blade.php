@@ -167,7 +167,7 @@
         {{-- Invoice Printable Container --}}
         <div class="invoice-page">
             <div class="header">
-                <img src="{{ asset('backEnd/assets/images/invoices/invoice_logo.jpeg') }}" style="max-width:100%;height:auto;max-height:100px;object-fit:contain;margin-bottom:10px;" alt="GANI ENTERPRISE">
+                <img src="{{ asset($generalsetting->dark_logo ?? $generalsetting->white_logo) }}" style="max-width:100%;height:auto;max-height:100px;object-fit:contain;margin-bottom:10px;" alt="{{ $generalsetting->name }}">
                 <div class="contact">
                     <div><i class="fa fa-map-marker"></i> <b>Head Office:</b> Rahman Mansion (3rd Floor), Tamakmundi Lane, Reazuddin Bazar, Chittagong</div>
                     <div><i class="fa fa-map-marker"></i> <b>Feni Office:</b> Gazi Cross Road, Gudham Quarter, Railgate, Feni Sadar, Feni</div>
@@ -182,7 +182,7 @@
                     <p><b>Invoice Date:</b> {{ $order->created_at->format('j F, Y') }}</p>
 
                     <div class="label" style="margin-top:20px"><b>Bill To</b></div>
-                    <p><b>Shop Name:</b> {{ $order->shipping->name ?? $order->customer->name ?? 'N/A' }}</p>
+                    <p><b>Name:</b> {{ $order->shipping->name ?? $order->customer->name ?? 'N/A' }}</p>
                     <p><b>Address:</b> {{ $order->shipping->address ?? '' }}</p>
                     <p><b>Contact:</b> {{ $order->shipping->phone ?? $order->customer->phone ?? '' }}</p>
                 </div>
