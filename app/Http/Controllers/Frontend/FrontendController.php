@@ -229,10 +229,16 @@ class FrontendController extends Controller
 
     public function hotdeals(Request $request)
     {
+        $soldShow = $request->sold == 'show' ? true : false;
+
+        // Global price range for slider
+        $globalMin = Product::where(['status' => 1, 'topsale' => 1])->min('new_price');
+        $globalMax = Product::where(['status' => 1, 'topsale' => 1])->max('new_price');
 
         $products = Product::where(['status' => 1, 'topsale' => 1])
-            ->select('id', 'name', 'slug', 'new_price', 'old_price','stock');
-        // return $request->sort;
+            ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'subcategory_id', 'sold', 'stock')
+            ->with(['image', 'images', 'procolors', 'prosizes']);
+
         if ($request->sort == 1) {
             $products = $products->orderBy('created_at', 'desc');
         } elseif ($request->sort == 2) {
@@ -249,14 +255,23 @@ class FrontendController extends Controller
             $products = $products->latest();
         }
 
-        $min_price = $products->min('new_price');
-        $max_price = $products->max('new_price');
-        if($request->min_price && $request->max_price){
-            $products = $products->where('new_price','>=',$request->min_price);
-            $products = $products->where('new_price','<=',$request->max_price);
+        if ($request->min_price && $request->max_price) {
+            $products = $products->where('new_price', '>=', $request->min_price)
+                                 ->where('new_price', '<=', $request->max_price);
         }
-        $products = $products->paginate(36);
-        return view('frontEnd.layouts.pages.hotdeals', compact('products'));
+
+        $products = $products->paginate(30)->appends($request->all());
+
+        $categories = Category::where('status', 1)
+            ->with(['subcategories' => function ($q) {
+                $q->where('status', 1)->select('id', 'slug', 'subcategoryName', 'category_id');
+            }])
+            ->select('id', 'name', 'slug')
+            ->get();
+
+        return view('frontEnd.layouts.pages.hotdeals', compact(
+            'products', 'globalMin', 'globalMax', 'soldShow', 'categories'
+        ));
     }
     public function shop(Request $request)
     {
