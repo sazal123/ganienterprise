@@ -81,28 +81,32 @@
     </div>
 </section>
 
-{{-- STORY PRODUCT MODAL — Quick view with video --}}
+{{-- ============================================================ --}}
+{{-- STORY PRODUCT MODAL — Quick view with video (Exact same as index) --}}
+{{-- ============================================================ --}}
 <div class="gani-video-modal" id="ganiStoryModal">
     <button class="gani-video-close" onclick="closeStoryModal()">&times;</button>
     <div class="gani-story-modal-inner">
-        <div class="gani-story-video-col">
-            <video id="modalStoryVideo" controls playsinline loop></video>
+        <div class="gani-story-modal-left">
+            <video id="ganiStoryVideo" controls playsinline></video>
         </div>
-        <div class="gani-story-product-col" id="modalStoryProductCol">
-            <div class="gani-story-modal-prod">
-                <img id="modalProdImg" src="" class="gani-modal-prod-img" />
-                <div class="gani-modal-prod-info">
-                    <h5 id="modalProdName"></h5>
-                    <div class="gani-modal-prices">
-                        <span id="modalProdPrice" class="current-price"></span>
-                        <del id="modalProdOldPrice" class="old-price"></del>
-                    </div>
-                </div>
+        <div class="gani-story-modal-right">
+            <h3 class="gani-sm-title" id="ganiSmTitle">Product Name</h3>
+            <div class="gani-sm-price-row">
+                <span class="gani-sm-price" id="ganiSmPrice">৳0</span>
+                <span class="gani-sm-old-price" id="ganiSmOldPrice"></span>
             </div>
-            <div class="gani-story-modal-actions">
-                <a id="modalProdLink" href="#" class="gani-btn-secondary w-100 mb-2 text-center">View Product Details</a>
-                <div id="modalCartContainer"></div>
+            <div class="gani-sm-colors" id="ganiSmColors" style="display:none;">
+                <span class="gani-sm-color-label">Color: <strong id="ganiSmColorName">Brown</strong></span>
+                <div class="gani-sm-color-swatches" id="ganiSmColorSwatches"></div>
             </div>
+            <form id="ganiSmCartForm" method="POST">
+                @csrf
+                <input type="hidden" name="id" id="ganiSmProdId" value="" />
+                <input type="hidden" name="qty" value="1" />
+                <button type="submit" class="gani-sm-cart-btn" id="ganiSmCartBtn">Add To Cart</button>
+            </form>
+            <a href="#" class="gani-sm-view-link" id="ganiSmViewLink">View Full Details →</a>
         </div>
     </div>
 </div>
@@ -110,79 +114,81 @@
 @endsection
 
 @push('script')
+<style>
+    #ganiSmViewLink {
+    background: #000;
+    color: #fff;
+    padding: 5px;
+}
+</style>
 <script>
-function openStoryModal(card) {
-    var videoSrc = card.data('video');
-    var prodImg = card.data('prod-img');
-    var prodName = card.data('prod-name');
-    var prodPrice = card.data('prod-price');
-    var prodOld = card.data('prod-old');
-    var prodLink = card.data('prod-link');
-    var prodId = card.data('prod-id');
-    var addToCartUrl = card.data('add-to-cart');
-
-    var modal = $('#ganiStoryModal');
-    var video = $('#modalStoryVideo')[0];
-
-    video.src = videoSrc;
-    video.play();
-
-    if (prodName) {
-        $('#modalProdImg').attr('src', prodImg).toggle(!!prodImg);
-        $('#modalProdName').text(prodName);
-        $('#modalProdPrice').text('৳' + prodPrice);
-        $('#modalProdOldPrice').text(prodOld ? '৳' + prodOld : '').toggle(!!prodOld);
-        $('#modalProdLink').attr('href', prodLink);
-
-        var cartHtml = '';
-        if (addToCartUrl && prodId) {
-            cartHtml = '<form action="' + addToCartUrl + '" method="POST">' +
-                       '<input type="hidden" name="_token" value="{{ csrf_token() }}">' +
-                       '<input type="hidden" name="id" value="' + prodId + '">' +
-                       '<input type="hidden" name="qty" value="1">' +
-                       '<button type="submit" class="gani-btn-primary w-100">Add To Cart</button>' +
-                       '</form>';
+    // Story product modal - Exact same logic as index page
+    function openStoryModal(card) {
+        var modal = document.getElementById('ganiStoryModal');
+        var video = document.getElementById('ganiStoryVideo');
+        var videoSrc = card.getAttribute('data-video');
+        var thumbSrc = card.getAttribute('data-thumb');
+        video.src = videoSrc;
+        video.setAttribute('poster', thumbSrc);
+        video.onerror = function() {
+            video.setAttribute('poster', thumbSrc);
+        };
+        document.getElementById('ganiSmTitle').textContent = card.getAttribute('data-prod-name');
+        document.getElementById('ganiSmPrice').textContent = '৳' + card.getAttribute('data-prod-price');
+        var oldEl = document.getElementById('ganiSmOldPrice');
+        var oldPrice = card.getAttribute('data-prod-old');
+        oldEl.textContent = oldPrice ? '৳' + oldPrice : '';
+        oldEl.style.display = oldPrice ? 'inline' : 'none';
+        document.getElementById('ganiSmProdId').value = card.getAttribute('data-prod-id');
+        var cartForm = document.getElementById('ganiSmCartForm');
+        var cartAction = card.getAttribute('data-add-to-cart');
+        if (cartAction) {
+            cartForm.action = cartAction;
+            document.getElementById('ganiSmCartBtn').style.display = 'block';
         } else {
-            cartHtml = '<a href="' + prodLink + '" class="gani-btn-primary w-100 text-center">Buy Now</a>';
+            cartForm.action = '';
+            document.getElementById('ganiSmCartBtn').style.display = 'none';
         }
-        $('#modalCartContainer').html(cartHtml);
-        $('#modalStoryProductCol').show();
-    } else {
-        $('#modalStoryProductCol').hide();
+        document.getElementById('ganiSmViewLink').href = card.getAttribute('data-prod-link');
+        modal.classList.add('active');
+        video.load();
+        video.play().catch(function() {});
     }
 
-    modal.addClass('active');
-    $('body').css('overflow', 'hidden');
-}
+    function closeStoryModal() {
+        var modal = document.getElementById('ganiStoryModal');
+        var video = document.getElementById('ganiStoryVideo');
+        modal.classList.remove('active');
+        video.pause();
+        video.src = '';
+    }
 
-function closeStoryModal() {
-    var modal = $('#ganiStoryModal');
-    var video = $('#modalStoryVideo')[0];
-    video.pause();
-    video.src = '';
-    modal.removeClass('active');
-    $('body').css('overflow', '');
-}
-
-$(document).ready(function() {
-    $('.gani-story-video').each(function() {
-        this.muted = true;
-        var p = this.play();
-        if (p !== undefined) {
-            p.catch(function(e) {});
-        }
+    document.addEventListener('click', function(e) {
+        var modal = document.getElementById('ganiStoryModal');
+        if (modal && e.target === modal) closeStoryModal();
     });
 
-    $('.gani-story-card').on('click', function(e) {
-        if ($(e.target).closest('form, button, a').length) return;
-        openStoryModal($(this));
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeStoryModal();
     });
 
-    $('#ganiStoryModal').on('click', function(e) {
-        if ($(e.target).is('#ganiStoryModal')) {
-            closeStoryModal();
-        }
+    $(document).ready(function() {
+        // Autoplay muted videos
+        $('.gani-story-video').each(function() {
+            this.muted = true;
+            var p = this.play();
+            if (p !== undefined) {
+                p.catch(function(e) {});
+            }
+        });
+
+        // Bind click on story cards
+        document.querySelectorAll('.gani-story-card').forEach(function(card) {
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('.gani-story-cart-btn') || e.target.closest('form')) return;
+                openStoryModal(this);
+            });
+        });
     });
-});
 </script>
 @endpush
