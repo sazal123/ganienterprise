@@ -79,7 +79,7 @@
                 bottom: 20px; /* Adjust vertical position */
                 left: 20px; /* Adjust horizontal position */
                 z-index: 1000;
-                background-color: #25D366;
+                background-color: #C9A84C !important;
                 color: white;
                 border-radius: 50%;
                 padding: 15px;
@@ -88,6 +88,9 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+            }
+            .scrolltop{
+                background-color: #C9A84C !important;
             }
 
             .whatsapp-float:hover {
