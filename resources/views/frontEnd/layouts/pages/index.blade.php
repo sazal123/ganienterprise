@@ -176,8 +176,8 @@
             <h2 class="gani-section-title">STORIES THAT LEAD</h2>
             <div class="gani-divider mx-auto"></div>
         </div>
-        <div class="row g-4">
-            @foreach($stories as $story)
+        <div class="row g-4 justify-content-center">
+            @foreach($stories->take(5) as $story)
             @php
                 $thumb = $story->thumbnail;
                 if ($thumb && str_starts_with($thumb, 'public/')) { $thumb = substr($thumb, 7); }
@@ -227,6 +227,9 @@
                 </div>
             </div>
             @endforeach
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ route('allStories') }}" class="gani-view-all-btn">VIEW ALL</a>
         </div>
     </div>
 </section>

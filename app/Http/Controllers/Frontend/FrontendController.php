@@ -1151,4 +1151,15 @@ class FrontendController extends Controller
         return view('frontEnd.layouts.pages.school_bag_landing', compact('products', 'spotlightProducts', 'shipping_charge'));
     }
 
+    public function allStories(Request $request)
+    {
+        $all_stories = \App\Models\Story::where('status', 1)
+            ->orderBy('order_id', 'ASC')
+            ->orderBy('id', 'DESC')
+            ->with(['product', 'product.image', 'product.procolors', 'product.prosizes'])
+            ->paginate(20);
+
+        return view('frontEnd.layouts.pages.all_stories', compact('all_stories'));
+    }
+
 }

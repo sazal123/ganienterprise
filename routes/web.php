@@ -78,6 +78,7 @@ Route::group(['namespace'=>'Frontend', 'middleware' => ['ipcheck','check_refer']
     Route::get('/offer', [FrontendController::class, 'offers'])->name('offers');
     Route::get('/collection/prime', [FrontendController::class, 'collectionPrime'])->name('collection.prime');
     Route::get('/collection/new', [FrontendController::class, 'collectionNew'])->name('collection.new');
+    Route::get('/stories', [FrontendController::class, 'allStories'])->name('allStories');
      Route::get('/payment-success', [FrontEndController::class, 'payment_success'])->name('payment_success');
     Route::get('/payment-cancel', [FrontEndController::class, 'payment_cancel'])->name('payment_cancel');
 
