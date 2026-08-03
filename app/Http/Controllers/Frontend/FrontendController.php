@@ -791,7 +791,20 @@ class FrontendController extends Controller
 
     public function page($slug)
     {
-        $page = CreatePage::where('slug', $slug)->firstOrFail();
+        $page = CreatePage::where('slug', $slug)->first();
+
+        if (!$page) {
+            $cleanSlug = str_replace('-', ' ', $slug);
+            $page = CreatePage::where('slug', 'like', "%{$slug}%")
+                ->orWhere('name', 'like', "%{$cleanSlug}%")
+                ->orWhere('title', 'like', "%{$cleanSlug}%")
+                ->first();
+        }
+
+        if (!$page) {
+            abort(404);
+        }
+
         return view('frontEnd.layouts.pages.page', compact('page'));
     }
     public function districts(Request $request)
