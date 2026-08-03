@@ -1,6 +1,5 @@
 @extends('frontEnd.layouts.master')
-@section('title')
-<title>Page</title>
+@section('title', $page->title ?? 'Page')
 @section('content')
 
 <section class="comn_sec">
@@ -23,6 +22,7 @@
         </div>
     </div>
 </section>
+
 <section class="createpage-section">
     <div class="container">
         <div class="row">
@@ -37,7 +37,18 @@
                 </div>
             </div>
         </div>
+    </div>
+</section>
+
 <style>
+    section.createpage-section {
+        min-height: 50vh;
+        margin-bottom: 0 !important;
+        padding: 40px 0;
+    }
+    .copyright p {
+        margin-bottom: 0 !important;
+    }
     .page-description {
         font-size: 15px;
         line-height: 1.7;
