@@ -332,7 +332,7 @@
             @endforeach
         </div>
         <div class="text-center mt-4">
-            <a href="{{ route('shop') }}" class="gani-view-all-btn">View All</a>
+            <a href="{{ route('allCategories') }}" class="gani-view-all-btn">View All</a>
         </div>
     </div>
 </section>

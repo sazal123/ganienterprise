@@ -411,6 +411,19 @@ class FrontendController extends Controller
         return view('frontEnd.layouts.pages.flashsales', compact('products'));
     }
 
+    public function allCategories()
+    {
+        $categories = Category::where('status', 1)
+            ->with(['subcategories' => function ($q) {
+                $q->where('status', 1)->with(['childcategories' => function ($cq) {
+                    $cq->where('status', 1);
+                }]);
+            }])
+            ->get();
+
+        return view('frontEnd.layouts.pages.all_categories', compact('categories'));
+    }
+
     public function category($slug, Request $request)
     {
         $soldShow = $request->sold == 'show' ? true : false;

@@ -55,6 +55,7 @@ Route::get('/controller', function() {
 
 Route::group(['namespace'=>'Frontend', 'middleware' => ['ipcheck','check_refer']], function() {
     Route::get('/', [FrontendController::class, 'index'])->name('home');
+    Route::get('categories', [FrontendController::class, 'allCategories'])->name('allCategories');
     Route::get('category/{category}', [FrontendController::class, 'category'])->name('category');
 
     Route::get('subcategory/{subcategory}', [FrontendController::class, 'subcategory'])->name('subcategory');
