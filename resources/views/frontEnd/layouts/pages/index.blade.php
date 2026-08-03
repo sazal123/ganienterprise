@@ -91,16 +91,19 @@
 @if($trendingProducts->count() > 0)
 <section class="gani-section gani-section-light">
     <div class="container">
-        <div class="text-center mb-5">
+        <div class="text-center mb-4">
             <h2 class="gani-section-title">Trending Collection</h2>
             <div class="gani-divider mx-auto"></div>
         </div>
-        <div class="row g-4">
-            @foreach($trendingProducts as $product)
+        <div class="row g-4 justify-content-center">
+            @foreach($trendingProducts->take(5) as $product)
                 <div class="col-6 col-md-g5">
                     @include('frontEnd.layouts.pages._product_card_folks', ['product' => $product])
                 </div>
             @endforeach
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ route('hotdeals') }}" class="gani-view-all-btn">VIEW ALL</a>
         </div>
     </div>
 </section>

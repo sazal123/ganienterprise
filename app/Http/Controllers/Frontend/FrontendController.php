@@ -82,7 +82,7 @@ class FrontendController extends Controller
             ->orderBy('id', 'DESC')
             ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
             ->with('image', 'images', 'procolors')
-            ->limit(8)
+            ->limit(5)
             ->get();
 
         // New Collection (is_new flag)
