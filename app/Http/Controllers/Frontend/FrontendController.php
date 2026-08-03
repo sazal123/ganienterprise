@@ -647,9 +647,21 @@ class FrontendController extends Controller
             }
         }
 
+        $orderPolicyPage = \App\Models\CreatePage::where('status', 1)
+            ->where(function($q) {
+                $q->where('slug', 'like', '%order%')
+                  ->orWhere('name', 'like', '%order%')
+                  ->orWhere('title', 'like', '%order%')
+                  ->orWhere('slug', 'like', '%procedure%')
+                  ->orWhere('name', 'like', '%procedure%')
+                  ->orWhere('slug', 'like', '%policy%')
+                  ->orWhere('name', 'like', '%policy%');
+            })
+            ->first();
+
         return view('frontEnd.layouts.pages.details', compact(
             'details', 'relatedProducts', 'pairProducts', 'shippingcharge',
-            'productcolors', 'productsizes', 'reviews', 'avgRating', 'totalReviews', 'features'
+            'productcolors', 'productsizes', 'reviews', 'avgRating', 'totalReviews', 'features', 'orderPolicyPage'
         ));
     }
     public function quickview(Request $request)

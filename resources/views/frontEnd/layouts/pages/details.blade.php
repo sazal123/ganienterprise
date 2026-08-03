@@ -946,7 +946,13 @@
             {{-- Order Policy --}}
             <div class="pdp-tab-pane" id="tab-orderpolicy">
                 <h3>Order Policy</h3>
-                <p>{!! $generalsetting->order_policy !!}</p>
+                @if(isset($orderPolicyPage) && !empty($orderPolicyPage->description))
+                    <div class="pdp-policy-content">{!! $orderPolicyPage->description !!}</div>
+                @elseif(isset($generalsetting->order_policy) && !empty($generalsetting->order_policy))
+                    <div class="pdp-policy-content">{!! $generalsetting->order_policy !!}</div>
+                @else
+                    <p class="text-muted">No order procedure content found.</p>
+                @endif
             </div>
 
             {{-- Reviews --}}
