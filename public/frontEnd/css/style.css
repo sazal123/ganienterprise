@@ -1210,7 +1210,7 @@ section.slider-section {
 
 .footer-about a {
     display: block;
-    color: #000;
+    color: #fff;
 }
 
 .footer-about a img {
@@ -2447,7 +2447,7 @@ li.recent_pro {
 }
 
 .order_place {
-    background: #3c7d17;
+    background: #000;
     display: block;
     width: 100%;
     border-radius: 5px;
@@ -2461,7 +2461,7 @@ li.recent_pro {
 }
 
 .order_place:hover {
-    background: #3c7d17;
+    background: #000;
 }
 
 /*====  CHECKOUT CSS END ====  */
@@ -5811,7 +5811,7 @@ a:hover .gani-product-name,
 }
 
 .gani-header-logo img {
-    transform: scale(2.5);
+    transform: scale(1.6);
 }
 
 .gani-header-logo {

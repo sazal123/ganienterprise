@@ -27,7 +27,7 @@
 
 /* ── Header Banner ── */
 .pdp-header {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    background: #000;
     padding: 32px 0 28px;
     position: relative;
     overflow: hidden;
@@ -361,8 +361,8 @@
     font-size: 13px; font-weight: 500; color: #444; cursor: pointer;
     transition: all 0.2s; display: flex; align-items: center; justify-content: center;
 }
-.pdp-size-btn:hover { border-color: #3c7d17; color: #3c7d17; }
-.pdp-size-btn.active { border-color: #3c7d17; background: #3c7d17; color: #fff; }
+.pdp-size-btn:hover { border-color: #C41E3A; color: #3c7d17; }
+.pdp-size-btn.active { border-color: #C41E3A; background: ##C41E3A; color: #fff; }
 .pdp-size-btn input { position: absolute; opacity: 0; width: 0; height: 0; }
 .pdp-size-btn .size-price {
     display: block; font-size: 10px; font-weight: 400; opacity: 0.8;
@@ -908,7 +908,7 @@
                 @if($shippingcharge->count() > 0)
                 <div class="pdp-shipping-table">
                     <table>
-                        <tr><th colspan="2">কুরিয়ার ডেলিভারি খরচ</th></tr>
+                        <tr><th colspan="2">Curriar Delivery Charge</th></tr>
                         @foreach($shippingcharge as $charge)
                         <tr><td>{{ $charge->name }}</td><td style="text-align:right;">৳ {{ $charge->amount }}</td></tr>
                         @endforeach

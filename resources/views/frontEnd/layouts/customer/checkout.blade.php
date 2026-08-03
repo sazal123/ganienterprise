@@ -185,7 +185,26 @@
                                                     </div>
                                                     <div class="flex-shrink-0">
                                                         <a href="{{ route('product', $value->options->slug) }}">
-                                                            <img src="{{ asset($value->options->image) }}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #eee;" alt="" />
+                                                            @php
+                                                                $itemImg = $value->options->image;
+                                                                if ($value->options->product_color) {
+                                                                    $colorModel = \App\Models\Color::where('colorName', $value->options->product_color)->first();
+                                                                    if ($colorModel) {
+                                                                        $cImg = \App\Models\Productimage::where('product_id', $value->id)->where('color_id', $colorModel->id)->first();
+                                                                        if (!$cImg) {
+                                                                            $pcs = \App\Models\Productcolor::where('product_id', $value->id)->get();
+                                                                            $idx = $pcs->pluck('color_id')->search($colorModel->id);
+                                                                            if ($idx !== false) {
+                                                                                $cImg = \App\Models\Productimage::where('product_id', $value->id)->get()->get($idx);
+                                                                            }
+                                                                        }
+                                                                        if ($cImg && !empty($cImg->image)) {
+                                                                            $itemImg = $cImg->image;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            @endphp
+                                                            <img src="{{ asset($itemImg) }}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #eee;" alt="" />
                                                         </a>
                                                     </div>
                                                 </div>

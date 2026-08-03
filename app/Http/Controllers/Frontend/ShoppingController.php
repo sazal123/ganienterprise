@@ -11,19 +11,46 @@ use DB;
 class ShoppingController extends Controller
 {
 
-    public function addTocartGet($id,Request $request){
-        $qty=1;
-        $productInfo = DB::table('products')->where('id',$id)->first();
-        $productImage = DB::table('productimages')->where('product_id',$id)->first();
-        $cartinfo=Cart::instance('shopping')->add(['id'=>$productInfo->id,'name'=>$productInfo->name,'qty'=>$qty,'price'=>$productInfo->new_price,
+    public function addTocartGet($id, Request $request){
+        $qty = 1;
+        $productInfo = Product::where('id', $id)->first();
+        $cartImage = $productInfo->image->image ?? 'frontEnd/img/default-product.jpg';
+
+        if ($request->product_color) {
+            $colorModel = \App\Models\Color::where('colorName', $request->product_color)->first();
+            if ($colorModel) {
+                $colorImg = \App\Models\Productimage::where('product_id', $id)
+                    ->where('color_id', $colorModel->id)
+                    ->first();
+                if (!$colorImg) {
+                    $productcolors = \App\Models\Productcolor::where('product_id', $id)->get();
+                    $colorIndex = $productcolors->pluck('color_id')->search($colorModel->id);
+                    if ($colorIndex !== false) {
+                        $allImages = \App\Models\Productimage::where('product_id', $id)->get();
+                        $colorImg = $allImages->get($colorIndex);
+                    }
+                }
+                if ($colorImg && !empty($colorImg->image)) {
+                    $cartImage = $colorImg->image;
+                }
+            }
+        }
+
+        $cartinfo = Cart::instance('shopping')->add([
+            'id' => $productInfo->id,
+            'name' => $productInfo->name,
+            'qty' => $qty,
+            'price' => $productInfo->new_price,
             'options' => [
-                'image'=>$productImage->image ?? 'frontEnd/img/default-product.jpg',
-                'old_price'=>$productInfo->old_price,
+                'image' => $cartImage,
+                'old_price' => $productInfo->old_price,
                 'slug' => $productInfo->slug,
                 'purchase_price' => $productInfo->purchase_price,
-            ]]);
+                'product_color' => $request->product_color,
+                'product_size' => $request->product_size,
+            ]
+        ]);
 
-        // return redirect()->back();
         return response()->json($cartinfo);
     }
 
@@ -58,6 +85,31 @@ class ShoppingController extends Controller
             }
         }
 
+        // Determine product image based on selected color
+        $cartImage = $product->image->image ?? 'frontEnd/img/default-product.jpg';
+
+        if ($request->product_color) {
+            $colorModel = \App\Models\Color::where('colorName', $request->product_color)->first();
+            if ($colorModel) {
+                $colorImg = \App\Models\Productimage::where('product_id', $product->id)
+                    ->where('color_id', $colorModel->id)
+                    ->first();
+
+                if (!$colorImg) {
+                    $productcolors = \App\Models\Productcolor::where('product_id', $product->id)->get();
+                    $colorIndex = $productcolors->pluck('color_id')->search($colorModel->id);
+                    if ($colorIndex !== false) {
+                        $allImages = \App\Models\Productimage::where('product_id', $product->id)->get();
+                        $colorImg = $allImages->get($colorIndex);
+                    }
+                }
+
+                if ($colorImg && !empty($colorImg->image)) {
+                    $cartImage = $colorImg->image;
+                }
+            }
+        }
+
         Cart::instance('shopping')->add([
             'id' => $product->id,
             'name' => $product->name,
@@ -65,12 +117,12 @@ class ShoppingController extends Controller
             'price' => $variantPrice,
             'options' => [
                 'slug' => $product->slug,
-                'image' => $product->image->image ?? 'frontEnd/img/default-product.jpg',
+                'image' => $cartImage,
                 'old_price' => $product->new_price,
                 'purchase_price' => $product->purchase_price,
-                'product_size'=>$request->product_size,
-                'product_color'=>$request->product_color,
-                'pro_unit'=>$request->pro_unit,
+                'product_size' => $request->product_size,
+                'product_color' => $request->product_color,
+                'pro_unit' => $request->pro_unit,
             ],
         ]);
 
@@ -85,16 +137,43 @@ class ShoppingController extends Controller
         // Fetch the current cart item using the row ID
         $cartItem = Cart::instance('shopping')->get($rowId);
         if ($cartItem) {
+            $product = Product::find($cartItem->id);
+            $newColor = $request->product_color ?: $cartItem->options->product_color;
+            $newSize = $request->product_size ?: $cartItem->options->product_size;
+            $cartImage = $cartItem->options->image;
+
+            if ($newColor && $product) {
+                $colorModel = \App\Models\Color::where('colorName', $newColor)->first();
+                if ($colorModel) {
+                    $colorImg = \App\Models\Productimage::where('product_id', $product->id)
+                        ->where('color_id', $colorModel->id)
+                        ->first();
+
+                    if (!$colorImg) {
+                        $productcolors = \App\Models\Productcolor::where('product_id', $product->id)->get();
+                        $colorIndex = $productcolors->pluck('color_id')->search($colorModel->id);
+                        if ($colorIndex !== false) {
+                            $allImages = \App\Models\Productimage::where('product_id', $product->id)->get();
+                            $colorImg = $allImages->get($colorIndex);
+                        }
+                    }
+
+                    if ($colorImg && !empty($colorImg->image)) {
+                        $cartImage = $colorImg->image;
+                    }
+                }
+            }
+
             // Update the options for the cart item
             Cart::instance('shopping')->update($rowId, [
                 'options' => [
-                    'product_size' => $request->product_size ?: $cartItem->options->product_size, // Use new size or keep existing
-                    'product_color' => $request->product_color ?: $cartItem->options->product_color, // Use new color or keep existing
-                    'slug' => $cartItem->options->slug, // Keep existing slug
-                    'image' => $cartItem->options->image, // Keep existing image
-                    'old_price' => $cartItem->options->old_price, // Keep existing old price
-                    'purchase_price' => $cartItem->options->purchase_price, // Keep existing purchase price
-                    'pro_unit' => $cartItem->options->pro_unit, // Keep existing pro unit
+                    'product_size' => $newSize,
+                    'product_color' => $newColor,
+                    'slug' => $cartItem->options->slug,
+                    'image' => $cartImage,
+                    'old_price' => $cartItem->options->old_price,
+                    'purchase_price' => $cartItem->options->purchase_price,
+                    'pro_unit' => $cartItem->options->pro_unit,
                 ],
             ]);
         }
