@@ -33,7 +33,7 @@ class CustomerController extends Controller
 {
     function __construct()
     {
-        $this->middleware('customer', ['except' => ['register','store','verify','resendotp','account_verify','login','signin','logout','checkout','forgot_password','forgot_verify','forgot_reset','forgot_store','forgot_resend','order_save','order_success','order_track','order_track_result']]);
+        $this->middleware('customer', ['except' => ['register','store','verify','resendotp','account_verify','login','signin','logout','checkout','forgot_password','forgot_verify','forgot_reset','forgot_store','forgot_resend','order_save','order_success','order_track','order_track_result','invoice']]);
     }
 
     public function review(Request $request){
@@ -421,9 +421,21 @@ class CustomerController extends Controller
     }
     public function invoice(Request $request)
     {
-        $order = Order::where(['id' => $request->id, 'customer_id' => Auth::guard('customer')->user()->id])
-            ->with('orderdetails.product.category', 'payment', 'shipping', 'customer', 'paymentHistories')
-            ->firstOrFail();
+        $orderId = $request->id;
+        $query = Order::where(function($q) use ($orderId) {
+            $q->where('id', $orderId)->orWhere('invoice_id', $orderId);
+        });
+
+        if (Auth::guard('customer')->check()) {
+            $order = (clone $query)->where('customer_id', Auth::guard('customer')->user()->id)->first();
+            if (!$order) {
+                $order = $query->firstOrFail();
+            }
+        } else {
+            $order = $query->firstOrFail();
+        }
+
+        $order->load(['orderdetails.product.category', 'payment', 'shipping', 'customer', 'paymentHistories']);
 
         $totalPaid = $order->paymentHistories ? $order->paymentHistories->sum('amount') : 0;
         $dueAmount = max($order->amount - $totalPaid, 0);

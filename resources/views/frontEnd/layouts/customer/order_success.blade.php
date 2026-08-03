@@ -9,7 +9,7 @@
                     <img src="{{asset('frontEnd/images/order-success.png')}}" alt="">
                 </div>
                 <div class="success-title">
-                    <h2>আপনার অর্ডারটি আমাদের কাছে সফলভাবে পৌঁছেছে, কিছুক্ষনের মধ্যে আমাদের একজন প্রতিনিধি আপনার নাম্বারে কল করবেন </h2>
+                    <h2>We have received you order successfully, within short time we will call you </h2>
                 </div>
 
                 <h5 class="my-3">Your Order Details</h5>
@@ -100,7 +100,14 @@
                     </table>
                 </div>
                 <!-- success table -->
-                <a href="{{route('home')}}" class=" my-5 btn btn-primary">Go To Home</a>
+                <div class="d-flex align-items-center justify-content-center gap-3 my-4 flex-wrap">
+                    <a href="{{ route('customer.invoice', ['id' => $order->id]) }}" target="_blank" class="btn btn-success fw-bold px-4 py-2" style="background: #000 !important;">
+                        <i class="fa fa-download me-1"></i> Download Invoice
+                    </a>
+                    <a href="{{ route('home') }}" class="btn btn-primary fw-bold px-4 py-2" style="background: #000 !important;">
+                        <i class="fa fa-home me-1"></i> Go To Home
+                    </a>
+                </div>
             </div>
         </div>
     </div>
