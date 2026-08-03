@@ -346,6 +346,11 @@
     background: #ffffff;
     padding: 50px 0 60px;
 }
+#ganiSmViewLink{
+    background: #000;
+    color: #fff;
+    padding: 5px;
+}
 .bag-tab-nav-bar {
     position: relative;
     border-bottom: 1px solid #eaeaea;
@@ -479,7 +484,7 @@ $(document).ready(function() {
                 <div class="gani-trust-item">
                     <i class="fa-solid fa-rotate-left gani-trust-icon"></i>
                     <h5 class="gani-trust-title">Free Return</h5>
-                    <p class="gani-trust-text">30 Day Return Policy</p>
+                    <p class="gani-trust-text">03 Days Return Policy</p>
                 </div>
             </div>
             <div class="col-6 col-md-3">

@@ -579,7 +579,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="copyright">
-                                <p>© {{ date('Y') }} {{$generalsetting->name}}. All Rights Reserved. | <span style="color: white;">Developed By : <a href="https://www.hostmcw.com"><span style="color: white;">HOSTMCW</span></a></span></p>
+                                <p>© {{ date('Y') }} {{$generalsetting->name}}. All Rights Reserved. | <span style="color: white;">Developed By : <a href="https://www.ganienterprise.com"><span style="color: white;">Gani Enterprise</span></a></span></p>
                             </div>
                         </div>
                     </div>

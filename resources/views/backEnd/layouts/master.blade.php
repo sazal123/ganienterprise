@@ -542,7 +542,7 @@
         <footer class="footer">
           <div class="container-fluid">
             <div class="row">
-              <div class="col-md-12 text-end"><a href="https://hostmcw.com" target="_blank">Developed by : HOSTMCW</a></div>
+              <div class="col-md-12 text-end"><a href="https://ganienterprise.com" target="_blank">Developed by : Gani Enterprise</a></div>
             </div>
           </div>
         </footer>
