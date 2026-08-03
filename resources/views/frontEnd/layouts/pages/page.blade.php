@@ -37,6 +37,28 @@
                 </div>
             </div>
         </div>
-    </div>
-</section>
+<style>
+    .page-description {
+        font-size: 15px;
+        line-height: 1.7;
+        color: #333;
+    }
+    .page-description img {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+    .page-description table {
+        width: 100% !important;
+        border-collapse: collapse;
+        margin: 15px 0;
+    }
+    .page-description table th,
+    .page-description table td {
+        padding: 10px 14px;
+        border: 1px solid #ddd;
+    }
+    .page-description iframe {
+        max-width: 100%;
+    }
+</style>
 @endsection

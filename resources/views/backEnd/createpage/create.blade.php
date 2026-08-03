@@ -91,15 +91,27 @@
 
 
 @section('script')
-<script src="{{asset('backEnd/assets/libs/parsleyjs/parsley.min.js"></script>
-<script src="{{asset('backEnd/assets/js/pages/form-validation.init.js"></script>
-<script src="{{asset('backEnd/assets/js/pages/form-advanced.init.js"></script>
+<script src="{{asset('backEnd/assets/libs/parsleyjs/parsley.min.js')}}"></script>
+<script src="{{asset('backEnd/assets/js/pages/form-validation.init.js')}}"></script>
+<script src="{{asset('backEnd/assets/js/pages/form-advanced.init.js')}}"></script>
 <!-- Plugins js -->
-<script src="{{asset('backEnd/assets/libs//summernote/summernote-lite.min.js"></script>
+<script src="{{asset('backEnd/assets/libs/summernote/summernote-lite.min.js')}}"></script>
 <script>
-  $(".summernote").summernote({
-    placeholder: "Enter Your Text Here",
-    
+  $(document).ready(function() {
+      $('.summernote').summernote({
+          height: 350,
+          placeholder: 'Enter or paste your content here...',
+          toolbar: [
+              ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ['color', ['color']],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['table', ['table']],
+              ['insert', ['link', 'picture', 'video']],
+              ['view', ['fullscreen', 'codeview', 'help']]
+          ]
+      });
   });
 </script>
 @endsection
