@@ -6,7 +6,7 @@
 .invoice-page .header{text-align:center;border-bottom:2px solid #000;padding-bottom:10px}
 .invoice-page .brand h1{margin:0;font-size:28px;font-weight:bold}
 .invoice-page .brand p{margin:4px 0 0;font-style:italic;font-weight:bold}
-.invoice-page .contact{margin-top:10px;font-size:14px;line-height:1.6}
+.invoice-page .contact{font-size:14px;line-height:1.6}
 .invoice-page .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:18px}
 .invoice-page .label{display:inline-block;background:#000;color:#fff;padding:4px 12px;font-weight:bold;margin-bottom:8px}
 .invoice-page .inv-table{width:100%;border-collapse:collapse;margin-top:20px}
@@ -59,7 +59,7 @@
 
 <div class="invoice-page">
 <div class="header">
-<img src="{{ asset($generalsetting->dark_logo ?? $generalsetting->white_logo) }}" style="max-width:100%;height:auto;max-height:100px;object-fit:contain;margin-bottom:10px;" alt="{{ $generalsetting->name }}">
+<img src="{{ asset($generalsetting->dark_logo ?? $generalsetting->white_logo) }}" style="max-width:100%;height:auto;max-height:100px;object-fit:contain;" alt="{{ $generalsetting->name }}">
 <div class="contact">
 <div><i class="fa fa-map-marker"></i> <b>Head Office:</b> Rahman Mansion (3rd Floor), Tamakmundi Lane, Reazuddin Bazar, Chittagong</div>
 <div><i class="fa fa-map-marker"></i> <b>Feni Office:</b> Gazi Cross Road, Gudham Quarter, Railgate, Feni Sadar, Feni</div>

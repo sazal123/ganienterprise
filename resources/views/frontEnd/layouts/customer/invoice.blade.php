@@ -21,7 +21,7 @@
 }
 .invoice-page .brand h1 { margin: 0; font-size: 28px; font-weight: bold; }
 .invoice-page .brand p { margin: 4px 0 0; font-style: italic; font-weight: bold; }
-.invoice-page .contact { margin-top: 10px; font-size: 14px; line-height: 1.6; }
+.invoice-page .contact {font-size: 14px; line-height: 1.6; }
 .invoice-page .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -167,7 +167,7 @@
         {{-- Invoice Printable Container --}}
         <div class="invoice-page">
             <div class="header">
-                <img src="{{ asset($generalsetting->dark_logo ?? $generalsetting->white_logo) }}" style="max-width:100%;height:auto;max-height:100px;object-fit:contain;margin-bottom:10px;" alt="{{ $generalsetting->name }}">
+                <img src="{{ asset($generalsetting->dark_logo ?? $generalsetting->white_logo) }}" style="max-width:100%;height:auto;max-height:100px;object-fit:contain;" alt="{{ $generalsetting->name }}">
                 <div class="contact">
                     <div><i class="fa fa-map-marker"></i> <b>Head Office:</b> Rahman Mansion (3rd Floor), Tamakmundi Lane, Reazuddin Bazar, Chittagong</div>
                     <div><i class="fa fa-map-marker"></i> <b>Feni Office:</b> Gazi Cross Road, Gudham Quarter, Railgate, Feni Sadar, Feni</div>
