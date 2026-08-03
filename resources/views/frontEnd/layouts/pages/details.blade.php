@@ -932,9 +932,6 @@
             <button class="pdp-tab-btn active" data-tab="description">Description</button>
             <button class="pdp-tab-btn" data-tab="orderpolicy">Order Policy</button>
             <button class="pdp-tab-btn" data-tab="reviews">Reviews ({{ $totalReviews }})</button>
-            @if($details->pro_video)
-            <button class="pdp-tab-btn" data-tab="video">Video</button>
-            @endif
         </div>
         <div class="pdp-tab-content">
             {{-- Description --}}
@@ -1006,19 +1003,6 @@
                 </div>
                 @endif
             </div>
-
-            {{-- Video --}}
-            @if($details->pro_video)
-            <div class="pdp-tab-pane" id="tab-video">
-                <div class="pdp-video">
-                    <h3>Product Video</h3>
-                    <iframe src="https://www.youtube.com/embed/{{ $details->pro_video }}"
-                            title="Product Video" frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
-                </div>
-            </div>
-            @endif
         </div>
     </div>
 </section>
