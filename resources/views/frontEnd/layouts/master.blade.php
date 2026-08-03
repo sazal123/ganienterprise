@@ -527,13 +527,12 @@
                         <div class="col-sm-3 mb-3 mb-sm-0 col-6">
                             <div class="footer-menu">
                                 <ul>
-                                    <li class="title"><a>Useful Link</a></li>
-                                    <li>
-                                        <a href="{{route('contact')}}"> Contact Us</a>
-                                    </li>
-                                    @foreach($pages as $page)
-                                    <li><a href="{{route('page',['slug'=>$page->slug])}}">{{$page->name}}</a></li>
-                                    @endforeach
+                                    <li class="title"><a>Useful Links</a></li>
+                                    <li><a href="{{ \App\Models\CreatePage::where('status',1)->where(fn($q)=>$q->where('slug','like','%affiliate%')->orWhere('name','like','%affiliate%'))->first() ? route('page', \App\Models\CreatePage::where('status',1)->where(fn($q)=>$q->where('slug','like','%affiliate%')->orWhere('name','like','%affiliate%'))->first()->slug) : route('page', 'affiliate-marketing') }}">Affiliate Marketing</a></li>
+                                    <li><a href="{{ route('offers') }}">Special Offers</a></li>
+                                    <li><a href="{{ route('allCategories') }}">All Categories</a></li>
+                                    <li><a href="{{ \App\Models\CreatePage::where('status',1)->where(fn($q)=>$q->where('slug','like','%wholesale%')->orWhere('name','like','%wholesale%'))->first() ? route('page', \App\Models\CreatePage::where('status',1)->where(fn($q)=>$q->where('slug','like','%wholesale%')->orWhere('name','like','%wholesale%'))->first()->slug) : route('page', 'wholesale') }}">Wholesale</a></li>
+                                    <li><a href="{{ route('contact') }}">Contact Us</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -541,15 +540,13 @@
                         <div class="col-sm-2 mb-3 mb-sm-0 col-6">
                             <div class="footer-menu">
                                 <ul>
-                                    <li class="title"><a>Link</a></li>
-                                     <li>
-                                        <a href="{{route('shop')}}">All Products</a>
-                                    </li>
-                                    @foreach($pagesright as $key=>$value)
-                                    <li>
-                                        <a href="{{route('page',['slug'=>$value->slug])}}">{{$value->name}}</a>
-                                    </li>
-                                    @endforeach
+                                    <li class="title"><a>Important Links</a></li>
+                                    <li><a href="{{ \App\Models\CreatePage::where('status',1)->where(fn($q)=>$q->where('slug','like','%procedure%')->orWhere('name','like','%procedure%'))->first() ? route('page', \App\Models\CreatePage::where('status',1)->where(fn($q)=>$q->where('slug','like','%procedure%')->orWhere('name','like','%procedure%'))->first()->slug) : route('page', 'order-procedure') }}">Order Procedure</a></li>
+                                    <li><a href="{{ route('shop') }}">All Products</a></li>
+                                    <li><a href="{{ \App\Models\CreatePage::where('status',1)->where(fn($q)=>$q->where('slug','like','%delivery%')->orWhere('name','like','%delivery%'))->first() ? route('page', \App\Models\CreatePage::where('status',1)->where(fn($q)=>$q->where('slug','like','%delivery%')->orWhere('name','like','%delivery%'))->first()->slug) : route('page', 'delivery-rules') }}">Delivery Rules</a></li>
+                                    <li><a href="{{ \App\Models\CreatePage::where('status',1)->where(fn($q)=>$q->where('slug','like','%return%')->orWhere('name','like','%return%'))->first() ? route('page', \App\Models\CreatePage::where('status',1)->where(fn($q)=>$q->where('slug','like','%return%')->orWhere('name','like','%return%'))->first()->slug) : route('page', 'return-policy') }}">Return Policy</a></li>
+                                    <li><a href="{{ \App\Models\CreatePage::where('status',1)->where(fn($q)=>$q->where('slug','like','%terms%')->orWhere('name','like','%terms%'))->first() ? route('page', \App\Models\CreatePage::where('status',1)->where(fn($q)=>$q->where('slug','like','%terms%')->orWhere('name','like','%terms%'))->first()->slug) : route('page', 'terms-conditions') }}">Terms &amp; Conditions</a></li>
+                                    <li><a href="{{ \App\Models\CreatePage::where('status',1)->where(fn($q)=>$q->where('slug','like','%privacy%')->orWhere('name','like','%privacy%'))->first() ? route('page', \App\Models\CreatePage::where('status',1)->where(fn($q)=>$q->where('slug','like','%privacy%')->orWhere('name','like','%privacy%'))->first()->slug) : route('page', 'privacy-policy') }}">Privacy Policy</a></li>
                                 </ul>
                             </div>
                         </div>
