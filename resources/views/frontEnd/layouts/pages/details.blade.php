@@ -505,12 +505,12 @@
 /* ── Write Review Modal ── */
 .pdp-write-review-btn {
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 10px 24px; background: #3c7d17; color: #fff; border: none;
+    padding: 10px 24px; background: #000; color: #fff; border: none;
     border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;
     transition: all 0.25s ease; letter-spacing: 0.5px;
     box-shadow: 0 3px 10px rgba(60,125,23,0.2);
 }
-.pdp-write-review-btn:hover { background: #2d5d11; color: #fff; transform: translateY(-1px); box-shadow: 0 5px 15px rgba(60,125,23,0.3); }
+.pdp-write-review-btn:hover { background: #000; color: #fff; transform: translateY(-1px); box-shadow: 0 5px 15px rgba(60,125,23,0.3); }
 
 /* ── Related / Pair Sections ── */
 .pdp-section { padding: 30px 0; }
