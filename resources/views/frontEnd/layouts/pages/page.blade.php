@@ -71,5 +71,10 @@
     .page-description iframe {
         max-width: 100%;
     }
+    .page-title{
+        text-align: center;
+        text-transform: uppercase;
+        margin-bottom: 10px !important;
+    }
 </style>
 @endsection
