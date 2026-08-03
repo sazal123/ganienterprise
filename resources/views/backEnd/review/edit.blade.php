@@ -124,10 +124,10 @@
 
 
 @section('script')
-<script src="{{asset('backEnd/assets/libs/parsleyjs/parsley.min.js)}}"></script>
-<script src="{{asset('backEnd/assets/js/pages/form-validation.init.js)}}"></script>
-<script src="{{asset('backEnd/assets/libs/select2/js/select2.min.js)}}"></script>
-<script src="{{asset('backEnd/assets/js/pages/form-advanced.init.js)}}"></script>
+<script src="{{asset('backEnd/assets/libs/parsleyjs/parsley.min.js')}}"></script>
+<script src="{{asset('backEnd/assets/js/pages/form-validation.init.js')}}"></script>
+<script src="{{asset('backEnd/assets/libs/select2/js/select2.min.js')}}"></script>
+<script src="{{asset('backEnd/assets/js/pages/form-advanced.init.js')}}"></script>
 <!-- Plugins js -->
-<script src="{{asset('backEnd/assets/libs/summernote/summernote-lite.min.js)}}"></script>
+<script src="{{asset('backEnd/assets/libs/summernote/summernote-lite.min.js')}}"></script>
 @endsection
