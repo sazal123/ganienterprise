@@ -362,7 +362,7 @@
     transition: all 0.2s; display: flex; align-items: center; justify-content: center;
 }
 .pdp-size-btn:hover { border-color: #C41E3A; color: #3c7d17; }
-.pdp-size-btn.active { border-color: #C41E3A; background: ##C41E3A; color: #fff; }
+.pdp-size-btn.active { border-color: #C41E3A; background: #C41E3A; color: #fff; }
 .pdp-size-btn input { position: absolute; opacity: 0; width: 0; height: 0; }
 .pdp-size-btn .size-price {
     display: block; font-size: 10px; font-weight: 400; opacity: 0.8;
