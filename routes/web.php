@@ -118,9 +118,9 @@ Route::group(['prefix'=>'customer','namespace'=>'Frontend', 'middleware' => ['ip
     Route::post('/order-save', [CustomerController::class, 'order_save'])->name('customer.ordersave');
     Route::get('/order-success/{id}', [CustomerController::class, 'order_success'])->name('customer.order_success');
 
-   Route::get('/order-track', [CustomerController::class, 'order_track'])->name('customer.order_track');
+    Route::get('/order-track', [CustomerController::class, 'order_track'])->name('customer.order_track');
     Route::get('/order-track/result', [CustomerController::class, 'order_track_result'])->name('customer.order_track_result');
-
+    Route::get('/invoice', [CustomerController::class, 'invoice'])->name('customer.invoice');
 
 });
 // customer auth
@@ -129,7 +129,6 @@ Route::group(['prefix'=>'customer','namespace'=>'Frontend','middleware' => ['cus
     Route::get('/account', [CustomerController::class, 'account'])->name('customer.account');
 
     Route::get('/orders', [CustomerController::class, 'orders'])->name('customer.orders');
-    Route::get('/invoice', [CustomerController::class, 'invoice'])->name('customer.invoice');
     Route::get('/invoice/order-note', [CustomerController::class, 'order_note'])->name('customer.order_note');
     Route::get('/profile-edit', [CustomerController::class, 'profile_edit'])->name('customer.profile_edit');
     Route::post('/profile-update', [CustomerController::class, 'profile_update'])->name('customer.profile_update');
