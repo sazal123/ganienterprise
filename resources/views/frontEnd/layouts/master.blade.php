@@ -590,7 +590,10 @@
         <div class="footer_nav">
             <ul>
                 <li>
-                    <a id="ganiMobileToggle" style="cursor:pointer;">
+                    <a class="gani-mobile-toggle" style="cursor:pointer;">
+                        <span>
+                            <i class="fa-solid fa-border-all"></i>
+                        </span>
                         <span>Category</span>
                     </a>
                 </li>
@@ -1035,7 +1038,7 @@
                 }
 
                 // Mobile sidebar toggle
-                var toggleBtn = document.getElementById('ganiMobileToggle');
+                var toggleBtns = document.querySelectorAll('.gani-mobile-toggle, #ganiMobileToggle');
                 var sidebar = document.getElementById('ganiMobileSidebar');
                 var overlay = document.getElementById('ganiMobileOverlay');
                 var closeBtn = document.getElementById('ganiSidebarClose');
@@ -1051,7 +1054,9 @@
                     document.body.style.overflow = '';
                 }
 
-                if (toggleBtn) toggleBtn.addEventListener('click', openSidebar);
+                toggleBtns.forEach(function(btn) {
+                    btn.addEventListener('click', openSidebar);
+                });
                 if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
                 if (overlay) overlay.addEventListener('click', closeSidebar);
 
