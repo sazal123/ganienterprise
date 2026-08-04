@@ -6301,6 +6301,36 @@ a:hover .gani-product-name,
     }
 }
 
+@media (max-width: 767px) {
+    .gani-top-bar {
+        padding: 8px 0;
+    }
+
+    .gani-top-bar .container {
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 4px;
+        text-align: center;
+    }
+
+    .gani-top-shipping-text {
+        order: 1;
+        font-size: 11px;
+        margin: 0;
+    }
+
+    .gani-top-phone {
+        order: 2;
+        font-size: 11px;
+    }
+
+    .gani-top-auth {
+        order: 3;
+        font-size: 11px;
+    }
+}
+
 @media (min-width: 992px) {
     .gani-mobile-header {
         display: none !important;

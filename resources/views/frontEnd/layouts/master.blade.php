@@ -262,11 +262,11 @@
         {{-- Black Secondary Bar --}}
         <div class="gani-top-bar">
             <div class="container d-flex align-items-center justify-content-center justify-content-md-between flex-wrap">
-                <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-3 gani-top-phone">
                     <a href="tel:{{ $contact->hotline }}" class="text-white text-decoration-none"><i class="fa-solid fa-phone me-1"></i> {{ $contact->hotline }}</a>
                 </div>
                 <div class="fw-bold gani-top-shipping-text">Your Trusted Partner For Imported Products</div>
-                <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-3 gani-top-auth">
                     @if(Auth::guard('customer')->user())
                         <a href="{{route('customer.account')}}" class="gani-top-link"><i class="fa-regular fa-user me-1"></i> {{ Str::limit(Auth::guard('customer')->user()->name, 14) }}</a>
                         <a href="{{ route('logout') }}" class="gani-top-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
