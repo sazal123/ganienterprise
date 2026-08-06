@@ -135,7 +135,7 @@
     background: var(--cmp-primary-dark);
     color: #ffffff;
     border-radius: 30px;
-    padding: 6px 18px;
+    padding: 15px 18px;
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -160,7 +160,7 @@
     padding: 3px 8px;
     border-radius: 6px;
     font-weight: 800;
-    font-size: 14px;
+    font-size: 20px;
     color: #ffffff;
 }
 
