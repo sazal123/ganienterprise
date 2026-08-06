@@ -6358,6 +6358,14 @@ a:hover .gani-product-name,
         order: 3;
         font-size: 11px;
     }
+
+    .gani-top-link {
+        display: none;
+    }
+
+    .gani-mobile-logo-img {
+        transform: scale(1.6);
+    }
 }
 
 @media (min-width: 992px) {

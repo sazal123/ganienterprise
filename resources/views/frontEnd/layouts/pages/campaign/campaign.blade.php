@@ -29,142 +29,170 @@
 }
 
 
-/* ───── Hero Header Section (Reference Design Match) ───── */
-.cmp-hero-card {
-    background: var(--cmp-card-bg);
-    border-radius: 24px;
-    padding: 45px 48px 36px;
+/* ───── Full Width Banner Box (Reference Match) ───── */
+.cmp-banner-card {
     position: relative;
+    border-radius: 20px;
+    padding: 45px 50px;
+    margin-bottom: 24px;
     overflow: hidden;
-    margin-bottom: 35px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-    border: 1px solid rgba(0, 0, 0, 0.04);
+    color: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    background-color: #0f172a;
+    @if($campaign_data->banner)
+    background-image: linear-gradient(90deg, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.82) 45%, rgba(15, 23, 42, 0.45) 100%), url('{{ asset($campaign_data->banner) }}');
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    @endif
 }
 
-@if($campaign_data->banner)
-.cmp-hero-card.has-banner-bg{
-    background:none;
-}
-@endif
-
-/* Breadcrumb Navigation */
-.cmp-breadcrumb {
-    display: flex;
+.cmp-banner-badge {
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    font-size: 11.5px;
+    gap: 6px;
+    background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.35);
+    margin-bottom: 16px;
+}
+
+.cmp-banner-title {
+    font-size: clamp(26px, 3.8vw, 42px);
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.25;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.cmp-banner-subtitle {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 22px;
+    max-width: 580px;
+    line-height: 1.5;
+}
+
+/* Translucent Glassmorphic Timer Box */
+.cmp-glass-timer {
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 12px 22px;
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.cmp-timer-unit {
+    text-align: center;
+}
+
+.cmp-timer-unit-val {
+    font-size: 26px;
+    font-weight: 800;
+    color: #facc15;
+    line-height: 1;
+    display: block;
+    min-width: 38px;
+}
+
+.cmp-timer-unit-lbl {
+    font-size: 9.5px;
     font-weight: 700;
+    color: rgba(255, 255, 255, 0.55);
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: #6b7280;
-    margin-bottom: 14px;
-}
-.cmp-breadcrumb i {
-    font-size: 10px;
-    color: #9ca3af;
+    margin-top: 4px;
+    display: block;
 }
 
-/* Main Giant Heading */
-.cmp-hero-title {
-    font-size: 50px;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: -0.5px;
-    color: var(--cmp-primary-dark);
-    line-height: 1.1;
-    margin-bottom: 14px;
-    font-family: 'Jost', 'Roboto', sans-serif;
+.cmp-timer-colon {
+    font-size: 20px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 12px;
 }
 
-/* Description Text */
-.cmp-hero-desc {
-    font-size: 15.5px;
-    color: var(--cmp-text-muted);
-    max-width: 840px;
-    line-height: 1.65;
-    margin-bottom: 28px;
+/* ───── White Filter Subbar (Below Banner) ───── */
+.cmp-subbar {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
-/* ───── Pill Controls Bar (Bottom of Hero Card) ───── */
-.cmp-pills-bar {
+.cmp-subbar-text {
+    font-size: 13.5px;
+    color: #64748b;
+}
+
+.cmp-subbar-text strong {
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.cmp-subbar-controls {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 10px;
+    gap: 10px;
 }
 
 .cmp-pill-select, .cmp-pill-input {
     background: #ffffff;
-    border: 1px solid #d1d5db;
-    border-radius: 30px;
-    padding: 9px 20px;
-    font-size: 13.5px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
     font-weight: 600;
-    color: var(--cmp-text-dark);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-    transition: all 0.2s ease;
+    color: #1e293b;
     outline: none;
+    transition: all 0.2s ease;
+}
+.cmp-pill-select{
+    display:none;
 }
 
 .cmp-pill-select:focus, .cmp-pill-input:focus {
-    border-color: var(--cmp-primary);
-    box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.15);
+    border-color: #f97316;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
 }
 
 .cmp-pill-search {
     position: relative;
-    flex-grow: 1;
-    max-width: 280px;
+    width: 220px;
 }
+
 .cmp-pill-search input {
     width: 100%;
-    padding-left: 38px;
+    padding-left: 36px;
 }
+
 .cmp-pill-search i {
     position: absolute;
-    left: 14px;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: #9ca3af;
-    font-size: 13px;
-}
-
-/* Countdown Timer Pill */
-.cmp-timer-pill {
-    background: var(--cmp-primary-dark);
-    color: #ffffff;
-    border-radius: 30px;
-    padding: 15px 18px;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 4px 14px rgba(6, 78, 59, 0.25);
-    margin-left: auto;
-}
-.cmp-timer-pill-title {
+    color: #94a3b8;
     font-size: 12px;
-    font-weight: 700;
-    color: #fde047;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
 }
-.cmp-timer-digits {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.cmp-timer-num-box {
-    background: rgba(255, 255, 255, 0.15);
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-weight: 800;
-    font-size: 20px;
-    color: #ffffff;
-}
-
-
 
 /* Quick Order Modal */
 .modal-content.cmp-modal {
@@ -185,21 +213,28 @@
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-    .cmp-hero-card {
-        padding: 28px 20px 24px;
-        border-radius: 18px;
+    .cmp-banner-card {
+        padding: 30px 20px;
+        border-radius: 16px;
     }
-    .cmp-hero-title {
-        font-size: 32px;
-    }
-    .cmp-pill-search {
-        max-width: 100%;
-        width: 100%;
-    }
-    .cmp-timer-pill {
-        margin-left: 0;
+    .cmp-glass-timer {
+        padding: 10px 14px;
+        gap: 10px;
         width: 100%;
         justify-content: center;
+    }
+    .cmp-timer-unit-val {
+        font-size: 20px;
+    }
+    .cmp-subbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .cmp-subbar-controls {
+        width: 100%;
+    }
+    .cmp-pill-search {
+        width: 100%;
     }
 }
 </style>
@@ -209,28 +244,56 @@
 <div class="cmp-page-wrapper">
     <div class="container">
         
-        <!-- Hero Header Card (Reference Design Match) -->
-        <div class="cmp-hero-card {{ $campaign_data->banner ? 'has-banner-bg' : '' }}">
-            <!-- Breadcrumb Navigation -->
-            <div class="cmp-breadcrumb">
-                <span>HOME</span> <i class="fa fa-chevron-right"></i>
-                <span>CAMPAIGN</span> <i class="fa fa-chevron-right"></i>
-                <span class="text-dark fw-bold">{{ strtoupper($campaign_data->name) }}</span>
-            </div>
+        <!-- Hero Banner Card (Reference Design Match) -->
+        <div class="cmp-banner-card">
+            <!-- Badge Tag -->
+            <span class="cmp-banner-badge">
+                <i class="fa fa-bolt"></i> {{ strtoupper($campaign_data->top_title_1 ?? 'UP TO 30% OFF') }}
+            </span>
 
-            <!-- Main Heading Title -->
-            <h1 class="cmp-hero-title">
+            <!-- Title -->
+            <h1 class="cmp-banner-title">
                 {{ $campaign_data->heading_1 ?? $campaign_data->name }}
             </h1>
 
-            <!-- Description -->
-            <p class="cmp-hero-desc">
-                {!! nl2br(e($campaign_data->short_description ?? $campaign_data->description ?? 'Get authentic products at attractive offer prices. Order directly with Cash on Delivery.')) !!}
+            <!-- Subtitle / Short Description -->
+            <p class="cmp-banner-subtitle">
+                {!! nl2br(e(Str::limit($campaign_data->short_description ?? $campaign_data->description ?? 'Get authentic products at attractive offer prices. Order directly with Cash on Delivery.', 120))) !!}
             </p>
 
-            <!-- Bottom Control Pills Bar -->
-            <div class="cmp-pills-bar">
-                <!-- Category Select Pill -->
+            <!-- Translucent Glassmorphic Timer Box -->
+            @if($campaign_data->deadline)
+            <div class="cmp-glass-timer" id="cmp-timer" data-deadline="{{ $campaign_data->deadline }}">
+                <div class="cmp-timer-unit">
+                    <span class="cmp-timer-unit-val" id="t-days">00</span>
+                    <span class="cmp-timer-unit-lbl">DAYS</span>
+                </div>
+                <span class="cmp-timer-colon">:</span>
+                <div class="cmp-timer-unit">
+                    <span class="cmp-timer-unit-val" id="t-hours">00</span>
+                    <span class="cmp-timer-unit-lbl">HOURS</span>
+                </div>
+                <span class="cmp-timer-colon">:</span>
+                <div class="cmp-timer-unit">
+                    <span class="cmp-timer-unit-val" id="t-mins">00</span>
+                    <span class="cmp-timer-unit-lbl">MINS</span>
+                </div>
+                <span class="cmp-timer-colon">:</span>
+                <div class="cmp-timer-unit">
+                    <span class="cmp-timer-unit-val" id="t-secs">00</span>
+                    <span class="cmp-timer-unit-lbl">SECS</span>
+                </div>
+            </div>
+            @endif
+        </div>
+
+        <!-- Subbar: Products Count & Sorting / Search Controls -->
+        <div class="cmp-subbar">
+            <div class="cmp-subbar-text">
+                Showing <strong>{{ $products->total() }}</strong> offer products
+            </div>
+
+            <div class="cmp-subbar-controls">
                 @if(isset($categories) && $categories->count() > 0)
                 <select class="cmp-pill-select" id="cmp-cat-select">
                     <option value="all">All Categories</option>
@@ -240,32 +303,17 @@
                 </select>
                 @endif
 
-                <!-- Sort Select Pill -->
                 <select class="cmp-pill-select" id="cmp-sort-select">
-                    <option value="latest">Newest Products</option>
+                    <option value="latest">Sort By: Default Order</option>
                     <option value="price_low">Price: Low to High</option>
                     <option value="price_high">Price: High to Low</option>
                     <option value="oldest">Oldest Products</option>
                 </select>
 
-                <!-- Search Input Pill -->
                 <div class="cmp-pill-search">
                     <i class="fa fa-search"></i>
                     <input type="text" id="cmp-search-input" class="cmp-pill-input" placeholder="Search products..." autocomplete="off">
                 </div>
-
-                <!-- Countdown Timer Pill -->
-                @if($campaign_data->deadline)
-                <div class="cmp-timer-pill">
-                    <span class="cmp-timer-pill-title"><i class="fa fa-clock-o me-1"></i> Offer Ends In:</span>
-                    <div class="cmp-timer-digits" id="cmp-timer" data-deadline="{{ $campaign_data->deadline }}">
-                        <span class="cmp-timer-num-box" id="t-days">00</span>:
-                        <span class="cmp-timer-num-box" id="t-hours">00</span>:
-                        <span class="cmp-timer-num-box" id="t-mins">00</span>:
-                        <span class="cmp-timer-num-box" id="t-secs">00</span>
-                    </div>
-                </div>
-                @endif
             </div>
         </div>
 
