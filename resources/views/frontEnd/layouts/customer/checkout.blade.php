@@ -13,6 +13,120 @@
     @endphp
     <div class="container">
         <div class="row">
+            <!-- Order Summary Column (First on Mobile) -->
+            <div class="col-sm-7 cust-order-1">
+                <div class="cart_details table-responsive-sm">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Order Summary</h5>
+                        </div>
+                        <div class="card-body cartlist">
+                            <table class="cart_table table table-bordered table-striped text-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 15%;">Action</th>
+                                        <th style="width: 45%;">Product</th>
+                                        <th style="width: 20%;">Quantity</th>
+                                        <th style="width: 20%;">Price</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach (Cart::instance('shopping')->content() as $value)
+                                        <tr>
+                                            <td>
+                                                <a class="cart_remove" data-id="{{ $value->rowId }}"><i
+                                                        class="fas fa-trash text-danger"></i></a>
+                                            </td>
+                                            <td class="text-left">
+                                                <div class="d-flex align-items-center justify-content-between gap-2">
+                                                    <div>
+                                                        <a href="{{ route('product', $value->options->slug) }}" class="fw-semibold text-dark text-decoration-none">
+                                                            {{ Str::limit($value->name, 25) }}
+                                                        </a>
+                                                        @if ($value->options->product_size)
+                                                            <p class="mb-0 text-muted small">Size: {{ $value->options->product_size }}</p>
+                                                        @endif
+                                                        @if ($value->options->product_color)
+                                                            <p class="mb-0 text-muted small">Color: {{ $value->options->product_color }}</p>
+                                                        @endif
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <a href="{{ route('product', $value->options->slug) }}">
+                                                            @php
+                                                                $itemImg = $value->options->image;
+                                                                if ($value->options->product_color) {
+                                                                    $colorModel = \App\Models\Color::where('colorName', $value->options->product_color)->first();
+                                                                    if ($colorModel) {
+                                                                        $cImg = \App\Models\Productimage::where('product_id', $value->id)->where('color_id', $colorModel->id)->first();
+                                                                        if (!$cImg) {
+                                                                            $pcs = \App\Models\Productcolor::where('product_id', $value->id)->get();
+                                                                            $idx = $pcs->pluck('color_id')->search($colorModel->id);
+                                                                            if ($idx !== false) {
+                                                                                $cImg = \App\Models\Productimage::where('product_id', $value->id)->get()->get($idx);
+                                                                            }
+                                                                        }
+                                                                        if ($cImg && !empty($cImg->image)) {
+                                                                            $itemImg = $cImg->image;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            @endphp
+                                                            <img src="{{ asset($itemImg) }}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #eee;" alt="" />
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="cart_qty">
+                                                <div class="qty-cart vcart-qty">
+                                                    <div class="quantity">
+                                                        <button class="minus cart_decrement"
+                                                            data-id="{{ $value->rowId }}">-</button>
+                                                        <input type="text" value="{{ $value->qty }}" readonly />
+                                                        <button class="plus cart_increment"
+                                                            data-id="{{ $value->rowId }}">+</button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><span class="alinur">৳ </span><strong>{{ $value->price }}</strong>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="3" class="text-end px-4">Subtotal</th>
+                                        <td class="px-4">
+                                            <span id="net_total"><span class="alinur">৳
+                                                </span><strong>{{ $subtotal }}</strong></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3" class="text-end px-4">Shipping Charge</th>
+                                        <td class="px-4">
+                                            <span id="cart_shipping_cost"><span class="alinur">৳
+                                                </span><strong>{{ $shipping }}</strong></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3" class="text-end px-4">Grand Total</th>
+                                        <td class="px-4">
+                                            <span id="grand_total"><span class="alinur">৳
+                                                </span><strong>{{ $subtotal + $shipping }}</strong></span>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div class="card-footer text-danger">
+                            {!! $generalsetting->checkout_note !!}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- col end -->
+
+            <!-- Place Order Form Column (Second on Mobile) -->
             <div class="col-sm-5 cus-order-2">
                 <div class="checkout-shipping">
                     <form action="{{ route('customer.ordersave') }}" method="POST" data-parsley-validate="">
@@ -143,117 +257,6 @@
                         </div>
                         <!-- card end -->
                     </form>
-                </div>
-            </div>
-            <!-- col end -->
-            <div class="col-sm-7 cust-order-1">
-                <div class="cart_details table-responsive-sm">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>Order Summary</h5>
-                        </div>
-                        <div class="card-body cartlist">
-                            <table class="cart_table table table-bordered table-striped text-center mb-0">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 15%;">Action</th>
-                                        <th style="width: 45%;">Product</th>
-                                        <th style="width: 20%;">Quantity</th>
-                                        <th style="width: 20%;">Price</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    @foreach (Cart::instance('shopping')->content() as $value)
-                                        <tr>
-                                            <td>
-                                                <a class="cart_remove" data-id="{{ $value->rowId }}"><i
-                                                        class="fas fa-trash text-danger"></i></a>
-                                            </td>
-                                            <td class="text-left">
-                                                <div class="d-flex align-items-center justify-content-between gap-2">
-                                                    <div>
-                                                        <a href="{{ route('product', $value->options->slug) }}" class="fw-semibold text-dark text-decoration-none">
-                                                            {{ Str::limit($value->name, 25) }}
-                                                        </a>
-                                                        @if ($value->options->product_size)
-                                                            <p class="mb-0 text-muted small">Size: {{ $value->options->product_size }}</p>
-                                                        @endif
-                                                        @if ($value->options->product_color)
-                                                            <p class="mb-0 text-muted small">Color: {{ $value->options->product_color }}</p>
-                                                        @endif
-                                                    </div>
-                                                    <div class="flex-shrink-0">
-                                                        <a href="{{ route('product', $value->options->slug) }}">
-                                                            @php
-                                                                $itemImg = $value->options->image;
-                                                                if ($value->options->product_color) {
-                                                                    $colorModel = \App\Models\Color::where('colorName', $value->options->product_color)->first();
-                                                                    if ($colorModel) {
-                                                                        $cImg = \App\Models\Productimage::where('product_id', $value->id)->where('color_id', $colorModel->id)->first();
-                                                                        if (!$cImg) {
-                                                                            $pcs = \App\Models\Productcolor::where('product_id', $value->id)->get();
-                                                                            $idx = $pcs->pluck('color_id')->search($colorModel->id);
-                                                                            if ($idx !== false) {
-                                                                                $cImg = \App\Models\Productimage::where('product_id', $value->id)->get()->get($idx);
-                                                                            }
-                                                                        }
-                                                                        if ($cImg && !empty($cImg->image)) {
-                                                                            $itemImg = $cImg->image;
-                                                                        }
-                                                                    }
-                                                                }
-                                                            @endphp
-                                                            <img src="{{ asset($itemImg) }}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #eee;" alt="" />
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="cart_qty">
-                                                <div class="qty-cart vcart-qty">
-                                                    <div class="quantity">
-                                                        <button class="minus cart_decrement"
-                                                            data-id="{{ $value->rowId }}">-</button>
-                                                        <input type="text" value="{{ $value->qty }}" readonly />
-                                                        <button class="plus cart_increment"
-                                                            data-id="{{ $value->rowId }}">+</button>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td><span class="alinur">৳ </span><strong>{{ $value->price }}</strong>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="3" class="text-end px-4">Subtotal</th>
-                                        <td class="px-4">
-                                            <span id="net_total"><span class="alinur">৳
-                                                </span><strong>{{ $subtotal }}</strong></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="3" class="text-end px-4">Shipping Charge</th>
-                                        <td class="px-4">
-                                            <span id="cart_shipping_cost"><span class="alinur">৳
-                                                </span><strong>{{ $shipping }}</strong></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="3" class="text-end px-4">Grand Total</th>
-                                        <td class="px-4">
-                                            <span id="grand_total"><span class="alinur">৳
-                                                </span><strong>{{ $subtotal + $shipping }}</strong></span>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                        <div class="card-footer text-danger">
-                            {!! $generalsetting->checkout_note !!}
-                        </div>
-                    </div>
                 </div>
             </div>
             <!-- col end -->
