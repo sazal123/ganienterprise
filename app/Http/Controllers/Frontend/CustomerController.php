@@ -435,7 +435,10 @@ class CustomerController extends Controller
     
     public function orders()
     {
-        $orders = Order::where('customer_id',Auth::guard('customer')->user()->id)->with('status')->latest()->get();
+        $orders = Order::where('customer_id',Auth::guard('customer')->user()->id)
+            ->with(['status', 'orderdetails.product.category', 'payment', 'shipping', 'paymentHistories'])
+            ->latest()
+            ->get();
         return view('frontEnd.layouts.customer.orders',compact('orders'));
     }
     public function order_success($id) {
