@@ -608,9 +608,19 @@
                 </li>
 
                 <li class="mobile_home">
-                    <a href="{{route('home')}}">
-                        <span><i class="fa-solid fa-home"></i></span> <span>Home</span>
-                    </a>
+                    @if(isset($campaign_data) && isset($campaign_data->slug))
+                        <a href="{{ route('campaign', $campaign_data->slug) }}">
+                            <span><i class="fa-solid fa-home"></i></span> <span>Home</span>
+                        </a>
+                    @elseif(request()->is('campaign/*'))
+                        <a href="{{ url()->current() }}">
+                            <span><i class="fa-solid fa-home"></i></span> <span>Home</span>
+                        </a>
+                    @else
+                        <a href="{{ route('home') }}">
+                            <span><i class="fa-solid fa-home"></i></span> <span>Home</span>
+                        </a>
+                    @endif
                 </li>
 
                 <li>
