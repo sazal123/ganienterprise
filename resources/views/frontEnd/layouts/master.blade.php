@@ -560,10 +560,38 @@
                                 <ul>
                                     <li class="title stay_conn"><a>Follow Us</a></li>
                                 </ul>
+                                @php
+                                    $whatsappSocial = isset($socialicons) ? $socialicons->first(function($item) {
+                                        return Str::contains(strtolower(($item->icon ?? '') . ' ' . ($item->title ?? '')), 'whatsapp');
+                                    }) : null;
+
+                                    $whatsappLink = null;
+                                    if ($whatsappSocial && !empty($whatsappSocial->link)) {
+                                        $whatsappLink = trim($whatsappSocial->link);
+                                        if (!Str::startsWith($whatsappLink, ['http://', 'https://', 'wa.me', 'api.whatsapp.com'])) {
+                                            $cleanNum = preg_replace('/[^0-9]/', '', $whatsappLink);
+                                            $whatsappLink = 'https://wa.me/' . $cleanNum;
+                                        }
+                                    }
+
+                                    if (!$whatsappLink && isset($contact) && !empty($contact->whatsapp)) {
+                                        $cleanContactNum = str_replace(['+', ' ', '-'], '', $contact->whatsapp);
+                                        $whatsappLink = 'https://wa.me/' . $cleanContactNum;
+                                    }
+                                @endphp
                                 <ul class="social_link">
                                     @foreach($socialicons as $value)
+                                    @php
+                                        $link = $value->link;
+                                        $isWhatsapp = Str::contains(strtolower(($value->icon ?? '') . ' ' . ($value->title ?? '')), 'whatsapp');
+                                        if ($isWhatsapp && $whatsappLink) {
+                                            $link = $whatsappLink;
+                                        } elseif ($link && !Str::startsWith($link, ['http://', 'https://', '//', 'tel:', 'mailto:'])) {
+                                            $link = 'https://' . $link;
+                                        }
+                                    @endphp
                                     <li class="social_list">
-                                        <a class="mobile-social-link" href="{{$value->link}}"><i class="{{$value->icon}}"></i></a>
+                                        <a class="mobile-social-link" href="{{ $link }}" target="_blank" rel="noopener noreferrer"><i class="{{ $value->icon }}"></i></a>
                                     </li>
                                     @endforeach
                                 </ul>
@@ -599,7 +627,7 @@
                 </li>
 
                 <li>
-                    <a href="https://wa.me/{{str_replace(['+', ' ', '-'], '', $contact->whatsapp)}}">
+                    <a href="{{ $whatsappLink }}" target="_blank">
                         <span>
                             <i class="fa-brands fa-whatsapp"></i>
                         </span>
@@ -653,7 +681,7 @@
             </ul>
         </div>
 
-        <a href="https://wa.me/{{str_replace(['+', ' ', '-'], '', $contact->whatsapp)}}?text=Hello, I would like to inquire about..." target="_blank" class="whatsapp-float">
+        <a href="{{ $whatsappLink }}{{ Str::contains($whatsappLink, '?') ? '&' : '?' }}text=Hello, I would like to inquire about..." target="_blank" class="whatsapp-float">
             <i class="fa-brands fa-whatsapp"></i>
         </a>
 
