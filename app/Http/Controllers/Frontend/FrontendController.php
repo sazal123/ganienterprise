@@ -82,7 +82,7 @@ class FrontendController extends Controller
             ->orderBy('id', 'DESC')
             ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
             ->with('image', 'images', 'procolors')
-            ->limit(5)
+            ->limit(10)
             ->get();
 
         // New Collection (is_new flag)
@@ -90,7 +90,7 @@ class FrontendController extends Controller
             ->orderBy('id', 'DESC')
             ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
             ->with('image', 'images', 'procolors')
-            ->limit(5)
+            ->limit(10)
             ->get();
 
         // Prime Collection (is_prime flag)
@@ -98,7 +98,7 @@ class FrontendController extends Controller
             ->orderBy('id', 'DESC')
             ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
             ->with('image', 'images', 'procolors')
-            ->limit(5)
+            ->limit(10)
             ->get();
 
         // Top Category Products (featured products)
@@ -106,7 +106,7 @@ class FrontendController extends Controller
             ->orderBy('id', 'DESC')
             ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
             ->with('image', 'images', 'procolors')
-            ->limit(8)
+            ->limit(10)
             ->get();
 
         // Hot deals (for backward compatibility)
@@ -162,7 +162,7 @@ class FrontendController extends Controller
                 ->select('id', 'name', 'slug', 'new_price', 'old_price', 'sold', 'stock')
                 ->with('image', 'images', 'prosizes', 'procolors')
                 ->latest()
-                ->limit(8)
+                ->limit(10)
                 ->get();
         }
         if ($schoolBagProducts->isEmpty()) {
@@ -171,7 +171,7 @@ class FrontendController extends Controller
                 ->select('id', 'name', 'slug', 'new_price', 'old_price', 'sold', 'stock')
                 ->with('image', 'images', 'prosizes', 'procolors')
                 ->latest()
-                ->limit(8)
+                ->limit(10)
                 ->get();
         }
 
@@ -183,7 +183,7 @@ class FrontendController extends Controller
                 ->select('id', 'name', 'slug', 'new_price', 'old_price', 'sold', 'stock')
                 ->with('image', 'images', 'prosizes', 'procolors')
                 ->latest()
-                ->limit(8)
+                ->limit(10)
                 ->get();
         }
         if ($ladiesBagProducts->isEmpty()) {
@@ -192,7 +192,7 @@ class FrontendController extends Controller
                 ->select('id', 'name', 'slug', 'new_price', 'old_price', 'sold', 'stock')
                 ->with('image', 'images', 'prosizes', 'procolors')
                 ->latest()
-                ->limit(8)
+                ->limit(10)
                 ->get();
         }
 
