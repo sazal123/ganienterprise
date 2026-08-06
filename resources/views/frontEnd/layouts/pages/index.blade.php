@@ -132,7 +132,7 @@
         {{-- Prime Products --}}
         <div class="gani-collection-panel active" id="panel-prime">
             @if($primeProducts->count() > 0)
-            <div class="row g-4">
+            <div class="row g-4 justify-content-center">
                 @foreach($primeProducts->take(10) as $key => $product)
                 <div class="col-6 col-md-g5 @if($key >= 5) d-none d-md-block @endif">
                     @include('frontEnd.layouts.pages._product_card_folks', ['product' => $product])
@@ -150,7 +150,7 @@
         {{-- New Products --}}
         <div class="gani-collection-panel" id="panel-new">
             @if($newProducts->count() > 0)
-            <div class="row g-4">
+            <div class="row g-4 justify-content-center">
                 @foreach($newProducts->take(10) as $key => $product)
                 <div class="col-6 col-md-g5 @if($key >= 5) d-none d-md-block @endif">
                     @include('frontEnd.layouts.pages._product_card_folks', ['product' => $product])
@@ -312,7 +312,7 @@
             <h2 class="gani-section-title">Trending Categories</h2>
             <div class="gani-divider mx-auto"></div>
         </div>
-        <div class="row g-4">
+        <div class="row g-4 justify-content-center">
             @foreach($homeCategories->take(10) as $key => $category)
             @php
                 $catImg = $category->image;
@@ -423,7 +423,7 @@
             {{-- School Bag Tab --}}
             <div class="tab-pane fade show active" id="tab-school-bag">
                 @if($schoolBagProducts->count() > 0)
-                <div class="row g-4">
+                <div class="row g-4 justify-content-center">
                     @foreach($schoolBagProducts->take(10) as $key => $product)
                     <div class="col-6 col-md-g5 @if($key >= 5) d-none d-md-block @endif">
                         @include('frontEnd.layouts.pages._product_card_folks', ['product' => $product])
@@ -441,7 +441,7 @@
             {{-- Ladies Bag Tab --}}
             <div class="tab-pane fade" id="tab-ladies-bag">
                 @if($ladiesBagProducts->count() > 0)
-                <div class="row g-4">
+                <div class="row g-4 justify-content-center">
                     @foreach($ladiesBagProducts->take(10) as $key => $product)
                     <div class="col-6 col-md-g5 @if($key >= 5) d-none d-md-block @endif">
                         @include('frontEnd.layouts.pages._product_card_folks', ['product' => $product])
