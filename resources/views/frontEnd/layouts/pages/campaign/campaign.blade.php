@@ -20,6 +20,14 @@
     padding: 30px 0 70px;
     min-height: 100vh;
 }
+.gani-product-card {
+    background: #fff;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 
 /* ───── Hero Header Section (Reference Design Match) ───── */
 .cmp-hero-card {
