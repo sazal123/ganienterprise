@@ -159,9 +159,14 @@
             <a href="{{ route('customer.orders') }}" class="btn btn-outline-dark btn-sm fw-bold">
                 <i class="fa-solid fa-arrow-left me-1"></i> Back To Orders
             </a>
-            <button onclick="window.print()" class="btn btn-success btn-sm fw-bold">
-                <i class="fa-solid fa-print me-1"></i> Print Invoice
-            </button>
+            <div class="d-flex gap-2">
+                <button onclick="downloadInvoicePDF()" class="btn btn-primary btn-sm fw-bold">
+                    <i class="fa-solid fa-download me-1"></i> Download PDF
+                </button>
+                <button onclick="window.print()" class="btn btn-success btn-sm fw-bold">
+                    <i class="fa-solid fa-print me-1"></i> Print Invoice
+                </button>
+            </div>
         </div>
 
         {{-- Invoice Printable Container --}}
@@ -261,3 +266,28 @@
     </div>
 </section>
 @endsection
+
+@push('script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+function downloadInvoicePDF() {
+    var element = document.querySelector('.invoice-page');
+    var opt = {
+        margin:       [5, 5, 5, 5],
+        filename:     'Invoice-{{ $order->invoice_id }}.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
+}
+
+@if(request()->has('download'))
+$(document).ready(function() {
+    setTimeout(function() {
+        downloadInvoicePDF();
+    }, 600);
+});
+@endif
+</script>
+@endpush

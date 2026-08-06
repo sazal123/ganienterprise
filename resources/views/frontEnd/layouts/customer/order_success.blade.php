@@ -101,9 +101,9 @@
                 </div>
                 <!-- success table -->
                 <div class="d-flex align-items-center justify-content-center gap-3 my-4 flex-wrap">
-                    <a href="{{ route('customer.invoice', ['id' => $order->id]) }}" target="_blank" class="btn btn-success fw-bold px-4 py-2" style="background: #000 !important;">
+                    <button type="button" id="btn-download-invoice" class="btn btn-success fw-bold px-4 py-2" style="background: #000 !important;">
                         <i class="fa fa-download me-1"></i> Download Invoice
-                    </a>
+                    </button>
                     <a href="{{ route('home') }}" class="btn btn-primary fw-bold px-4 py-2" style="background: #000 !important;">
                         <i class="fa fa-home me-1"></i> Go To Home
                     </a>
@@ -116,6 +116,55 @@
 @push('script')
 <script src="{{asset('frontEnd/')}}/js/parsley.min.js"></script>
 <script src="{{asset('frontEnd/')}}/js/form-validation.init.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#btn-download-invoice').on('click', function(e) {
+            e.preventDefault();
+            var $btn = $(this);
+            var originalText = $btn.html();
+            $btn.html('<i class="fa fa-spinner fa-spin me-1"></i> Downloading...').prop('disabled', true);
+
+            $.get("{{ route('customer.invoice', ['id' => $order->id]) }}", function(html) {
+                var $temp = $('<div>').html(html);
+                var $invoice = $temp.find('.invoice-page');
+                
+                if ($invoice.length === 0) {
+                    $btn.html(originalText).prop('disabled', false);
+                    alert('Invoice could not be generated.');
+                    return;
+                }
+
+                $invoice.css({
+                    position: 'absolute',
+                    left: '-9999px',
+                    top: '0',
+                    width: '210mm',
+                    background: '#ffffff'
+                }).appendTo('body');
+
+                var opt = {
+                    margin:       [5, 5, 5, 5],
+                    filename:     'Invoice-{{ $order->invoice_id }}.pdf',
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true, logging: false },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                html2pdf().set(opt).from($invoice[0]).save().then(function() {
+                    $invoice.remove();
+                    $btn.html(originalText).prop('disabled', false);
+                }).catch(function(err) {
+                    $invoice.remove();
+                    $btn.html(originalText).prop('disabled', false);
+                });
+            }).fail(function() {
+                $btn.html(originalText).prop('disabled', false);
+                alert('Failed to download invoice. Please try again.');
+            });
+        });
+    });
+</script>
 <!-- Data Layer Script for Order Success Event -->
 <script>
     window.dataLayer = window.dataLayer || [];
