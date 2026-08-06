@@ -788,14 +788,36 @@ class OrderController extends Controller
             $customer_id = $store->id;
         }
 
-         // order data save
+        // Resolve "Ordered" OrderStatus
+        $orderedStatus = OrderStatus::where('slug', 'ordered')
+            ->orWhere('name', 'Ordered')
+            ->first();
+
+        if (!$orderedStatus) {
+            $statusOne = OrderStatus::find(1);
+            if ($statusOne) {
+                $statusOne->name = 'Ordered';
+                $statusOne->slug = 'ordered';
+                $statusOne->status = 1;
+                $statusOne->save();
+                $orderedStatus = $statusOne;
+            } else {
+                $orderedStatus = OrderStatus::create([
+                    'name'   => 'Ordered',
+                    'slug'   => 'ordered',
+                    'status' => 1,
+                ]);
+            }
+        }
+
+        // order data save
         $order                   = new Order();
         $order->invoice_id       = rand(11111,99999);
         $order->amount           = ($subtotal + $shippingfee->amount) - $discount;
         $order->discount         = $discount ? $discount : 0;
         $order->shipping_charge  = $shippingfee->amount;
-        $order->customer_id      =  $customer_id;
-        $order->order_status     = 1;
+        $order->customer_id      = $customer_id;
+        $order->order_status     = $orderedStatus->id;
         $order->note             = $request->note;
         $order->order_date       = $request->order_date ?? now();
         $order->delivery_date    = $request->delivery_date;
