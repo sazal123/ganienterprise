@@ -99,7 +99,7 @@
         </div>
         <div class="row g-4 justify-content-center">
             @foreach($trendingProducts->take(10) as $key => $product)
-                <div class="col-6 col-md-g5 @if($key >= 5) d-none d-md-block @endif">
+                <div class="col-6 col-md-g5 @if($key >= 6) d-none d-md-block @endif">
                     @include('frontEnd.layouts.pages._product_card_folks', ['product' => $product])
                 </div>
             @endforeach
@@ -134,7 +134,7 @@
             @if($primeProducts->count() > 0)
             <div class="row g-4 justify-content-center">
                 @foreach($primeProducts->take(10) as $key => $product)
-                <div class="col-6 col-md-g5 @if($key >= 5) d-none d-md-block @endif">
+                <div class="col-6 col-md-g5 @if($key >= 6) d-none d-md-block @endif">
                     @include('frontEnd.layouts.pages._product_card_folks', ['product' => $product])
                 </div>
                 @endforeach
@@ -152,7 +152,7 @@
             @if($newProducts->count() > 0)
             <div class="row g-4 justify-content-center">
                 @foreach($newProducts->take(10) as $key => $product)
-                <div class="col-6 col-md-g5 @if($key >= 5) d-none d-md-block @endif">
+                <div class="col-6 col-md-g5 @if($key >= 6) d-none d-md-block @endif">
                     @include('frontEnd.layouts.pages._product_card_folks', ['product' => $product])
                 </div>
                 @endforeach
@@ -186,7 +186,7 @@
                 $storyProduct = $story->product;
                 $prodImg = $storyProduct && $storyProduct->image ? $storyProduct->image->image : '';
             @endphp
-            <div class="col-6 col-md-g5 @if($key >= 5) d-none d-md-block @endif">
+            <div class="col-6 col-md-g5 @if($key >= 6) d-none d-md-block @endif">
                 <div class="gani-story-card"
                      data-video="{{ asset($story->video) }}"
                      data-thumb="{{ $thumb ? asset($thumb) : asset('frontEnd/img/default-product.jpg') }}"
@@ -320,7 +320,7 @@
                     $catImg = substr($catImg, 7);
                 }
             @endphp
-            <div class="col-6 col-md-g5 @if($key >= 5) d-none d-md-block @endif">
+            <div class="col-6 col-md-g5 @if($key >= 6) d-none d-md-block @endif">
                 <a href="{{ route('category', $category->slug) }}" class="gani-cat-card">
                     <div class="gani-cat-img-wrap">
                         @if($category->image)
@@ -425,7 +425,7 @@
                 @if($schoolBagProducts->count() > 0)
                 <div class="row g-4 justify-content-center">
                     @foreach($schoolBagProducts->take(10) as $key => $product)
-                    <div class="col-6 col-md-g5 @if($key >= 5) d-none d-md-block @endif">
+                    <div class="col-6 col-md-g5 @if($key >= 6) d-none d-md-block @endif">
                         @include('frontEnd.layouts.pages._product_card_folks', ['product' => $product])
                     </div>
                     @endforeach
@@ -443,7 +443,7 @@
                 @if($ladiesBagProducts->count() > 0)
                 <div class="row g-4 justify-content-center">
                     @foreach($ladiesBagProducts->take(10) as $key => $product)
-                    <div class="col-6 col-md-g5 @if($key >= 5) d-none d-md-block @endif">
+                    <div class="col-6 col-md-g5 @if($key >= 6) d-none d-md-block @endif">
                         @include('frontEnd.layouts.pages._product_card_folks', ['product' => $product])
                     </div>
                     @endforeach

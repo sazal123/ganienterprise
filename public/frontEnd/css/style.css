@@ -5565,6 +5565,33 @@ a:hover .gani-product-name,
     padding-bottom: 4px;
 }
 
+/* --- Equal Height Card Alignment for Home Page Sections --- */
+.gani-product-card,
+.gani-story-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.gani-cat-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.gani-product-info,
+.gani-story-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.gani-cat-name {
+    margin-top: auto;
+}
+
 @media (max-width: 768px) {
     .gani-spotlight-lg {
         min-height: 300px;
