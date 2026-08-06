@@ -158,36 +158,36 @@
             </div>
         </div>
 
-        <table style="width: 100%; border-collapse: collapse; margin-top: 16px; font-size:13px;">
+        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-top: 16px; font-size:13px;">
             <thead>
                 <tr>
-                    <th style="border: 2px solid #222; padding: 7px; text-align: center; background: #111; color: #fff; font-weight: bold;">SL</th>
-                    <th style="border: 2px solid #222; padding: 7px; text-align: center; background: #111; color: #fff; font-weight: bold;">Product Code</th>
-                    <th style="border: 2px solid #222; padding: 7px; text-align: center; background: #111; color: #fff; font-weight: bold;">Colour</th>
-                    <th style="border: 2px solid #222; padding: 7px; text-align: center; background: #111; color: #fff; font-weight: bold;">Price</th>
-                    <th style="border: 2px solid #222; padding: 7px; text-align: center; background: #111; color: #fff; font-weight: bold;">Order Qty</th>
-                    <th style="border: 2px solid #222; padding: 7px; text-align: center; background: #111; color: #fff; font-weight: bold;">Amount (BDT)</th>
+                    <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; background: #111; color: #fff; font-weight: bold;">SL</th>
+                    <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; background: #111; color: #fff; font-weight: bold;">Product Code</th>
+                    <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; background: #111; color: #fff; font-weight: bold;">Colour</th>
+                    <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; background: #111; color: #fff; font-weight: bold;">Price</th>
+                    <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; background: #111; color: #fff; font-weight: bold;">Order Qty</th>
+                    <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; background: #111; color: #fff; font-weight: bold;">Amount (BDT)</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($order->orderdetails as $item)
                 <tr>
-                    <td style="border: 2px solid #222; padding: 7px; text-align: center;">{{ $loop->iteration }}</td>
-                    <td style="border: 2px solid #222; padding: 7px; text-align: center;">{{ $item->product->product_code ?? $item->product_id }}</td>
-                    <td style="border: 2px solid #222; padding: 7px; text-align: center;">{{ $item->product_color ?? ($item->product_size ?? '—') }}</td>
-                    <td style="border: 2px solid #222; padding: 7px; text-align: center;">{{ number_format($item->sale_price, 0) }}</td>
-                    <td style="border: 2px solid #222; padding: 7px; text-align: center;">{{ $item->qty }}</td>
-                    <td style="border: 2px solid #222; padding: 7px; text-align: center;">{{ number_format($item->sale_price * $item->qty, 0) }}</td>
+                    <td style="border: 1px solid #000; padding: 6px 8px; text-align: center;">{{ $loop->iteration }}</td>
+                    <td style="border: 1px solid #000; padding: 6px 8px; text-align: center;">{{ $item->product->product_code ?? $item->product_id }}</td>
+                    <td style="border: 1px solid #000; padding: 6px 8px; text-align: center;">{{ $item->product_color ?? ($item->product_size ?? '—') }}</td>
+                    <td style="border: 1px solid #000; padding: 6px 8px; text-align: center;">{{ number_format($item->sale_price, 0) }}</td>
+                    <td style="border: 1px solid #000; padding: 6px 8px; text-align: center;">{{ $item->qty }}</td>
+                    <td style="border: 1px solid #000; padding: 6px 8px; text-align: center;">{{ number_format($item->sale_price * $item->qty, 0) }}</td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
 
-        <div style="width: 280px; margin-left: auto; margin-right: 5px; margin-top: 16px; border: 2px solid #222; font-size:13px;">
-            <div style="display: flex; border-bottom: 2px solid #222;"><span style="flex: 1; padding: 6px; border-right: 2px solid #222;">Sub Total</span><span style="flex: 1; padding: 6px; text-align: right;">{{ number_format($subTotal, 0) }}</span></div>
-            <div style="display: flex; border-bottom: 2px solid #222;"><span style="flex: 1; padding: 6px; border-right: 2px solid #222;">Discount</span><span style="flex: 1; padding: 6px; text-align: right;">{{ number_format($order->discount, 0) }}</span></div>
-            <div style="display: flex; border-bottom: 2px solid #222;"><span style="flex: 1; padding: 6px; border-right: 2px solid #222;">Shipping Charge</span><span style="flex: 1; padding: 6px; text-align: right;">{{ number_format($order->shipping_charge, 0) }}</span></div>
-            <div style="display: flex;"><span style="flex: 1; padding: 6px; border-right: 2px solid #222; font-weight: bold;">Total</span><span style="flex: 1; padding: 6px; text-align: right; font-weight: bold;">{{ number_format($order->amount, 0) }}</span></div>
+        <div style="width: 280px; margin-left: auto; margin-top: 16px; border: 1px solid #000; font-size:13px;">
+            <div style="display: flex; border-bottom: 1px solid #000;"><span style="flex: 1; padding: 6px 10px; border-right: 1px solid #000;">Sub Total</span><span style="flex: 1; padding: 6px 10px; text-align: right;">{{ number_format($subTotal, 0) }}</span></div>
+            <div style="display: flex; border-bottom: 1px solid #000;"><span style="flex: 1; padding: 6px 10px; border-right: 1px solid #000;">Discount</span><span style="flex: 1; padding: 6px 10px; text-align: right;">{{ number_format($order->discount, 0) }}</span></div>
+            <div style="display: flex; border-bottom: 1px solid #000;"><span style="flex: 1; padding: 6px 10px; border-right: 1px solid #000;">Shipping Charge</span><span style="flex: 1; padding: 6px 10px; text-align: right;">{{ number_format($order->shipping_charge, 0) }}</span></div>
+            <div style="display: flex;"><span style="flex: 1; padding: 6px 10px; border-right: 1px solid #000; font-weight: bold;">Total</span><span style="flex: 1; padding: 6px 10px; text-align: right; font-weight: bold;">{{ number_format($order->amount, 0) }}</span></div>
         </div>
 
         <div style="display: flex; justify-content: space-between; gap: 20px; margin-top: 30px;">
