@@ -6370,3 +6370,102 @@ a:hover .gani-product-name,
         display: none !important;
     }
 }
+
+/* ───── Shop & Campaign Product Grid & Pagination ───── */
+.shop-products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+@media (max-width: 1199px) {
+    .shop-products-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 767px) {
+    .shop-products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+}
+
+.shop-empty {
+    text-align: center;
+    padding: 60px 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.shop-empty i {
+    font-size: 48px;
+    color: #ddd;
+    margin-bottom: 16px;
+}
+.shop-empty h4 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 8px;
+}
+.shop-empty p {
+    color: #888;
+    font-size: 14px;
+}
+
+.shop-pagination-wrap {
+    margin-top: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    background: #fff;
+    padding: 16px 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.shop-pagination-info {
+    font-size: 13px;
+    color: #888;
+}
+.shop-pagination-info strong {
+    color: #333;
+    font-weight: 600;
+}
+.shop-pagination {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.shop-pagination .pagination {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    align-items: center;
+}
+.shop-pagination .pagination .page-item {
+    display: inline-block;
+    margin: 0;
+}
+.shop-pagination .pagination .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    color: #444;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+.shop-pagination .pagination .page-item.active .page-link {
+    background: #C9A84C;
+    border-color: #C9A84C;
+    color: #000;
+    font-weight: 700;
+}
+.shop-pagination .pagination .page-link:hover {
+    border-color: #C9A84C;
+    color: #C9A84C;
+}

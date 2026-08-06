@@ -892,11 +892,11 @@ class FrontendController extends Controller
             $query->orderBy('id', 'desc');
         }
 
-        $products = $query->with(['image', 'sizes', 'colors'])->paginate(12)->withQueryString();
+        $products = $query->with(['image', 'images', 'procolors', 'prosizes'])->paginate(12)->withQueryString();
 
         // Fallback to showcase all active products if campaign has no attached items or categories
         if ($products->total() == 0 && empty($productIds)) {
-            $products = Product::where('status', 1)->with(['image', 'sizes', 'colors'])->paginate(12)->withQueryString();
+            $products = Product::where('status', 1)->with(['image', 'images', 'procolors', 'prosizes'])->paginate(12)->withQueryString();
         }
 
         // Categories to display as tabs on the view page
