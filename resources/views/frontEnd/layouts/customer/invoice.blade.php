@@ -273,10 +273,10 @@
 function downloadInvoicePDF() {
     var element = document.querySelector('.invoice-page');
     var opt = {
-        margin:       [5, 5, 5, 5],
+        margin:       0,
         filename:     'Invoice-{{ $order->invoice_id }}.pdf',
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
+        html2canvas:  { scale: 2, useCORS: true, logging: false, scrollX: 0, scrollY: 0 },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
     html2pdf().set(opt).from(element).save();
