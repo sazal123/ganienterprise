@@ -6366,6 +6366,19 @@ a:hover .gani-product-name,
     .gani-mobile-logo-img {
         transform: scale(1.6);
     }
+
+    .footer_bottom_left ul li a {
+        text-align: left !important;
+        line-height: 1;
+        padding-left: 5px;
+    }
+
+    .footer_bottom_right ul li a {
+        text-align: right !important;
+        line-height: 1;
+        padding-right: 5px;
+    }
+
 }
 
 @media (min-width: 992px) {

@@ -527,7 +527,7 @@
                             </div>
                         </div>
                         <!-- col end -->
-                        <div class="col-sm-3 mb-3 mb-sm-0 col-6">
+                        <div class="col-sm-3 mb-3 mb-sm-0 col-6 footer_bottom_left">
                             <div class="footer-menu">
                                 <ul>
                                     <li class="title"><a>Useful Links</a></li>
@@ -540,7 +540,7 @@
                             </div>
                         </div>
                         <!-- col end -->
-                        <div class="col-sm-2 mb-3 mb-sm-0 col-6">
+                        <div class="col-sm-2 mb-3 mb-sm-0 col-6 footer_bottom_right">
                             <div class="footer-menu">
                                 <ul>
                                     <li class="title"><a>Important Links</a></li>
