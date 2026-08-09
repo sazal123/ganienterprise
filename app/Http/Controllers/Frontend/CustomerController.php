@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 use shurjopayv2\ShurjopayLaravelPackage8\Http\Controllers\ShurjopayController;
 use App\Mail\OrderPlace;
+use App\Jobs\SendTelegramOrderNotification;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -369,6 +370,15 @@ class CustomerController extends Controller
         }
        
         Cart::instance('shopping')->destroy();
+
+        // Dispatch Telegram Notification Job
+        if (class_exists(\App\Jobs\SendTelegramOrderNotification::class)) {
+            try {
+                \App\Jobs\SendTelegramOrderNotification::dispatch($order->id);
+            } catch (\Throwable $e) {
+                \Log::error('Telegram Job Dispatch Exception: ' . $e->getMessage());
+            }
+        }
         
         Toastr::success('Thanks, Your order place successfully', 'Success!');
         $site_setting = GeneralSetting::where('status', 1)->first();

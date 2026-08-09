@@ -20,6 +20,7 @@ use App\Models\Courierapi;
 use App\Models\SmsGateway;
 use App\Models\GeneralSetting;
 use App\Models\PaymentHistory;
+use App\Jobs\SendTelegramOrderNotification;
 
 use Session;
 use Cart;
@@ -865,6 +866,16 @@ class OrderController extends Controller
         Session::forget('pos_shipping');
         Session::forget('pos_discount');
         Session::forget('product_discount');
+
+        // Dispatch Telegram Notification Job
+        if (class_exists(\App\Jobs\SendTelegramOrderNotification::class)) {
+            try {
+                \App\Jobs\SendTelegramOrderNotification::dispatch($order->id);
+            } catch (\Throwable $e) {
+                \Log::error('Telegram Job Dispatch Exception: ' . $e->getMessage());
+            }
+        }
+
         Toastr::success('Thanks, Your order placed successfully', 'Success!');
         return redirect('admin/order/all');
     }

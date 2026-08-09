@@ -22,6 +22,7 @@ use App\Models\Customer;
 use App\Models\OrderDetails;
 use App\Models\Payment;
 use App\Models\Order;
+use App\Jobs\SendTelegramOrderNotification;
 use App\Models\Review;
 use App\Models\Offer;
 use App\Models\Contact;
@@ -975,6 +976,16 @@ class FrontendController extends Controller
             }
 
             Cart::instance('shopping')->destroy();
+
+            // Dispatch Telegram Notification Job
+            if (class_exists(\App\Jobs\SendTelegramOrderNotification::class)) {
+                try {
+                    \App\Jobs\SendTelegramOrderNotification::dispatch($order->id);
+                } catch (\Throwable $e) {
+                    \Log::error('Telegram Job Dispatch Exception: ' . $e->getMessage());
+                }
+            }
+
             Toastr::error('Thanks, Your payment send successfully', 'Success!');
             return redirect()->route('home');
         }
