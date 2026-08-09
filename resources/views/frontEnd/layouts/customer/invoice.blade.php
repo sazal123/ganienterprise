@@ -192,15 +192,15 @@
                     <p><b>Contact:</b> {{ $order->shipping->phone ?? $order->customer->phone ?? '' }}</p>
                 </div>
 
-                <div style="text-align: right">
-                    <p><b>Category:</b> {{ $categoryNames ?: '—' }}</p>
-                    <p><b>Total Bill:</b> <b>{{ number_format($order->amount, 0) }} BDT</b></p>
+                <div style="text-align: right;">
+                    <p style="text-align: right;"><b>Category:</b> {{ $categoryNames ?: '—' }}</p>
+                    <p style="text-align: right;"><b>Total Bill:</b> <b>{{ number_format($order->amount, 0) }} BDT</b></p>
 
-                    <div style="margin-top:45px">
-                        <p><b>Order Date:</b> {{ $order->order_date ? $order->order_date->format('j F, Y') : $order->created_at->format('j F, Y') }}</p>
-                        <p><b>Delivery Date:</b> {{ $order->delivery_date ? $order->delivery_date->format('j F, Y') : 'N/A' }}</p>
-                        <p><b>Paid Amount:</b> {{ number_format($totalPaid, 0) }}</p>
-                        <p><b>Due Amount:</b> {{ number_format($dueAmount, 0) }}</p>
+                    <div style="margin-top:45px; text-align: right;">
+                        <p style="text-align: right;"><b>Order Date:</b> {{ $order->order_date ? $order->order_date->format('j F, Y') : $order->created_at->format('j F, Y') }}</p>
+                        <p style="text-align: right;"><b>Delivery Date:</b> {{ $order->delivery_date ? $order->delivery_date->format('j F, Y') : 'N/A' }}</p>
+                        <p style="text-align: right;"><b>Paid Amount:</b> {{ number_format($totalPaid, 0) }}</p>
+                        <p style="text-align: right;"><b>Due Amount:</b> {{ number_format($dueAmount, 0) }}</p>
                     </div>
                 </div>
             </div>

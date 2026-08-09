@@ -145,15 +145,15 @@
                 <p style="margin-bottom:3px; font-size:13px;"><b>Contact:</b> {{ $order->shipping->phone ?? $order->customer->phone ?? '' }}</p>
             </div>
 
-            <div style="flex: 1; text-align: right; padding-right: 10px;">
-                <p style="margin-bottom:3px; font-size:13px;"><b>Category:</b> {{ $categoryNames ?: '—' }}</p>
-                <p style="margin-bottom:3px; font-size:13px;"><b>Total Bill:</b> <b>{{ number_format($order->amount, 0) }} BDT</b></p>
+            <div style="flex: 1; text-align: right;">
+                <p style="margin-bottom:3px; font-size:13px; text-align: right;"><b>Category:</b> {{ $categoryNames ?: '—' }}</p>
+                <p style="margin-bottom:3px; font-size:13px; text-align: right;"><b>Total Bill:</b> <b>{{ number_format($order->amount, 0) }} BDT</b></p>
 
-                <div style="margin-top: 35px">
-                    <p style="margin-bottom:3px; font-size:13px;"><b>Order Date:</b> {{ $order->order_date ? $order->order_date->format('j F, Y') : $order->created_at->format('j F, Y') }}</p>
-                    <p style="margin-bottom:3px; font-size:13px;"><b>Delivery Date:</b> {{ $order->delivery_date ? $order->delivery_date->format('j F, Y') : 'N/A' }}</p>
-                    <p style="margin-bottom:3px; font-size:13px;"><b>Paid Amount:</b> {{ number_format($totalPaid, 0) }}</p>
-                    <p style="margin-bottom:3px; font-size:13px;"><b>Due Amount:</b> {{ number_format($dueAmount, 0) }}</p>
+                <div style="margin-top: 35px; text-align: right;">
+                    <p style="margin-bottom:3px; font-size:13px; text-align: right;"><b>Order Date:</b> {{ $order->order_date ? $order->order_date->format('j F, Y') : $order->created_at->format('j F, Y') }}</p>
+                    <p style="margin-bottom:3px; font-size:13px; text-align: right;"><b>Delivery Date:</b> {{ $order->delivery_date ? $order->delivery_date->format('j F, Y') : 'N/A' }}</p>
+                    <p style="margin-bottom:3px; font-size:13px; text-align: right;"><b>Paid Amount:</b> {{ number_format($totalPaid, 0) }}</p>
+                    <p style="margin-bottom:3px; font-size:13px; text-align: right;"><b>Due Amount:</b> {{ number_format($dueAmount, 0) }}</p>
                 </div>
             </div>
         </div>
