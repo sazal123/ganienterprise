@@ -81,15 +81,17 @@ class Product extends Model
     public function scopeInStock($query)
     {
         return $query->where('products.stock', '>', 0)
-            ->whereDoesntHave('procolors', function($q) {
-                $q->where(function($cq) {
-                    $cq->where('stock', '<=', 0)->orWhereNull('stock');
-                });
+            ->where(function($q) {
+                $q->whereDoesntHave('procolors')
+                  ->orWhereHas('procolors', function($cq) {
+                      $cq->where('stock', '>', 0)->orWhereNull('stock');
+                  });
             })
-            ->whereDoesntHave('prosizes', function($q) {
-                $q->where(function($sq) {
-                    $sq->where('stock', '<=', 0)->orWhereNull('stock');
-                });
+            ->where(function($q) {
+                $q->whereDoesntHave('prosizes')
+                  ->orWhereHas('prosizes', function($sq) {
+                      $sq->where('stock', '>', 0)->orWhereNull('stock');
+                  });
             });
     }
 
@@ -98,23 +100,44 @@ class Product extends Model
         if ($this->stock <= 0) {
             return false;
         }
+
         if ($this->relationLoaded('procolors')) {
-            if ($this->procolors->contains(function($c) { return $c->stock === null || $c->stock <= 0; })) {
-                return false;
+            if ($this->procolors->isNotEmpty()) {
+                $hasAvailableColor = $this->procolors->contains(function($c) {
+                    return $c->stock === null || $c->stock > 0;
+                });
+                if (!$hasAvailableColor) {
+                    return false;
+                }
             }
         } else {
-            if ($this->procolors()->where(function($q) { $q->where('stock', '<=', 0)->orWhereNull('stock'); })->exists()) {
-                return false;
+            if ($this->procolors()->exists()) {
+                $hasAvailableColor = $this->procolors()->where(function($q) {
+                    $q->where('stock', '>', 0)->orWhereNull('stock');
+                })->exists();
+                if (!$hasAvailableColor) {
+                    return false;
+                }
             }
         }
 
         if ($this->relationLoaded('prosizes')) {
-            if ($this->prosizes->contains(function($s) { return $s->stock === null || $s->stock <= 0; })) {
-                return false;
+            if ($this->prosizes->isNotEmpty()) {
+                $hasAvailableSize = $this->prosizes->contains(function($s) {
+                    return $s->stock === null || $s->stock > 0;
+                });
+                if (!$hasAvailableSize) {
+                    return false;
+                }
             }
         } else {
-            if ($this->prosizes()->where(function($q) { $q->where('stock', '<=', 0)->orWhereNull('stock'); })->exists()) {
-                return false;
+            if ($this->prosizes()->exists()) {
+                $hasAvailableSize = $this->prosizes()->where(function($q) {
+                    $q->where('stock', '>', 0)->orWhereNull('stock');
+                })->exists();
+                if (!$hasAvailableSize) {
+                    return false;
+                }
             }
         }
 

@@ -57,12 +57,17 @@
         </div>
 
         {{-- Color variant images --}}
-        @if($product->procolors && $product->procolors->count() > 0)
+        @php
+            $availableColors = $product->procolors ? $product->procolors->filter(function($pc) {
+                return $pc->stock === null || $pc->stock > 0;
+            }) : collect();
+        @endphp
+        @if($availableColors->count() > 0)
         <div class="gani-color-swatches">
-            @foreach($product->procolors->take(5) as $pc)
+            @foreach($availableColors->take(5) as $pc)
                 @if($pc->color)
                     @php
-                        $colorImage = $product->images->where('color_id', $pc->color_id)->first();
+                        $colorImage = $product->images ? $product->images->where('color_id', $pc->color_id)->first() : null;
                         $thumbUrl = asset($colorImage ? $colorImage->image : $mainImage);
                     @endphp
                     <button type="button" class="gani-swatch-link gani-swatch-btn"
@@ -74,8 +79,8 @@
                     </button>
                 @endif
             @endforeach
-            @if($product->procolors->count() > 5)
-                <a href="{{ route('product', $product->slug) }}" class="gani-swatch-more">+{{ $product->procolors->count() - 5 }}</a>
+            @if($availableColors->count() > 5)
+                <a href="{{ route('product', $product->slug) }}" class="gani-swatch-more">+{{ $availableColors->count() - 5 }}</a>
             @endif
         </div>
         @endif

@@ -73,7 +73,7 @@
                                 <a href="{{ route('product',$value->slug) }}">
                                     <img src="{{ asset($value->image ? $value->image->image : '') }}" alt="{{$value->name}}" />
                                 </a>
-                                @if($value->stock < 1)
+                                @if($value->isOutOfStock())
                                 <div class="stock-out-overlay">STOCK OUT</div>
                                 @endif
                             </div>
@@ -90,7 +90,7 @@
                             </div>
                         </div>
 
-                         @if(! $value->prosizes->isEmpty() || ! $value->procolors->isEmpty() || ($value->stock < 1))
+                         @if(! $value->prosizes->isEmpty() || ! $value->procolors->isEmpty() || $value->isOutOfStock())
                         <div class="pro_btn">
                             
                             <div class="cart_btn order_button">
