@@ -9,7 +9,13 @@ return new class extends Migration
     public function up()
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->tinyInteger('spotlight')->nullable()->after('front_view');
+            if (!Schema::hasColumn('categories', 'spotlight')) {
+                if (Schema::hasColumn('categories', 'front_view')) {
+                    $table->tinyInteger('spotlight')->nullable()->after('front_view');
+                } else {
+                    $table->tinyInteger('spotlight')->nullable();
+                }
+            }
         });
     }
 

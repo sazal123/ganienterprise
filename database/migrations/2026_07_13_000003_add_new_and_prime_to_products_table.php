@@ -9,8 +9,16 @@ return new class extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->tinyInteger('is_new')->nullable()->after('flashsale');
-            $table->tinyInteger('is_prime')->nullable()->after('is_new');
+            if (!Schema::hasColumn('products', 'is_new')) {
+                if (Schema::hasColumn('products', 'flashsale')) {
+                    $table->tinyInteger('is_new')->nullable()->after('flashsale');
+                } else {
+                    $table->tinyInteger('is_new')->nullable();
+                }
+            }
+            if (!Schema::hasColumn('products', 'is_prime')) {
+                $table->tinyInteger('is_prime')->nullable()->after('is_new');
+            }
         });
     }
 

@@ -24,19 +24,27 @@ class BkashController extends Controller
 
     public function __construct()
     {
-        $bkash_gateway = PaymentGateway::where(['status'=> 1, 'type'=>'bkash'])->first();
-        if($bkash_gateway) {
-            $this->base_url = $bkash_gateway->base_url;
-            $this->app_key = $bkash_gateway->app_key; // bKash Merchant API APP KEY
-            $this->app_secret = $bkash_gateway->app_secret; // bKash Merchant API APP SECRET
-            $this->username = $bkash_gateway->username; // bKash Merchant API USERNAME
-            $this->password = $bkash_gateway->password; // bKash Merchant API PASSWORD
+        if (\Illuminate\Support\Facades\Schema::hasTable('payment_gateways') && \Illuminate\Support\Facades\Schema::hasColumn('payment_gateways', 'status')) {
+            $bkash_gateway = PaymentGateway::where(['status'=> 1, 'type'=>'bkash'])->first();
+            if($bkash_gateway) {
+                $this->base_url = $bkash_gateway->base_url;
+                $this->app_key = $bkash_gateway->app_key; // bKash Merchant API APP KEY
+                $this->app_secret = $bkash_gateway->app_secret; // bKash Merchant API APP SECRET
+                $this->username = $bkash_gateway->username; // bKash Merchant API USERNAME
+                $this->password = $bkash_gateway->password; // bKash Merchant API PASSWORD
+            } else {
+                $this->base_url = 'https://tokenized.pay.bka.sh/v1.2.0-beta';
+                $this->app_key = '';
+                $this->app_secret = '';
+                $this->username = '';
+                $this->password = '';
+            }
         } else {
             $this->base_url = 'https://tokenized.pay.bka.sh/v1.2.0-beta';
-            $this->app_key = ''; // bKash Merchant API APP KEY
-            $this->app_secret = ''; // bKash Merchant API APP SECRET
-            $this->username = ''; // bKash Merchant API USERNAME
-            $this->password = ''; // bKash Merchant API PASSWORD
+            $this->app_key = '';
+            $this->app_secret = '';
+            $this->username = '';
+            $this->password = '';
         }
     }
 

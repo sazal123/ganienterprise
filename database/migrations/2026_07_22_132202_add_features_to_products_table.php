@@ -14,7 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->text('features')->nullable()->after('description')->comment('Pipe-separated list of product features, e.g. "Adjustable Strap|With Zip|Interior Pocket"');
+            if (!Schema::hasColumn('products', 'features')) {
+                if (Schema::hasColumn('products', 'description')) {
+                    $table->text('features')->nullable()->after('description')->comment('Pipe-separated list of product features, e.g. "Adjustable Strap|With Zip|Interior Pocket"');
+                } else {
+                    $table->text('features')->nullable()->comment('Pipe-separated list of product features, e.g. "Adjustable Strap|With Zip|Interior Pocket"');
+                }
+            }
         });
     }
 

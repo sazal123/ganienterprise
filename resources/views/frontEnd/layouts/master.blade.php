@@ -1206,8 +1206,12 @@
         </script>
 
         <!-- Google Tag Manager (noscript) -->
+        @foreach($gtm_code as $gtm)
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $gtm->code }}"
         height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-        <!-- End Google Tag Manager (noscript) -->
+        @endforeach
+        <!-- Customer Support Chatbot Widget -->
+        @include('frontEnd.inc.chat_widget')
+
     </body>
 </html>

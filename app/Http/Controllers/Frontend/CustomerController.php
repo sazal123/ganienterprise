@@ -67,6 +67,16 @@ class CustomerController extends Controller
         $auth_check = Customer::where('phone',$request->phone)->first();
         if($auth_check){
             if (Auth::guard('customer')->attempt(['phone' => $request->phone, 'password' => $request->password])) {
+                $customer = Auth::guard('customer')->user();
+                $guestTokenService = app(\App\Services\GuestTokenService::class);
+                $guestToken = $guestTokenService->getTokenFromRequest($request);
+                if ($guestToken && $customer) {
+                    $authService = app(\App\Services\ChatbotAuthorizationService::class);
+                    $conversation = $authService->findActiveGuestConversation($guestToken);
+                    if ($conversation) {
+                        $authService->migrateGuestConversationToCustomer($conversation, $customer, $guestToken);
+                    }
+                }
                 Toastr::success('You are login successfully', 'success!');
                 if(Cart::instance('shopping')->count() > 0){
                     return redirect()->route('customer.checkout');

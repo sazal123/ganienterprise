@@ -45,4 +45,20 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function conversations()
+    {
+        return $this->hasMany(Conversation::class, 'user_id');
+    }
+
+    public function assignedConversations()
+    {
+        return $this->hasMany(Conversation::class, 'assigned_admin_id');
+    }
+
+    public function telegramAdmin()
+    {
+        return $this->hasOne(TelegramAdmin::class, 'user_id');
+    }
 }
+

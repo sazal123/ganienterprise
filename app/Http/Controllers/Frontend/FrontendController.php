@@ -39,7 +39,14 @@ class FrontendController extends Controller
 {
     public function index()
     {
-        $generalsetting = GeneralSetting::where('status',1)->limit(1)->first();
+        $generalsetting = GeneralSetting::where('status', 1)->first()
+            ?? GeneralSetting::first()
+            ?? new GeneralSetting([
+                'name'                        => 'Gani Enterprise',
+                'status'                      => 1,
+                'show_category_wise_products' => 1,
+                'show_all_products'           => 1,
+            ]);
 
         $frontcategory = Category::where(['status' => 1])
             ->select('id', 'name', 'image', 'slug', 'status')
@@ -119,7 +126,7 @@ class FrontendController extends Controller
             ->get();
 
         // Category-wise products
-        if($generalsetting->show_category_wise_products){
+        if (!empty($generalsetting->show_category_wise_products)) {
             $homeproducts = Category::where(['front_view' => 1, 'status' => 1])
                 ->orderBy('id', 'ASC')
                 ->with(['products', 'products.image', 'products.prosize', 'products.procolor'])
@@ -128,7 +135,7 @@ class FrontendController extends Controller
                     $query->setRelation('products', $query->products->take(12));
                     return $query;
                 });
-        }else{
+        } else {
             $homeproducts = null;
         }
 
@@ -139,14 +146,14 @@ class FrontendController extends Controller
             ->get();
 
         // All products
-        if($generalsetting->show_all_products){
+        if (!empty($generalsetting->show_all_products)) {
             $all_products = Product::where(['status' => 1])
                 ->inRandomOrder()
                 ->select('id', 'name', 'slug', 'new_price', 'old_price','sold','stock')
                 ->with('image', 'images', 'prosizes', 'procolors')
                 ->limit(30)
                 ->get();
-        }else{
+        } else {
             $all_products = null;
         }
 

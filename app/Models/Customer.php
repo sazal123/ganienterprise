@@ -28,6 +28,11 @@ class Customer extends Authenticatable
         return $this->hasMany(Order::class,'customer_id');
     }
 
+    public function conversations()
+    {
+        return $this->hasMany(Conversation::class, 'customer_id');
+    }
+
     /**
      * Get order product categories as comma-separated string.
      */

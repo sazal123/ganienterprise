@@ -32,8 +32,21 @@ return [
     ],
 
     'telegram' => [
-        'bot_token' => env('TELEGRAM_BOT_TOKEN', '8758560868:AAHSkhWa4l4bW9qJJxz1tI8CRubE94X3swE'),
-        'chat_id'   => env('TELEGRAM_CHAT_ID', '-5360314363'),
+        'bot_token'      => env('TELEGRAM_BOT_TOKEN', '8758560868:AAHSkhWa4l4bW9qJJxz1tI8CRubE94X3swE'),
+        'webhook_secret' => env('TELEGRAM_WEBHOOK_SECRET'),
+        'chat_id'        => env('TELEGRAM_CHAT_ID', '-5360314363'),
+    ],
+
+    'openrouter' => [
+        'api_key'                   => env('OPENROUTER_API_KEY'),
+        'model'                     => env('OPENROUTER_MODEL', 'openai/gpt-4o-mini'),
+        'base_url'                  => env('OPENROUTER_BASE_URL', 'https://openrouter.ai/api/v1'),
+        'timeout'                   => (int) env('OPENROUTER_TIMEOUT', 15),
+        'retries'                   => (int) env('OPENROUTER_RETRIES', 2),
+        'max_tokens'                => (int) env('OPENROUTER_MAX_TOKENS', 1000),
+        'history_limit'             => (int) env('OPENROUTER_HISTORY_LIMIT', 10),
+        'cost_per_1k_input_tokens'  => (float) env('OPENROUTER_COST_INPUT_1K', 0.00015),
+        'cost_per_1k_output_tokens' => (float) env('OPENROUTER_COST_OUTPUT_1K', 0.0006),
     ],
 
 ];
