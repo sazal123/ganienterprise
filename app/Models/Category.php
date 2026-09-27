@@ -42,16 +42,16 @@ class Category extends Model
     
     public function homeproducts()
     {
-        return $this->hasMany(Product::class, 'category_id')->where('status', 1)->where('stock', '>', 0);
+        return $this->hasMany(Product::class, 'category_id')->where('status', 1)->inStock();
     }
     public function menuproducts()
     {
-        return $this->hasMany(Product::class, 'category_id')->where('status', 1)->where('stock', '>', 0)->limit(8);
+        return $this->hasMany(Product::class, 'category_id')->where('status', 1)->inStock()->limit(8);
     }
 
     public function products()
     {
-        return $this->hasMany(Product::class, 'category_id')->where('status', 1)->where('stock', '>', 0)->select('id', 'name', 'slug', 'category_id', 'new_price', 'old_price','sold','stock')->orderBy('id','DESC');
+        return $this->hasMany(Product::class, 'category_id')->where('status', 1)->inStock()->select('id', 'name', 'slug', 'category_id', 'new_price', 'old_price','sold','stock')->orderBy('id','DESC');
     }
     
     

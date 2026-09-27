@@ -850,7 +850,7 @@
                     @endif
 
                     {{-- Stock check --}}
-                    @if($details->stock < 1)
+                    @if($details->isOutOfStock())
                     <div class="pdp-stock-out"><i class="fa-solid fa-circle-exclamation"></i> স্টক আউট</div>
                     @else
                     {{-- Qty + Buttons --}}

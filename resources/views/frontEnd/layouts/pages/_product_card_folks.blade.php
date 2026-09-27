@@ -27,7 +27,7 @@
 
         {{-- Hover add-to-cart --}}
         <div class="gani-product-hover">
-            @if($product->procolors->isEmpty() && $product->prosizes->isEmpty() && $product->stock > 0)
+            @if($product->procolors->isEmpty() && $product->prosizes->isEmpty() && $product->isInStock())
                 <form action="{{ route('cart.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="id" value="{{ $product->id }}" />
@@ -40,7 +40,7 @@
         </div>
 
         {{-- Stock out overlay --}}
-        @if($product->stock < 1)
+        @if($product->isOutOfStock())
         <div class="gani-stock-overlay">Stock Out</div>
         @endif
     </div>

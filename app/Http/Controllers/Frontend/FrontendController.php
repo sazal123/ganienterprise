@@ -72,7 +72,7 @@ class FrontendController extends Controller
 
         // Flash sale products
         $flas_sales = Product::where(['status' => 1, 'flashsale' => 1])
-            ->where('stock', '>', 0)
+            ->inStock()
             ->orderBy('id', 'DESC')
             ->select('id', 'name', 'slug', 'new_price', 'old_price','sold','stock')
             ->with('image', 'prosizes', 'procolors')
@@ -81,7 +81,7 @@ class FrontendController extends Controller
 
         // Trending Products (topsale = hot deals / trending)
         $trendingProducts = Product::where(['status' => 1, 'topsale' => 1])
-            ->where('stock', '>', 0)
+            ->inStock()
             ->orderBy('id', 'DESC')
             ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
             ->with('image', 'images', 'procolors')
@@ -90,7 +90,7 @@ class FrontendController extends Controller
 
         // New Collection (is_new flag)
         $newProducts = Product::where(['status' => 1, 'is_new' => 1])
-            ->where('stock', '>', 0)
+            ->inStock()
             ->orderBy('id', 'DESC')
             ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
             ->with('image', 'images', 'procolors')
@@ -99,7 +99,7 @@ class FrontendController extends Controller
 
         // Prime Collection (is_prime flag)
         $primeProducts = Product::where(['status' => 1, 'is_prime' => 1])
-            ->where('stock', '>', 0)
+            ->inStock()
             ->orderBy('id', 'DESC')
             ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
             ->with('image', 'images', 'procolors')
@@ -108,7 +108,7 @@ class FrontendController extends Controller
 
         // Top Category Products (featured products)
         $topCategoryProducts = Product::where(['status' => 1, 'feature_product' => 1])
-            ->where('stock', '>', 0)
+            ->inStock()
             ->orderBy('id', 'DESC')
             ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
             ->with('image', 'images', 'procolors')
@@ -118,7 +118,7 @@ class FrontendController extends Controller
         // Hot deals (for backward compatibility)
         $hotdeal_top = $trendingProducts;
         $hotdeal_bottom = Product::where(['status' => 1, 'topsale' => 1])
-            ->where('stock', '>', 0)
+            ->inStock()
             ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
             ->skip(8)
             ->limit(12)
@@ -147,7 +147,7 @@ class FrontendController extends Controller
         // All products
         if($generalsetting->show_all_products){
             $all_products = Product::where(['status' => 1])
-                ->where('stock', '>', 0)
+                ->inStock()
                 ->inRandomOrder()
                 ->select('id', 'name', 'slug', 'new_price', 'old_price','sold','stock')
                 ->with('image', 'images', 'prosizes', 'procolors')
@@ -167,7 +167,7 @@ class FrontendController extends Controller
         $schoolBagProducts = collect();
         if ($schoolBagCat) {
             $schoolBagProducts = Product::where(['status' => 1, 'category_id' => $schoolBagCat->id])
-                ->where('stock', '>', 0)
+                ->inStock()
                 ->select('id', 'name', 'slug', 'new_price', 'old_price', 'sold', 'stock')
                 ->with('image', 'images', 'prosizes', 'procolors')
                 ->latest()
@@ -176,7 +176,7 @@ class FrontendController extends Controller
         }
         if ($schoolBagProducts->isEmpty()) {
             $schoolBagProducts = Product::where('status', 1)
-                ->where('stock', '>', 0)
+                ->inStock()
                 ->where('name', 'like', '%bag%')
                 ->select('id', 'name', 'slug', 'new_price', 'old_price', 'sold', 'stock')
                 ->with('image', 'images', 'prosizes', 'procolors')
@@ -190,7 +190,7 @@ class FrontendController extends Controller
         $ladiesBagProducts = collect();
         if ($ladiesBagCat) {
             $ladiesBagProducts = Product::where(['status' => 1, 'category_id' => $ladiesBagCat->id])
-                ->where('stock', '>', 0)
+                ->inStock()
                 ->select('id', 'name', 'slug', 'new_price', 'old_price', 'sold', 'stock')
                 ->with('image', 'images', 'prosizes', 'procolors')
                 ->latest()
@@ -199,7 +199,7 @@ class FrontendController extends Controller
         }
         if ($ladiesBagProducts->isEmpty()) {
             $ladiesBagProducts = Product::where('status', 1)
-                ->where('stock', '>', 0)
+                ->inStock()
                 ->whereIn('category_id', [19, 24, 25, 26])
                 ->select('id', 'name', 'slug', 'new_price', 'old_price', 'sold', 'stock')
                 ->with('image', 'images', 'prosizes', 'procolors')
@@ -223,7 +223,7 @@ class FrontendController extends Controller
                 ->first();
             // Products to showcase on the right side of the banner
             $primeDropProducts = Product::where(['status' => 1])
-                ->where('stock', '>', 0)
+                ->inStock()
                 ->inRandomOrder()
                 ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock')
                 ->with('image')
@@ -245,11 +245,11 @@ class FrontendController extends Controller
         $soldShow = $request->sold == 'show' ? true : false;
 
         // Global price range for slider
-        $globalMin = Product::where(['status' => 1, 'topsale' => 1])->where('stock', '>', 0)->min('new_price');
-        $globalMax = Product::where(['status' => 1, 'topsale' => 1])->where('stock', '>', 0)->max('new_price');
+        $globalMin = Product::where(['status' => 1, 'topsale' => 1])->inStock()->min('new_price');
+        $globalMax = Product::where(['status' => 1, 'topsale' => 1])->inStock()->max('new_price');
 
         $products = Product::where(['status' => 1, 'topsale' => 1])
-            ->where('stock', '>', 0)
+            ->inStock()
             ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'subcategory_id', 'sold', 'stock')
             ->with(['image', 'images', 'procolors', 'prosizes']);
 
@@ -290,11 +290,11 @@ class FrontendController extends Controller
     public function shop(Request $request)
     {
         // Get global price range (unfiltered)
-        $globalMin = Product::where('status', 1)->where('stock', '>', 0)->min('new_price');
-        $globalMax = Product::where('status', 1)->where('stock', '>', 0)->max('new_price');
+        $globalMin = Product::where('status', 1)->inStock()->min('new_price');
+        $globalMax = Product::where('status', 1)->inStock()->max('new_price');
 
         $products = Product::where(['status' => 1])
-            ->where('stock', '>', 0)
+            ->inStock()
             ->select('id', 'name', 'slug', 'new_price', 'old_price','stock')
             ->with('image', 'images', 'procolors', 'prosizes');
 
@@ -344,7 +344,7 @@ class FrontendController extends Controller
     public function collectionPrime(Request $request)
     {
         $products = Product::where(['status' => 1, 'is_prime' => 1])
-            ->where('stock', '>', 0)
+            ->inStock()
             ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock')
             ->with('image', 'procolors');
 
@@ -354,8 +354,8 @@ class FrontendController extends Controller
         elseif ($request->sort == 4) { $products = $products->orderBy('new_price', 'asc'); }
         else { $products = $products->latest(); }
 
-        $globalMin = Product::where(['status' => 1, 'is_prime' => 1])->where('stock', '>', 0)->min('new_price') ?? 0;
-        $globalMax = Product::where(['status' => 1, 'is_prime' => 1])->where('stock', '>', 0)->max('new_price') ?? 0;
+        $globalMin = Product::where(['status' => 1, 'is_prime' => 1])->inStock()->min('new_price') ?? 0;
+        $globalMax = Product::where(['status' => 1, 'is_prime' => 1])->inStock()->max('new_price') ?? 0;
 
         if ($request->min_price && $request->max_price) {
             $products = $products->where('new_price', '>=', $request->min_price)
@@ -379,7 +379,7 @@ class FrontendController extends Controller
     public function collectionNew(Request $request)
     {
         $products = Product::where(['status' => 1, 'is_new' => 1])
-            ->where('stock', '>', 0)
+            ->inStock()
             ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock')
             ->with('image', 'procolors');
 
@@ -389,8 +389,8 @@ class FrontendController extends Controller
         elseif ($request->sort == 4) { $products = $products->orderBy('new_price', 'asc'); }
         else { $products = $products->latest(); }
 
-        $globalMin = Product::where(['status' => 1, 'is_new' => 1])->where('stock', '>', 0)->min('new_price') ?? 0;
-        $globalMax = Product::where(['status' => 1, 'is_new' => 1])->where('stock', '>', 0)->max('new_price') ?? 0;
+        $globalMin = Product::where(['status' => 1, 'is_new' => 1])->inStock()->min('new_price') ?? 0;
+        $globalMax = Product::where(['status' => 1, 'is_new' => 1])->inStock()->max('new_price') ?? 0;
 
         if ($request->min_price && $request->max_price) {
             $products = $products->where('new_price', '>=', $request->min_price)
@@ -415,7 +415,7 @@ class FrontendController extends Controller
     {
 
         $products = Product::where(['status' => 1, 'flashsale' => 1])
-            ->where('stock', '>', 0)
+            ->inStock()
             ->select('id', 'name', 'slug', 'new_price', 'old_price','stock');
         // return $request->sort;
         if ($request->sort == 1) {
@@ -463,11 +463,11 @@ class FrontendController extends Controller
         $category = Category::where(['slug' => $slug, 'status' => 1])->firstOrFail();
 
         // Global price range for slider
-        $globalMin = Product::where(['status' => 1, 'category_id' => $category->id])->where('stock', '>', 0)->min('new_price');
-        $globalMax = Product::where(['status' => 1, 'category_id' => $category->id])->where('stock', '>', 0)->max('new_price');
+        $globalMin = Product::where(['status' => 1, 'category_id' => $category->id])->inStock()->min('new_price');
+        $globalMax = Product::where(['status' => 1, 'category_id' => $category->id])->inStock()->max('new_price');
 
         $products = Product::where(['status' => 1, 'category_id' => $category->id])
-            ->where('stock', '>', 0)
+            ->inStock()
             ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'sold', 'stock')
             ->with('image', 'images', 'procolors', 'prosizes');
 
@@ -523,11 +523,11 @@ class FrontendController extends Controller
         $subcategory = Subcategory::where(['slug' => $slug, 'status' => 1])->firstOrFail();
 
         // Global price range for slider
-        $globalMin = Product::where(['status' => 1, 'subcategory_id' => $subcategory->id])->where('stock', '>', 0)->min('new_price');
-        $globalMax = Product::where(['status' => 1, 'subcategory_id' => $subcategory->id])->where('stock', '>', 0)->max('new_price');
+        $globalMin = Product::where(['status' => 1, 'subcategory_id' => $subcategory->id])->inStock()->min('new_price');
+        $globalMax = Product::where(['status' => 1, 'subcategory_id' => $subcategory->id])->inStock()->max('new_price');
 
         $products = Product::where(['status' => 1, 'subcategory_id' => $subcategory->id])
-            ->where('stock', '>', 0)
+            ->inStock()
             ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'subcategory_id', 'sold', 'stock')
             ->with(['image', 'images', 'procolors', 'prosizes']);
 
@@ -579,11 +579,11 @@ class FrontendController extends Controller
         $soldShow = $request->sold == 'show' ? true : false;
         $childcategory = Childcategory::where(['slug' => $slug, 'status' => 1])->firstOrFail();
 
-        $globalMin = Product::where(['status' => 1, 'childcategory_id' => $childcategory->id])->where('stock', '>', 0)->min('new_price');
-        $globalMax = Product::where(['status' => 1, 'childcategory_id' => $childcategory->id])->where('stock', '>', 0)->max('new_price');
+        $globalMin = Product::where(['status' => 1, 'childcategory_id' => $childcategory->id])->inStock()->min('new_price');
+        $globalMax = Product::where(['status' => 1, 'childcategory_id' => $childcategory->id])->inStock()->max('new_price');
 
         $products = Product::where(['status' => 1, 'childcategory_id' => $childcategory->id])
-            ->where('stock', '>', 0)
+            ->inStock()
             ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'subcategory_id', 'childcategory_id', 'sold', 'stock')
             ->with(['image', 'images', 'procolors', 'prosizes']);
 
@@ -634,7 +634,7 @@ class FrontendController extends Controller
 
         // Related products from same category
         $relatedProducts = Product::where(['category_id' => $details->category_id, 'status' => 1])
-            ->where('stock', '>', 0)
+            ->inStock()
             ->where('id', '!=', $details->id)
             ->with('image', 'procolors', 'prosizes')
             ->select('id', 'name', 'slug', 'new_price', 'old_price', 'stock')
@@ -643,7 +643,7 @@ class FrontendController extends Controller
 
         // "Pair It & Shine!" — also fetch some unrelated products for variety
         $pairProducts = Product::where('status', 1)
-            ->where('stock', '>', 0)
+            ->inStock()
             ->where('id', '!=', $details->id)
             ->where('category_id', '!=', $details->category_id)
             ->with('image')
@@ -714,10 +714,14 @@ class FrontendController extends Controller
     {
         $products = Product::select('id', 'name', 'slug', 'new_price', 'old_price','stock')
             ->where('status', 1)
-            ->where('stock', '>', 0)
+            ->inStock()
             ->with('image');
         if ($request->keyword) {
-            $products = $products->where('name', 'LIKE', '%' . $request->keyword . "%");
+            $kw = trim($request->keyword);
+            $products = $products->where(function($q) use ($kw) {
+                $q->where('name', 'LIKE', '%' . $kw . '%')
+                  ->orWhere('product_code', 'LIKE', '%' . $kw . '%');
+            });
         }
         if ($request->category) {
             $products = $products->where('category_id', $request->category);
@@ -732,7 +736,7 @@ class FrontendController extends Controller
     public function search(Request $request)
     {
         $products = Product::where('status', 1)
-            ->where('stock', '>', 0)
+            ->inStock()
             ->select('id', 'name', 'slug', 'new_price', 'old_price', 'category_id', 'stock')
             ->with(['image', 'images', 'procolors', 'prosizes']);
 
@@ -875,7 +879,7 @@ class FrontendController extends Controller
 
         // Include all products belonging to any of the selected categories
         if (!empty($campaignCategoryIds)) {
-            $catProductIds = Product::whereIn('category_id', $campaignCategoryIds)->where('status', 1)->where('stock', '>', 0)->pluck('id')->toArray();
+            $catProductIds = Product::whereIn('category_id', $campaignCategoryIds)->where('status', 1)->inStock()->pluck('id')->toArray();
             $productIds = array_merge($productIds, $catProductIds);
         }
 
@@ -885,7 +889,7 @@ class FrontendController extends Controller
 
         $productIds = array_unique(array_filter($productIds));
 
-        $query = Product::where('status', 1)->where('stock', '>', 0);
+        $query = Product::where('status', 1)->inStock();
 
         if (!empty($productIds)) {
             $query->whereIn('id', $productIds);
@@ -921,7 +925,7 @@ class FrontendController extends Controller
 
         // Fallback to showcase all active products if campaign has no attached items or categories
         if ($products->total() == 0 && empty($productIds)) {
-            $products = Product::where('status', 1)->where('stock', '>', 0)->with(['image', 'images', 'procolors', 'prosizes'])->paginate(12)->withQueryString();
+            $products = Product::where('status', 1)->inStock()->with(['image', 'images', 'procolors', 'prosizes'])->paginate(12)->withQueryString();
         }
 
         // Categories to display as tabs on the view page
@@ -1050,7 +1054,7 @@ class FrontendController extends Controller
         if ($activeOffer) {
             $productQuery = $activeOffer->products()
                 ->where('products.status', 1)
-                ->where('products.stock', '>', 0)
+                ->inStock()
                 ->with(['image', 'images']);
 
             // Optional category filter
@@ -1075,7 +1079,7 @@ class FrontendController extends Controller
         } else {
             // Fallback: If no active offer created yet, display discounted products
             $products = Product::where('status', 1)
-                ->where('stock', '>', 0)
+                ->inStock()
                 ->whereNotNull('old_price')
                 ->whereColumn('old_price', '>', 'new_price')
                 ->with(['image', 'images'])
@@ -1091,7 +1095,7 @@ class FrontendController extends Controller
 
     public function schoolBagsLanding(Request $request)
     {
-        $query = Product::where('status', 1)->where('stock', '>', 0);
+        $query = Product::where('status', 1)->inStock();
 
         // Broad matching for school bags / backpacks / bags
         $query->where(function($q) {
@@ -1164,12 +1168,12 @@ class FrontendController extends Controller
 
         // If no bag matches, fallback to all active products to ensure landing page always showcases items nicely
         if ($products->total() == 0) {
-            $products = Product::where('status', 1)->where('stock', '>', 0)->with(['image', 'sizes', 'colors'])->paginate(12)->withQueryString();
+            $products = Product::where('status', 1)->inStock()->with(['image', 'sizes', 'colors'])->paginate(12)->withQueryString();
         }
 
         // Top 4 spotlight products
         $spotlightProducts = Product::where('status', 1)
-            ->where('stock', '>', 0)
+            ->inStock()
             ->with(['image', 'sizes', 'colors'])
             ->latest()
             ->take(4)
@@ -1195,7 +1199,7 @@ class FrontendController extends Controller
             ->where(function($q) {
                 $q->whereNull('product_id')
                   ->orWhereHas('product', function($pq) {
-                      $pq->where('status', 1)->where('stock', '>', 0);
+                      $pq->where('status', 1)->inStock();
                   });
             })
             ->orderBy('order_id', 'ASC')

@@ -38,7 +38,7 @@ class FrontendController extends Controller
    }
    
     public function hotdealproduct(){
-        $data = Product::where(['status'=>1])->where('stock', '>', 0)->select('id','slug','name','topsale','old_price','new_price')->with('image')->get();
+        $data = Product::where(['status'=>1])->inStock()->select('id','slug','name','topsale','old_price','new_price')->with('image')->get();
         return response()->json(['status' => 'success','message'=>'Data fatch successfully','data'=>$data]);
    }
    
@@ -68,7 +68,7 @@ class FrontendController extends Controller
 
     public function catproduct($id){
         $category = Category::where(['status'=>1, 'id'=>$id])->select('id','name','slug')->first();
-        $data = Product::where(['status'=>1, 'category_id'=>$category->id])->where('stock', '>', 0)->select('id','slug','name','old_price','new_price', 'category_id')->with('image')->orderBy('id','DESC')->get();
+        $data = Product::where(['status'=>1, 'category_id'=>$category->id])->inStock()->select('id','slug','name','old_price','new_price', 'category_id')->with('image')->orderBy('id','DESC')->get();
         return response()->json(['status' => 'success','message'=>'Data fatch successfully','data'=>$data, 'category'=>$category]);
     }
    

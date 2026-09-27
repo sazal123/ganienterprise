@@ -77,4 +77,52 @@ class Product extends Model
     {
         return $this->hasOne(Productcolor::class, 'product_id');
     }
+
+    public function scopeInStock($query)
+    {
+        return $query->where('products.stock', '>', 0)
+            ->whereDoesntHave('procolors', function($q) {
+                $q->where(function($cq) {
+                    $cq->where('stock', '<=', 0)->orWhereNull('stock');
+                });
+            })
+            ->whereDoesntHave('prosizes', function($q) {
+                $q->where(function($sq) {
+                    $sq->where('stock', '<=', 0)->orWhereNull('stock');
+                });
+            });
+    }
+
+    public function isInStock()
+    {
+        if ($this->stock <= 0) {
+            return false;
+        }
+        if ($this->relationLoaded('procolors')) {
+            if ($this->procolors->contains(function($c) { return $c->stock === null || $c->stock <= 0; })) {
+                return false;
+            }
+        } else {
+            if ($this->procolors()->where(function($q) { $q->where('stock', '<=', 0)->orWhereNull('stock'); })->exists()) {
+                return false;
+            }
+        }
+
+        if ($this->relationLoaded('prosizes')) {
+            if ($this->prosizes->contains(function($s) { return $s->stock === null || $s->stock <= 0; })) {
+                return false;
+            }
+        } else {
+            if ($this->prosizes()->where(function($q) { $q->where('stock', '<=', 0)->orWhereNull('stock'); })->exists()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function isOutOfStock()
+    {
+        return !$this->isInStock();
+    }
 }

@@ -30,9 +30,9 @@
                      data-prod-old="{{ $storyProduct && $storyProduct->old_price ? number_format($storyProduct->old_price) : '' }}"
                      data-prod-slug="{{ $storyProduct ? $storyProduct->slug : '#' }}"
                      data-prod-id="{{ $storyProduct ? $storyProduct->id : '' }}"
-                     data-prod-stock="{{ $storyProduct ? $storyProduct->stock : 0 }}"
+                     data-prod-stock="{{ $storyProduct && $storyProduct->isInStock() ? $storyProduct->stock : 0 }}"
                      data-prod-link="{{ $storyProduct ? route('product', $storyProduct->slug) : '#' }}"
-                     data-add-to-cart="{{ $storyProduct && $storyProduct->procolors->isEmpty() && $storyProduct->prosizes->isEmpty() && $storyProduct->stock > 0 ? route('cart.store') : '' }}">
+                     data-add-to-cart="{{ $storyProduct && $storyProduct->procolors->isEmpty() && $storyProduct->prosizes->isEmpty() && $storyProduct->isInStock() ? route('cart.store') : '' }}">
                     <div class="gani-story-thumb-wrap">
                         <video src="{{ asset($video) }}" class="gani-story-video" muted playsinline loop autoplay preload="auto" poster="{{ $thumb ? asset($thumb) : asset('frontEnd/img/default-product.jpg') }}"></video>
                         <div class="gani-story-play-indicator"><i class="fa-solid fa-volume-xmark"></i></div>
@@ -48,7 +48,7 @@
                                     <span class="gani-story-prod-price">৳{{ number_format($storyProduct->new_price) }}</span>
                                 </div>
                             </div>
-                            @if($storyProduct->procolors->isEmpty() && $storyProduct->prosizes->isEmpty() && $storyProduct->stock > 0)
+                            @if($storyProduct->procolors->isEmpty() && $storyProduct->prosizes->isEmpty() && $storyProduct->isInStock())
                             <form action="{{ route('cart.store') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $storyProduct->id }}" />
