@@ -257,11 +257,9 @@ class CustomerController extends Controller
     public function checkout(){
         $shippingcharge = ShippingCharge::where('status',1)->get();
         $select_charge = ShippingCharge::where('status',1)->first();
-        $bkash_gateway = PaymentGateway::where(['status'=> 1, 'type'=>'bkash'])->first();
-        $shurjopay_gateway = PaymentGateway::where(['status'=> 1, 'type'=>'shurjopay'])->first();
         $contact = Contact::where('status', 1)->first();
         Session::put('shipping', $select_charge ? $select_charge->amount : 0);
-        return view('frontEnd.layouts.customer.checkout', compact('shippingcharge', 'bkash_gateway', 'shurjopay_gateway', 'contact'));
+        return view('frontEnd.layouts.customer.checkout', compact('shippingcharge', 'contact'));
     }
     public function order_save(Request $request){
         $this->validate($request,[

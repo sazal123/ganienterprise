@@ -149,7 +149,6 @@
                                             <input type="text" id="name"
                                                 class="form-control @error('name') is-invalid @enderror" name="name"
                                                 value="{{ old('name') }}"
-                                                placeholder="Enter your full name"
                                                 required/>
                                             @error('name')
                                                 <span class="invalid-feedback" role="alert">
@@ -167,7 +166,6 @@
                                                 title="Please enter an 11-digit number starting with 0."
                                                 class="form-control @error('phone') is-invalid @enderror" name="phone"
                                                 value="{{ old('phone') }}"
-                                                placeholder="Enter 11-digit phone number"
                                                 required/>
                                             @error('phone')
                                                 <span class="invalid-feedback" role="alert">
@@ -184,7 +182,6 @@
                                                 class="form-control @error('address') is-invalid @enderror"
                                                 name="address"
                                                 value="{{ old('address') }}"
-                                                placeholder="House, Road, Thana, District..."
                                                 required/>
                                             @error('address')
                                                 <span class="invalid-feedback" role="alert">
@@ -225,25 +222,6 @@
                                                     Cash On Delivery
                                                 </label>
                                             </div>
-                                            @if($bkash_gateway)
-                                            <div class="form-check p_bkash">
-                                                <input class="form-check-input" type="radio" name="payment_method"
-                                                id="inlineRadio2" value="bkash" required/>
-                                                <label class="form-check-label" for="inlineRadio2">
-                                                    Bkash
-                                                </label>
-                                            </div>
-                                            @endif
-                                            
-                                            @if($shurjopay_gateway)
-                                            <div class="form-check p_shurjo">
-                                                <input class="form-check-input" type="radio" name="payment_method"
-                                                id="inlineRadio3" value="shurjopay" required/>
-                                                <label class="form-check-label" for="inlineRadio3">
-                                                    Shurjopay
-                                                </label>
-                                            </div>
-                                            @endif
                                         </div>
                                     </div>
 
