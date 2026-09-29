@@ -250,6 +250,22 @@
 <script>
     $(document).ready(function() {
         $(".select2").select2();
+
+        $('form[action="{{ route('customer.ordersave') }}"]').on('submit', function(e) {
+            var form = this;
+            if (window.Parsley) {
+                var instance = $(form).parsley();
+                if (!instance.isValid()) {
+                    return;
+                }
+            }
+            var $btn = $(form).find('.order_place');
+            if ($btn.length && !$btn.prop('disabled')) {
+                $btn.prop('disabled', true);
+                $btn.html('<i class="fas fa-spinner fa-spin"></i> Processing Order...');
+                form.submit();
+            }
+        });
     });
 </script>
 <script>

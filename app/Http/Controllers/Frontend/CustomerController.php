@@ -331,7 +331,6 @@ class CustomerController extends Controller
         $order->shipping_charge  = $shippingfee;
         $order->customer_id      = $customer_id;
         $order->order_status     = $orderedStatus->id;
-        $order->note             = $request->note;
         $order->save();
 
         // shipping data save
@@ -341,7 +340,7 @@ class CustomerController extends Controller
         $shipping->name        =   $request->name;
         $shipping->phone       =   $request->phone;
         $shipping->address     =   $request->address;
-        $shipping->area        =   $shipping_area->name;
+        $shipping->area        =   $shipping_area ? $shipping_area->name : ($request->area ?? 'Inside Dhaka');
         $shipping->save();
 
         // payment data save
@@ -353,15 +352,13 @@ class CustomerController extends Controller
         $payment->payment_status = 'pending';
         $payment->save();
 
-       // order details data save
+        // order details data save
         foreach(Cart::instance('shopping')->content() as $cart){
             $order_details                  =   new OrderDetails();
             $order_details->order_id        =   $order->id;
             $order_details->product_id      =   $cart->id;
             $order_details->product_name    =   $cart->name;
             $order_details->purchase_price  =   $cart->options->purchase_price;
-            $order_details->product_color   =   $cart->options->product_color;
-            $order_details->product_size    =   $cart->options->product_size;
             $order_details->sale_price      =   $cart->price;
             $order_details->qty             =   $cart->qty;
             $order_details->save();
@@ -372,43 +369,55 @@ class CustomerController extends Controller
         // Dispatch Telegram Notification Job
         if (class_exists(\App\Jobs\SendTelegramOrderNotification::class)) {
             try {
-                \App\Jobs\SendTelegramOrderNotification::dispatch($order->id);
+                \App\Jobs\SendTelegramOrderNotification::dispatchSync($order->id);
             } catch (\Throwable $e) {
-                \Log::error('Telegram Job Dispatch Exception: ' . $e->getMessage());
+                try {
+                    (new \App\Jobs\SendTelegramOrderNotification($order->id))->handle();
+                } catch (\Throwable $ex) {
+                    \Log::error('Telegram Notification Exception: ' . $ex->getMessage());
+                }
             }
         }
         
         Toastr::success('Thanks, Your order place successfully', 'Success!');
         $site_setting = GeneralSetting::where('status', 1)->first();
-        $sms_gateway = SmsGateway::where(['status'=> 1, 'order'=>'1'])->first();
-        
-        $contact = Contact::where('status', 1)->first();
-        if ($contact && $contact->email) {
-            try {
-                Mail::to($contact->email)->send(new OrderPlace($order));
-            } catch (\Exception $e) {
-                \Log::error('Email sending failed: ' . $e->getMessage());
+
+        // Send SMS safely if gateway is configured
+        try {
+            $sms_gateway = SmsGateway::where('status', 1)->first();
+            if ($sms_gateway && !empty($sms_gateway->url) && !empty($sms_gateway->api_key)) {
+                $url = "$sms_gateway->url";
+                $siteName = $site_setting->name ?? config('app.name');
+                $data = [
+                    "api_key" => "$sms_gateway->api_key",
+                    "number" => $request->phone,
+                    "type" => 'text',
+                    "senderid" => "$sms_gateway->serderid",
+                    "message" => "Dear $request->name!\r\nYour order#" . $order->invoice_id . " has been successfully placed. Thank you for using " . $siteName
+                ];
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                $response = curl_exec($ch);
+                curl_close($ch);
             }
+        } catch (\Throwable $e) {
+            \Log::error('SMS sending failed: ' . $e->getMessage());
         }
         
-        
-        if($sms_gateway) {
-            $url = "$sms_gateway->url";
-            $data = [
-                "api_key" => "$sms_gateway->api_key",
-                "number" => $request->phone,
-                "type" => 'text',
-                "senderid" => "$sms_gateway->serderid",
-                "message" => "Dear $request->name!\r\nYour order#".$order->invoice_id." has been successfully placed. Thank you for using $site_setting->name"
-            ];
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            $response = curl_exec($ch);
-            curl_close($ch);
+        // Send Email notification safely
+        try {
+            $contact = Contact::where('status', 1)->first();
+            if ($contact && !empty($contact->email)) {
+                Mail::to($contact->email)->send(new OrderPlace($order));
+            }
+        } catch (\Throwable $e) {
+            \Log::error('Email sending failed: ' . $e->getMessage());
         }
         
 

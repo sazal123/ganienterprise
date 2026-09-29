@@ -1008,9 +1008,13 @@ class FrontendController extends Controller
             // Dispatch Telegram Notification Job
             if (class_exists(\App\Jobs\SendTelegramOrderNotification::class)) {
                 try {
-                    \App\Jobs\SendTelegramOrderNotification::dispatch($order->id);
+                    \App\Jobs\SendTelegramOrderNotification::dispatchSync($order->id);
                 } catch (\Throwable $e) {
-                    \Log::error('Telegram Job Dispatch Exception: ' . $e->getMessage());
+                    try {
+                        (new \App\Jobs\SendTelegramOrderNotification($order->id))->handle();
+                    } catch (\Throwable $ex) {
+                        \Log::error('Telegram Job Dispatch Exception: ' . $ex->getMessage());
+                    }
                 }
             }
 
