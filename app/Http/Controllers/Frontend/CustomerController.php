@@ -359,6 +359,9 @@ class CustomerController extends Controller
             $order_details->product_id      =   $cart->id;
             $order_details->product_name    =   $cart->name;
             $order_details->purchase_price  =   $cart->options->purchase_price;
+            $order_details->product_discount=   $cart->options->product_discount ?? 0;
+            $order_details->product_color   =   $cart->options->product_color ?? null;
+            $order_details->product_size    =   $cart->options->product_size ?? null;
             $order_details->sale_price      =   $cart->price;
             $order_details->qty             =   $cart->qty;
             $order_details->save();
